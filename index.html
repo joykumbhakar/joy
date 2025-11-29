@@ -1779,38 +1779,29 @@
         </div>
     </div>
 
-    <script>
-// Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+<script>
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCsp-xvRknmdBFuS39V0IsljDIq3bOLGOA",
+  authDomain: "portfolio-app-b908d.firebaseapp.com",
+  projectId: "portfolio-app-b908d",
+  storageBucket: "portfolio-app-b908d.firebasestorage.app",
+  messagingSenderId: "1036721930214",
+  appId: "1:1036721930214:web:3cd553be7488a6a7ec2027",
+  measurementId: "G-MWFJTKSHY7"
+};
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyCsp-xvRknmdBFuS39V0IsljDIq3bOLGOA",
-    authDomain: "portfolio-app-b908d.firebaseapp.com",
-    projectId: "portfolio-app-b908d",
-    storageBucket: "portfolio-app-b908d.firebasestorage.app",
-    messagingSenderId: "1036721930214",
-    appId: "1:1036721930214:web:3cd553be7488a6a7ec2027",
-    measurementId: "G-MWFJTKSHY7"
-  };
+// Admin credentials
+const ADMIN_EMAIL = "joykumbhakar101@gmail.com";
+const ADMIN_PASSWORD = "joy9749505101_@security";
 
-        // Admin credentials
-        const ADMIN_EMAIL = "joykumbhakar101@gmail.com";
-        const ADMIN_PASSWORD = "joy9749505101_@security";
-        
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = app.auth();
-        const db = app.firestore();h();
-        const db = app.firestore();
-        
-        let currentUser = null;
+// Initialize Firebase using the global compatibility object
+const app = firebase.initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app); // Cannot be used globally with this setup
+const auth = app.auth();
+const db = app.firestore();
+    
+let currentUser = null;
 
         // --- 2. AUTHENTICATION FUNCTIONS ---
         
