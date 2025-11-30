@@ -2853,21 +2853,27 @@ async function toggleLike(noteId) {
         loadNotes();
     }
 }
-// Get user identifier for likes
 function getUserIdentifier() {
-    if (currentUser) {
-        return currentUser.uid;
-    } else if (isAdminLoggedIn()) {
+    // 1. Check Firebase Auth User (Safest way)
+    const authUser = firebase.auth().currentUser;
+    if (authUser) {
+        return authUser.uid;
+    } 
+    
+    // 2. Check Admin (Custom Logic)
+    // Make sure isAdminLoggedIn() is defined elsewhere in your code!
+    if (typeof isAdminLoggedIn === 'function' && isAdminLoggedIn()) {
         return 'admin';
-    } else {
-        // For anonymous users, use a session-based identifier
-        let sessionId = localStorage.getItem('sessionId');
-        if (!sessionId) {
-            sessionId = 'anon_' + Math.random().toString(36).substring(2, 15);
-            localStorage.setItem('sessionId', sessionId);
-        }
-        return sessionId;
     }
+
+    // 3. Anonymous Fallback (Local Storage)
+    let sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+        // Generate a random ID like "anon_k4l2m5n6"
+        sessionId = 'anon_' + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('sessionId', sessionId);
+    }
+    return sessionId;
 }
 
 // Check if admin is logged in
