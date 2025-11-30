@@ -8,7 +8,6 @@
     <meta name="keywords" content="frontend developer, web developer, HTML, CSS, JavaScript, Python, React, portfolio">
     <meta name="author" content="Joy Kumbhakar">
     
-    <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:title" content="Joy Kumbhakar | Frontend Developer">
     <meta property="og:description" content="Frontend Developer specializing in HTML, CSS, JavaScript, and Python. Building beautiful, responsive web applications.">
     <meta property="og:type" content="website">
@@ -25,7 +24,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -1465,10 +1463,10 @@
                     </div>
                       <div class="glass-panel p-4 md:p-5 flex items-center gap-3 md:gap-4">
                         <div class="p-2 md:p-2.5 rounded-xl bg-emerald-500/20 text-emerald-300"><i data-lucide="coffee" class="w-4 h-4 md:w-5 md:h-5"></i></div>
-                         <div>
+                          <div>
                              <div class="text-lg md:text-xl font-bold text-dynamic">∞</div>
                              <div class="text-xs text-muted-dynamic font-medium uppercase tracking-wider">Caffeine</div>
-                         </div>
+                          </div>
                     </div>
                     <div class="glass-panel p-4 md:p-5 flex items-center gap-3 md:gap-4">
                         <div class="p-2 md:p-2.5 rounded-xl bg-pink-500/20 text-pink-300"><i data-lucide="globe" class="w-4 h-4 md:w-5 md:h-5"></i></div>
@@ -1890,7 +1888,6 @@
             </div>
         </section>
 
-        <!-- Notes Section -->
         <section id="notes" class="hidden-section fade-enter">
             <div class="max-w-5xl mx-auto">
                 <div class="mb-8 md:mb-12 px-2">
@@ -1899,7 +1896,6 @@
                 </div>
 
                 <div class="notes-section">
-                    <!-- Notes will be dynamically loaded here -->
                     <div id="notes-container"></div>
                 </div>
             </div>
@@ -1973,6 +1969,7 @@
 
 <script>
 // Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCsp-xvRknmdBFuS39V0IsljDIq3bOLGOA",
   authDomain: "portfolio-app-b908d.firebaseapp.com",
@@ -1985,7 +1982,7 @@ const firebaseConfig = {
 
 // Admin credentials for production
 const ADMIN_EMAIL = "joykumbhakar101@gmail.com";
-const ADMIN_PASSWORD = "joy9749505101_@security";
+// REMOVED INSECURE PASSWORD CONSTANT
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
@@ -2105,13 +2102,16 @@ function updateAccountModalUI(user) {
 // Check Admin Status
 function checkAdminLoginStatus(user) {
     const adminToggle = document.getElementById('admin-toggle');
-    const adminEmail = localStorage.getItem('adminEmail');
-    const isAdmin = localStorage.getItem('adminLoggedIn') === 'true' && adminEmail === ADMIN_EMAIL;
     
-    if (isAdmin) {
+    // Check if user is logged in via Firebase AND matches the admin email
+    if (user && user.email === ADMIN_EMAIL) {
         adminToggle.style.display = 'flex';
+        // Also set localStorage for convenience, but trust the user object primarily
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('adminEmail', user.email);
     } else {
         adminToggle.style.display = 'none';
+        localStorage.removeItem('adminLoggedIn');
     }
 }
 
@@ -2630,8 +2630,13 @@ function getUserIdentifier() {
 
 // Check if admin is logged in
 function isAdminLoggedIn() {
+    // Check localStorage OR current Firebase user email
     const adminEmail = localStorage.getItem('adminEmail');
-    return localStorage.getItem('adminLoggedIn') === 'true' && adminEmail === ADMIN_EMAIL;
+    const isLocalAdmin = localStorage.getItem('adminLoggedIn') === 'true' && adminEmail === ADMIN_EMAIL;
+    
+    const isFirebaseAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+    
+    return isLocalAdmin || isFirebaseAdmin;
 }
 
 // --- UTILITY & UI FUNCTIONS ---
@@ -2817,11 +2822,15 @@ function switchTab(tabId) {
 function logoutAdmin() {
     localStorage.removeItem('adminLoggedIn');
     localStorage.removeItem('adminEmail');
-    document.getElementById('admin-toggle').style.display = 'none';
-    document.getElementById('admin-panel').classList.remove('open');
-    renderCalendar(currentDate);
-    loadNotes();
-    alert('Admin logged out successfully');
+    
+    // Also sign out from Firebase
+    auth.signOut().then(() => {
+        document.getElementById('admin-toggle').style.display = 'none';
+        document.getElementById('admin-panel').classList.remove('open');
+        renderCalendar(currentDate);
+        loadNotes();
+        alert('Logged out successfully');
+    });
 }
 
 // --- INITIALIZATION ---
@@ -2863,7 +2872,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize contact form for Firestore submission
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
-        contactForm.removeEventListener('submit', this.originalFormSubmit);
         contactForm.addEventListener('submit', submitContactForm);
     }
     
@@ -2876,31 +2884,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Email Sign-In Button (for admin/regular user)
+    // Email Sign-In Button (SECURE FIX APPLIED)
     document.getElementById('email-sign-in-btn').addEventListener('click', () => {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
         
-        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-            // Redirect to admin login for specific credentials
-            closeAllPanels();
-            showAdminLogin();
-            document.getElementById('admin-email').value = email;
-            document.getElementById('admin-password').value = password;
-        } else {
-            // Regular Firebase Email Sign-In
-            showLoader('Signing in...', 'Authenticating with Email/Password');
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    hideLoader();
-                    closeAllPanels();
-                })
-                .catch((error) => {
-                    hideLoader();
-                    alert(`Sign-In Failed: ${error.message}`);
-                    console.error("Email Sign-In Error:", error);
-                });
-        }
+        showLoader('Signing in...', 'Authenticating...');
+        
+        // Just try to sign in directly with Firebase
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                hideLoader();
+                closeAllPanels();
+                // If the email matches your admin email, the admin buttons will automatically appear
+                // because of your existing onAuthStateChanged listener.
+            })
+            .catch((error) => {
+                hideLoader();
+                alert(`Sign-In Failed: ${error.message}`);
+                console.error("Sign-In Error:", error);
+            });
     });
     
 });
