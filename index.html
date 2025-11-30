@@ -1248,6 +1248,179 @@
         .save-note-btn:hover {
             background: #4f46e5;
         }
+        /* --- X-Style Feed Design --- */
+.feed-container {
+    max-width: 600px;
+    margin: 0 auto;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 50vh;
+}
+
+.feed-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(5, 5, 5, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+/* Compose Box (Admin Only) */
+.compose-box {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 1rem;
+}
+
+.compose-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #333;
+}
+
+.compose-input-area {
+    flex: 1;
+}
+
+.compose-textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    resize: none;
+    outline: none;
+    min-height: 50px;
+    padding-top: 0.5rem;
+}
+
+.compose-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.compose-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 0.75rem;
+}
+
+.tweet-btn {
+    background: var(--accent-primary);
+    color: white;
+    font-weight: 700;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.tweet-btn:hover {
+    opacity: 0.9;
+}
+
+/* The "Tweet" Post */
+.post-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.post-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.post-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post-content-area {
+    flex: 1;
+    min-width: 0; /* Prevents overflow */
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+.post-name {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.post-handle, .post-time {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.post-text {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-wrap; /* Preserves line breaks */
+    word-wrap: break-word;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    max-width: 80%;
+    color: var(--text-muted);
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.2s;
+    group-hover: text-pink-500;
+}
+
+.action-item:hover {
+    color: var(--accent-primary);
+}
+
+.action-item.like-action:hover {
+    color: #f91880; /* X like color */
+}
+
+.action-item.like-action.liked {
+    color: #f91880;
+}
+
+.action-item.like-action.liked svg {
+    fill: #f91880;
+}
+
+.action-item.delete-action:hover {
+    color: #ef4444;
+}
     </style>
 </head>
 <body class="antialiased h-screen flex flex-col">
@@ -1889,17 +2062,25 @@
         </section>
 
         <section id="notes" class="hidden-section fade-enter">
-            <div class="max-w-5xl mx-auto">
-                <div class="mb-8 md:mb-12 px-2">
-                    <h2 class="text-2xl md:text-3xl font-bold text-dynamic tracking-tight">Notes & Updates</h2>
-                    <p class="text-muted-dynamic mt-1">Latest updates, thoughts, and announcements.</p>
-                </div>
+    <div class="max-w-5xl mx-auto">
+        <div class="feed-container glass-panel p-0 overflow-hidden">
+            
+            <div class="feed-header bg-black/50 backdrop-blur-md border-b border-white/10 p-4">
+                <h2 class="text-xl font-bold text-white">Updates</h2>
+            </div>
 
-                <div class="notes-section">
-                    <div id="notes-container"></div>
+            <div id="admin-compose-area"></div>
+
+            <div id="notes-container">
+                <div class="p-8 text-center text-gray-500">
+                    <div class="loader-spinner w-6 h-6 mx-auto border-2"></div>
+                    <p class="mt-2 text-sm">Loading tweets...</p>
                 </div>
             </div>
-        </section>
+            
+        </div>
+    </div>
+</section>
     </main>
 
     <nav class="fixed bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-auto">
@@ -2335,228 +2516,257 @@ async function setAvailability(isAvailable) {
 
 // --- NOTES FUNCTIONALITY ---
 
+// --- NOTES FUNCTIONALITY (X-Style Feed) ---
+
 const NOTES_COLLECTION = "notes";
 
-// Load all notes from Firestore
-async function loadNotes() {
+// Helper: Format time like X (2s, 4m, 2h, Nov 30)
+function timeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    let interval = seconds / 31536000;
+
+    if (interval > 1) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+        return Math.floor(interval) + "d";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+        return Math.floor(interval) + "h";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+        return Math.floor(interval) + "m";
+    }
+    return Math.floor(seconds) + "s";
+}
+
+// Helper: Prevent HTML injection in tweets
+function escapeHtml(text) {
+    if (!text) return "";
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// 1. Render Compose Box (Only for Admin)
+function renderComposeBox() {
+    const container = document.getElementById('admin-compose-area');
+    
+    // Safety check if the element exists in HTML
+    if (!container) return;
+
+    if (isAdminLoggedIn()) {
+        container.innerHTML = `
+            <div class="compose-box">
+                <img src="images/profile.png" class="compose-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Joy+K&background=6366f1&color=fff'">
+                <div class="compose-input-area">
+                    <textarea id="new-tweet-content" class="compose-textarea" placeholder="What's happening?!" rows="2"></textarea>
+                    <div class="compose-actions">
+                        <button onclick="postTweet()" class="tweet-btn">Post</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        container.innerHTML = ''; 
+    }
+}
+
+// 2. Post a New Tweet
+async function postTweet() {
+    const content = document.getElementById('new-tweet-content').value;
+    
+    if (!content.trim()) return;
+
+    showLoader('Posting...', 'Sending to feed');
+
     try {
-        const notesContainer = document.getElementById('notes-container');
-        notesContainer.innerHTML = '';
-        
-        // Show add note button for admin
-        if (isAdminLoggedIn()) {
-            const addNoteBtn = document.createElement('button');
-            addNoteBtn.className = 'add-note-btn';
-            addNoteBtn.innerHTML = '<i data-lucide="plus" class="w-4 h-4 mr-2"></i> Add New Note';
-            addNoteBtn.onclick = showAddNoteForm;
-            notesContainer.appendChild(addNoteBtn);
-        }
-        
+        await db.collection(NOTES_COLLECTION).add({
+            content: content,
+            // Hardcoded author details for consistency
+            authorName: "Joy Kumbhakar", 
+            authorHandle: "@joykumbhakar",
+            likes: 0,
+            likedBy: [],
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        document.getElementById('new-tweet-content').value = ""; // Clear input
+        hideLoader();
+        loadNotes(); // Refresh feed
+    } catch (error) {
+        hideLoader();
+        console.error("Error posting: ", error);
+        alert("Failed to post: " + error.message);
+    }
+}
+
+// 3. Load Notes (Feed Style)
+async function loadNotes() {
+    // Render the compose box if admin
+    renderComposeBox();
+
+    const notesContainer = document.getElementById('notes-container');
+    if (!notesContainer) return;
+    
+    try {
         const querySnapshot = await db.collection(NOTES_COLLECTION)
             .orderBy('timestamp', 'desc')
+            .limit(20)
             .get();
             
+        notesContainer.innerHTML = ''; // Clear loader
+
         if (querySnapshot.empty) {
-            const noNotesMsg = document.createElement('div');
-            noNotesMsg.className = 'text-center text-muted-dynamic py-8';
-            noNotesMsg.textContent = 'No notes available yet.';
-            notesContainer.appendChild(noNotesMsg);
+            notesContainer.innerHTML = `
+                <div class="p-8 text-center text-gray-500">
+                    <p>No updates yet.</p>
+                </div>`;
             return;
         }
         
         querySnapshot.forEach((doc) => {
             const note = doc.data();
             note.id = doc.id;
-            renderNote(note);
+            renderTweet(note);
         });
         
         lucide.createIcons();
     } catch (error) {
-        console.error("Error loading notes: ", error);
-        alert(`Error loading notes: ${error.message}`);
+        console.error("Error loading feed: ", error);
+        notesContainer.innerHTML = `<div class="p-4 text-red-400 text-center">Failed to load feed.</div>`;
     }
 }
 
-// Render a single note
-function renderNote(note) {
+// 4. Render Individual Tweet
+function renderTweet(note) {
     const notesContainer = document.getElementById('notes-container');
     
-    const noteElement = document.createElement('div');
-    noteElement.className = 'note-item';
-    noteElement.id = `note-${note.id}`;
+    // Safety check for date
+    const dateObj = note.timestamp ? note.timestamp.toDate() : new Date();
+    const timeString = timeAgo(dateObj);
     
-    const date = note.timestamp ? note.timestamp.toDate() : new Date();
-    const formattedDate = date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    // User ID for likes
+    const currentUserId = getUserIdentifier();
+    const isLiked = note.likedBy && note.likedBy.includes(currentUserId);
+
+    const tweetDiv = document.createElement('div');
+    tweetDiv.className = 'post-item fade-enter-active';
+    tweetDiv.id = `note-${note.id}`;
     
-    noteElement.innerHTML = `
-        <div class="note-header">
-            <h3 class="note-title">${note.title}</h3>
-            <span class="note-date">${formattedDate}</span>
+    tweetDiv.innerHTML = `
+        <div class="post-avatar">
+            <img src="images/profile.png" onerror="this.src='https://ui-avatars.com/api/?name=Joy+K&background=6366f1&color=fff'">
         </div>
-        <div class="note-content">${note.content}</div>
-        <div class="note-actions">
-            <button class="like-btn ${note.likedBy && note.likedBy.includes(getUserIdentifier()) ? 'liked' : ''}" 
-                    onclick="toggleLike('${note.id}')">
-                <i data-lucide="heart" class="w-4 h-4"></i>
-                <span class="like-count">${note.likes || 0}</span>
-            </button>
-            ${isAdminLoggedIn() ? `
-            <div class="admin-note-actions">
-                <button class="edit-note-btn" onclick="editNote('${note.id}')">
-                    <i data-lucide="edit" class="w-3 h-3 mr-1"></i> Edit
-                </button>
-                <button class="delete-note-btn" onclick="deleteNote('${note.id}')">
-                    <i data-lucide="trash" class="w-3 h-3 mr-1"></i> Delete
-                </button>
+        <div class="post-content-area">
+            <div class="post-header">
+                <span class="post-name">${note.authorName || 'Joy Kumbhakar'}</span>
+                <span class="post-handle">${note.authorHandle || '@joykumbhakar'}</span>
+                <span class="text-gray-600">·</span>
+                <span class="post-time">${timeString}</span>
             </div>
-            ` : ''}
+            <div class="post-text">${escapeHtml(note.content)}</div>
+            
+            <div class="post-actions">
+                <button class="action-item">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>0</span>
+                </button>
+                <button class="action-item like-action ${isLiked ? 'liked' : ''}" onclick="event.stopPropagation(); toggleLike('${note.id}')">
+                    <i data-lucide="heart" class="w-4 h-4 ${isLiked ? 'fill-current' : ''}"></i>
+                    <span>${note.likes || 0}</span>
+                </button>
+                <button class="action-item">
+                    <i data-lucide="share" class="w-4 h-4"></i>
+                </button>
+                ${isAdminLoggedIn() ? `
+                <button class="action-item delete-action" onclick="event.stopPropagation(); deleteNote('${note.id}')">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+                ` : ''}
+            </div>
         </div>
     `;
     
-    notesContainer.appendChild(noteElement);
+    notesContainer.appendChild(tweetDiv);
 }
 
-// Show add note form
-function showAddNoteForm() {
-    const notesContainer = document.getElementById('notes-container');
-    
-    // Remove existing form if any
-    const existingForm = document.getElementById('note-form');
-    if (existingForm) {
-        existingForm.remove();
-    }
-    
-    const noteForm = document.createElement('div');
-    noteForm.id = 'note-form';
-    noteForm.className = 'note-form';
-    noteForm.innerHTML = `
-        <h3>Add New Note</h3>
-        <div class="form-group">
-            <input type="text" id="note-title" class="form-input" placeholder="Note Title" required>
-        </div>
-        <div class="form-group">
-            <textarea id="note-content" class="form-input" placeholder="Note Content" required></textarea>
-        </div>
-        <div class="note-form-actions">
-            <button type="button" class="cancel-note-btn" onclick="cancelNoteForm()">Cancel</button>
-            <button type="button" class="save-note-btn" onclick="saveNote()">Save Note</button>
-        </div>
-    `;
-    
-    // Insert after the add note button
-    const addNoteBtn = notesContainer.querySelector('.add-note-btn');
-    if (addNoteBtn) {
-        notesContainer.insertBefore(noteForm, addNoteBtn.nextSibling);
-    } else {
-        notesContainer.prepend(noteForm);
-    }
-}
-
-// Show edit note form
-function editNote(noteId) {
-    const noteElement = document.getElementById(`note-${noteId}`);
-    const noteTitle = noteElement.querySelector('.note-title').textContent;
-    const noteContent = noteElement.querySelector('.note-content').textContent;
-    
-    // Remove existing form if any
-    const existingForm = document.getElementById('note-form');
-    if (existingForm) {
-        existingForm.remove();
-    }
-    
-    const noteForm = document.createElement('div');
-    noteForm.id = 'note-form';
-    noteForm.className = 'note-form';
-    noteForm.innerHTML = `
-        <h3>Edit Note</h3>
-        <div class="form-group">
-            <input type="text" id="note-title" class="form-input" value="${noteTitle}" required>
-        </div>
-        <div class="form-group">
-            <textarea id="note-content" class="form-input" required>${noteContent}</textarea>
-        </div>
-        <div class="note-form-actions">
-            <button type="button" class="cancel-note-btn" onclick="cancelNoteForm()">Cancel</button>
-            <button type="button" class="save-note-btn" onclick="saveNote('${noteId}')">Update Note</button>
-        </div>
-    `;
-    
-    noteElement.style.display = 'none';
-    noteElement.parentNode.insertBefore(noteForm, noteElement);
-    currentEditingNoteId = noteId;
-}
-
-// Cancel note form
-function cancelNoteForm() {
-    const noteForm = document.getElementById('note-form');
-    if (noteForm) {
-        noteForm.remove();
-    }
-    
-    if (currentEditingNoteId) {
-        const noteElement = document.getElementById(`note-${currentEditingNoteId}`);
-        if (noteElement) {
-            noteElement.style.display = 'block';
-        }
-        currentEditingNoteId = null;
-    }
-}
-
-// Save note (create or update)
-async function saveNote(noteId = null) {
-    const title = document.getElementById('note-title').value;
-    const content = document.getElementById('note-content').value;
-    
-    if (!title || !content) {
-        alert('Please fill in both title and content');
+// Toggle like (Updated for Feed)
+async function toggleLike(noteId) {
+    const userIdentifier = getUserIdentifier();
+    if (!userIdentifier) {
+        // Should not happen if anon auth is working, but safe fallback
+        alert('Please reload the page to enable interactions.');
         return;
     }
     
-    showLoader(noteId ? 'Updating note...' : 'Saving note...');
+    const noteRef = db.collection(NOTES_COLLECTION).doc(noteId);
+    
+    // Optimistic UI Update (Make it feel instant)
+    const noteElement = document.getElementById(`note-${noteId}`);
+    if (noteElement) {
+        const likeBtn = noteElement.querySelector('.like-action');
+        const countSpan = likeBtn.querySelector('span');
+        const icon = likeBtn.querySelector('i');
+        
+        let currentLikes = parseInt(countSpan.textContent) || 0;
+        
+        if (likeBtn.classList.contains('liked')) {
+            // Optimistic Unlike
+            likeBtn.classList.remove('liked');
+            icon.classList.remove('fill-current');
+            countSpan.textContent = Math.max(0, currentLikes - 1);
+        } else {
+            // Optimistic Like
+            likeBtn.classList.add('liked');
+            icon.classList.add('fill-current');
+            countSpan.textContent = currentLikes + 1;
+        }
+    }
     
     try {
-        if (noteId) {
-            // Update existing note
-            await db.collection(NOTES_COLLECTION).doc(noteId).update({
-                title: title,
-                content: content,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        const noteDoc = await noteRef.get();
+        if (!noteDoc.exists) return;
+        
+        const note = noteDoc.data();
+        const likedBy = note.likedBy || [];
+        const isLiked = likedBy.includes(userIdentifier);
+        
+        if (isLiked) {
+            await noteRef.update({
+                likes: firebase.firestore.FieldValue.increment(-1),
+                likedBy: firebase.firestore.FieldValue.arrayRemove(userIdentifier)
             });
         } else {
-            // Create new note
-            await db.collection(NOTES_COLLECTION).add({
-                title: title,
-                content: content,
-                likes: 0,
-                likedBy: [],
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            await noteRef.update({
+                likes: firebase.firestore.FieldValue.increment(1),
+                likedBy: firebase.firestore.FieldValue.arrayUnion(userIdentifier)
             });
         }
         
-        hideLoader();
-        cancelNoteForm();
-        loadNotes();
+        // No need to reload whole feed, optimistic UI handled it
     } catch (error) {
-        hideLoader();
-        alert(`Error saving note: ${error.message}`);
-        console.error("Error saving note: ", error);
+        console.error("Error toggling like: ", error);
+        // Revert UI on error would go here in a production app
+        loadNotes(); // Fallback: reload to get true state
     }
 }
 
-// Delete note
+// Delete note (Updated for Feed)
 async function deleteNote(noteId) {
-    if (!confirm('Are you sure you want to delete this note?')) {
-        return;
-    }
+    if (!confirm('Delete this post?')) return;
     
-    showLoader('Deleting note...');
+    showLoader('Deleting...', 'Removing post');
     
     try {
         await db.collection(NOTES_COLLECTION).doc(noteId).delete();
@@ -2564,53 +2774,66 @@ async function deleteNote(noteId) {
         loadNotes();
     } catch (error) {
         hideLoader();
-        alert(`Error deleting note: ${error.message}`);
-        console.error("Error deleting note: ", error);
+        alert(`Error deleting: ${error.message}`);
     }
 }
-
-// Toggle like on a note
+// Toggle like (Updated for X-Style Feed)
 async function toggleLike(noteId) {
-    const userIdentifier = getUserIdentifier();
-    if (!userIdentifier) {
-        alert('Please sign in to like notes');
-        return;
-    }
+    const userIdentifier = getUserIdentifier(); // Works for both Admin and Visitors (Session ID)
     
     const noteRef = db.collection(NOTES_COLLECTION).doc(noteId);
-    const noteDoc = await noteRef.get();
     
-    if (!noteDoc.exists) {
-        return;
+    // --- 1. Optimistic UI Update (Instant Feedback) ---
+    // This makes the heart turn pink IMMEDIATELY, before Firebase responds.
+    const noteElement = document.getElementById(`note-${noteId}`);
+    if (noteElement) {
+        const likeBtn = noteElement.querySelector('.like-action');
+        const countSpan = likeBtn.querySelector('span');
+        const icon = likeBtn.querySelector('i');
+        
+        let currentLikes = parseInt(countSpan.textContent) || 0;
+        
+        if (likeBtn.classList.contains('liked')) {
+            // Visual Unlike
+            likeBtn.classList.remove('liked');
+            icon.classList.remove('fill-current'); // Removes the solid pink fill
+            countSpan.textContent = Math.max(0, currentLikes - 1);
+        } else {
+            // Visual Like
+            likeBtn.classList.add('liked');
+            icon.classList.add('fill-current'); // Adds the solid pink fill
+            countSpan.textContent = currentLikes + 1;
+        }
     }
     
-    const note = noteDoc.data();
-    const likedBy = note.likedBy || [];
-    const isLiked = likedBy.includes(userIdentifier);
-    
+    // --- 2. Send to Firebase ---
     try {
+        const noteDoc = await noteRef.get();
+        if (!noteDoc.exists) return;
+        
+        const note = noteDoc.data();
+        const likedBy = note.likedBy || [];
+        const isLiked = likedBy.includes(userIdentifier);
+        
         if (isLiked) {
-            // Unlike
+            // Remove Like in Database
             await noteRef.update({
                 likes: firebase.firestore.FieldValue.increment(-1),
                 likedBy: firebase.firestore.FieldValue.arrayRemove(userIdentifier)
             });
         } else {
-            // Like
+            // Add Like in Database
             await noteRef.update({
                 likes: firebase.firestore.FieldValue.increment(1),
                 likedBy: firebase.firestore.FieldValue.arrayUnion(userIdentifier)
             });
         }
-        
-        // Update UI
-        loadNotes();
     } catch (error) {
         console.error("Error toggling like: ", error);
-        alert(`Error toggling like: ${error.message}`);
+        // If there was an error (e.g., internet lost), reload the real data to correct the UI
+        loadNotes();
     }
 }
-
 // Get user identifier for likes
 function getUserIdentifier() {
     if (currentUser) {
