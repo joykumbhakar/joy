@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
+    <meta name="description" content="Joy Kumbhakar - Frontend Developer specializing in HTML, CSS, JavaScript, and Python. Building beautiful, responsive web applications.">
+    <meta name="keywords" content="frontend developer, web developer, HTML, CSS, JavaScript, Python, React, portfolio">
+    <meta name="author" content="Joy Kumbhakar">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Joy Kumbhakar | Frontend Developer">
+    <meta property="og:description" content="Frontend Developer specializing in HTML, CSS, JavaScript, and Python. Building beautiful, responsive web applications.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joykumhakar.netlify.app">
+    <meta property="og:image" content="https://joykumhakar.netlify.app/images/profile.png">
+    
     <title>Joy Kumbhakar | Frontend Developer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -13,27 +24,33 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
     <style>
-        /* --- CSS Variables for Theme Engine (Keep existing styles) --- */
+        /* --- CSS Variables for Theme Engine --- */
         :root {
             /* Core Colors */
-            --bg-color: #050505; /* Deeper black for premium feel */
-            --accent-primary: #6366f1; /* Indigo */
-            --accent-secondary: #ec4899; /* Pink */
+            --bg-color: #050505;
+            --accent-primary: #6366f1;
+            --accent-secondary: #ec4899;
             
             /* Text */
             --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.6); /* Slightly higher contrast */
+            --text-muted: rgba(255, 255, 255, 0.6);
             
             /* Liquid Glass Material Settings (Dark Mode) */
-            --glass-bg: rgba(20, 20, 20, 0.4); /* More transparent */
+            --glass-bg: rgba(20, 20, 20, 0.4);
             --glass-blur: 30px;
-            /* The complex shadow stack that creates the liquid bevel edge */
             --glass-shadows: 
-                0px 1px 2px rgba(0,0,0,0.2), /* Soft drop */
-                0px 20px 40px rgba(0,0,0,0.4), /* Deep ambient */
-                inset 0px 1px 0.5px rgba(255, 255, 255, 0.3), /* Top sharp gloss edge */
-                inset 0px -1px 0.5px rgba(0, 0, 0, 0.3); /* Bottom depth edge */
+                0px 1px 2px rgba(0,0,0,0.2),
+                0px 20px 40px rgba(0,0,0,0.4),
+                inset 0px 1px 0.5px rgba(255, 255, 255, 0.3),
+                inset 0px -1px 0.5px rgba(0, 0, 0, 0.3);
             --glass-border: 1px solid rgba(255, 255, 255, 0.08);
             
             /* Dock & UI */
@@ -42,12 +59,12 @@
             
             /* Background Blobs */
             --blob-opacity: 0.5;
-            --blob-blend: hard-light; /* More vibrant blending */
+            --blob-blend: hard-light;
         }
 
-        /* Light Mode Overrides (Ceramic/Liquid look) */
+        /* Light Mode Overrides */
         body.light-mode {
-            --bg-color: #f8f9fa; /* Clean ceramic white */
+            --bg-color: #f8f9fa;
             --text-main: #1a1a1a;
             --text-muted: rgba(0, 0, 0, 0.55);
             
@@ -55,7 +72,7 @@
             --glass-shadows: 
                 0px 2px 4px rgba(0,0,0,0.05),
                 0px 15px 30px rgba(0,0,0,0.1),
-                inset 0px 1px 1px rgba(255, 255, 255, 0.9), /* Very bright top gloss */
+                inset 0px 1px 1px rgba(255, 255, 255, 0.9),
                 inset 0px -1px 1px rgba(0, 0, 0, 0.05);
             --glass-border: 1px solid rgba(255, 255, 255, 0.6);
             
@@ -75,7 +92,6 @@
         }
 
         /* --- Premium Noise Texture --- */
-        /* Adds a subtle grain that prevents color banding and feels tangible */
         .noise-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -97,7 +113,7 @@
 
         .blob {
             position: absolute;
-            filter: blur(90px); /* Increased blur for softer gradients */
+            filter: blur(90px);
             opacity: var(--blob-opacity);
             mix-blend-mode: var(--blob-blend);
             animation: float 25s infinite ease-in-out alternate;
@@ -124,7 +140,7 @@
             -webkit-backdrop-filter: blur(var(--glass-blur));
             border: var(--glass-border);
             box-shadow: var(--glass-shadows);
-            border-radius: 1.75rem; /* Slightly tighter corners */
+            border-radius: 1.75rem;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
             overflow: hidden;
@@ -156,15 +172,15 @@
         .glass-interactive:hover {
             transform: translateY(-4px) scale(1.01);
             box-shadow: 
-                0px 10px 20px rgba(0,0,0,0.1), /* Lifted shadow */
+                0px 10px 20px rgba(0,0,0,0.1),
                 0px 30px 60px rgba(0,0,0,0.3),
-                inset 0px 1px 0.5px rgba(255, 255, 255, 0.5), /* Brighten top gloss */
+                inset 0px 1px 0.5px rgba(255, 255, 255, 0.5),
                 inset 0px -1px 0.5px rgba(0, 0, 0, 0.3);
             border-color: rgba(255, 255, 255, 0.2);
         }
 
         .glass-interactive:hover::before {
-            left: 100%; /* Trigger shimmer across */
+            left: 100%;
         }
 
         /* Form Inputs */
@@ -172,7 +188,7 @@
             background: rgba(0,0,0,0.05);
             border: 1px solid var(--glass-border);
             color: var(--text-main);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); /* Inner depth */
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
         .glass-input:focus {
             background: rgba(0,0,0,0.1);
@@ -186,14 +202,14 @@
         /* Text & Typography */
         .text-dynamic { color: var(--text-main); }
         .text-muted-dynamic { color: var(--text-muted); }
-        h1, h2, h3 { letter-spacing: -0.02em; } /* tighter headings for modern look */
+        h1, h2, h3 { letter-spacing: -0.02em; }
 
-        /* Premium Gradient Text - Fixed for both modes */
+        /* Premium Gradient Text */
         .text-gradient {
             background: linear-gradient(135deg, #ffffff 10%, #a5b4fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); /* Subtile depth to text */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
         body.light-mode .text-gradient {
             background: linear-gradient(135deg, #4f46e5 0%, #a855f7 100%);
@@ -202,7 +218,7 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
-        /* Hero Title Styles - Fixed for both modes */
+        /* Hero Title Styles */
         .hero-title {
             font-size: 3.5rem;
             font-weight: 700;
@@ -254,7 +270,7 @@
             border-radius: 9999px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
             transition: background 0.5s, border-color 0.5s, box-shadow 0.5s;
-            padding: 0.75rem; /* Increased padding for larger nav */
+            padding: 0.75rem;
         }
         
         .nav-item {
@@ -319,23 +335,6 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Digital Clock Styles */
-        .digital-clock {
-            font-family: 'Courier New', monospace;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
-        }
-        
-        .clock-colon {
-            animation: blink 1s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
         /* Home Layout Fixes */
         .home-grid {
             display: grid;
@@ -373,7 +372,7 @@
             }
         }
 
-        /* Calendar Styles (Keep existing styles) */
+        /* Calendar Styles */
         .calendar-container {
             width: 100%;
             display: flex;
@@ -545,21 +544,7 @@
             100% { opacity: 1; }
         }
 
-        /* Loader Styles (Keep existing styles) */
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        /* Loader Styles */
         .loader-overlay {
             position: fixed;
             top: 0;
@@ -601,6 +586,10 @@
             margin: 0 auto 1rem;
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .loader-text {
             font-size: 1rem;
             font-weight: 500;
@@ -612,7 +601,7 @@
             color: var(--text-muted);
         }
 
-        /* Search Bar (Keep existing styles) */
+        /* Search Bar */
         .search-container {
             position: relative;
             margin-bottom: 2rem;
@@ -645,7 +634,7 @@
             color: var(--text-muted);
         }
 
-        /* Mobile Layout (Keep existing styles) */
+        /* Mobile Layout */
         @media (max-width: 768px) {
             .home-grid {
                 display: flex;
@@ -708,7 +697,7 @@
             }
         }
 
-        /* Profile Image in Logo (Keep existing styles) */
+        /* Profile Image in Logo */
         .profile-logo {
             width: 3rem;
             height: 3rem;
@@ -734,7 +723,7 @@
             font-size: 1.125rem;
         }
 
-        /* Code Editor Styles (Keep existing styles) */
+        /* Code Editor Styles */
         .code-editor-container {
             display: flex;
             flex-direction: column;
@@ -855,7 +844,7 @@
             }
         }
 
-        /* Account Modal Styles (MODIFIED) */
+        /* Account Modal Styles */
         .modal {
             position: fixed;
             top: 50%; left: 50%;
@@ -877,14 +866,6 @@
         .modal-header h3 { font-size: 1.5rem; margin-bottom: 5px; }
         .modal-header p { color: var(--text-muted); font-size: 0.9rem; }
 
-        .auth-tabs { display: flex; background: rgba(0,0,0,0.05); border-radius: 12px; padding: 4px; margin-bottom: 20px; }
-        .auth-tab { 
-            flex: 1; text-align: center; padding: 8px; 
-            border-radius: 10px; font-size: 0.9rem; font-weight: 500; cursor: pointer; 
-            color: var(--text-muted); transition: 0.3s; 
-        }
-        .auth-tab.active { background: var(--text-main); color: var(--bg-color); shadow: 0 4px 10px rgba(0,0,0,0.1); }
-
         .form-group { margin-bottom: 15px; }
         .form-input {
             width: 100%; padding: 12px 15px;
@@ -903,10 +884,10 @@
         }
         .submit-btn:hover { background: #4f46e5; }
         
-        /* NEW STYLES for Sign Out & Google Button */
+        /* Sign Out & Google Button */
         .signout-btn {
             width: 100%; padding: 10px;
-            background: #ef4444; /* Red color for sign out */
+            background: #ef4444;
             color: white; border: none; border-radius: 12px;
             font-weight: 600; cursor: pointer; margin-top: 10px;
             transition: background-color 0.3s;
@@ -940,7 +921,7 @@
         }
         .overlay.active { opacity: 1; pointer-events: all; }
 
-        /* Admin Panel Styles (Keep existing styles) */
+        /* Admin Panel Styles */
         .admin-panel {
             position: fixed;
             bottom: 100px;
@@ -975,7 +956,7 @@
             border-radius: 50%;
             background: var(--accent-primary);
             color: white;
-            display: none; /* Controlled by JS now */
+            display: none;
             align-items: center;
             justify-content: center;
             cursor: pointer;
@@ -1042,7 +1023,7 @@
             background: rgba(239, 68, 68, 0.3);
         }
 
-        /* Admin Login Modal (MODIFIED for login button) */
+        /* Admin Login Modal */
         .admin-login-modal {
             position: fixed;
             top: 50%; left: 50%;
@@ -1339,8 +1320,9 @@
             <div class="flex items-center gap-4">
                 <div class="profile-logo">
                     <img src="images/profile.png" 
-                        alt="Joy Kumbhakar">
-                
+                        alt="Joy Kumbhakar - Frontend Developer"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="initials" style="display: none;">JK</div>
                 </div>
                 <div>
                     <h3 class="font-semibold text-xl leading-tight text-dynamic" id="user-name-display">Joy Kumbhakar</h3>
@@ -1737,7 +1719,7 @@
                         <div class="editor-pane">
                             <div class="pane-header">Preview</div>
                             <div class="preview-pane">
-                                <iframe id="preview-frame" class="w-full h-full border-0"></iframe>
+                                <iframe id="preview-frame" class="w-full h-full border-0" title="Code Preview"></iframe>
                             </div>
                         </div>
                     </div>
@@ -1758,8 +1740,9 @@
                     <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
                         <div class="md:w-1/3 flex flex-col items-center">
                             <img src="images/profile.png" 
-                                alt="Joy Kumbhakar" 
-                                class="profile-image">
+                                alt="Joy Kumbhakar - Frontend Developer" 
+                                class="profile-image"
+                                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjNjM2NkYxIi8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBkeT0iLjNlbSI+Sus8L3RleHQ+Cjwvc3ZnPg=='">
                         </div>
                         <div class="md:w-2/3">
                             <h3 class="text-lg md:text-xl font-bold text-dynamic mb-3 md:mb-4">My Story</h3>
@@ -1989,7 +1972,7 @@
     </div>
 
 <script>
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCsp-xvRknmdBFuS39V0IsljDIq3bOLGOA",
   authDomain: "portfolio-app-b908d.firebaseapp.com",
@@ -2000,11 +1983,11 @@ const firebaseConfig = {
   measurementId: "G-MWFJTKSHY7"
 };
 
-// Admin credentials
+// Admin credentials for production
 const ADMIN_EMAIL = "joykumbhakar101@gmail.com";
-const ADMIN_PASSWORD = "admin123"; // You should change this in production
+const ADMIN_PASSWORD = "joy9749505101_@security";
 
-// Initialize Firebase using the global compatibility object
+// Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = app.auth();
 const db = app.firestore();
@@ -2021,7 +2004,6 @@ function signInWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
         .then((result) => {
-            // This is handled by the auth.onAuthStateChanged listener
             hideLoader();
         })
         .catch((error) => {
@@ -2036,32 +2018,38 @@ function handleAdminLogin() {
     const email = document.getElementById('admin-email').value;
     const password = document.getElementById('admin-password').value;
     
-    showLoader('Verifying Admin...', 'Checking credentials');
+    showLoader('Verifying Admin...', 'Authenticating with Firebase');
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        // Simulate admin login without Firebase auth for simplicity
-        localStorage.setItem('adminLoggedIn', 'true');
-        localStorage.setItem('adminEmail', email);
-        closeAllPanels();
-        checkAdminLoginStatus({ email: email });
-        renderCalendar(currentDate);
-        hideLoader();
-        alert('Admin login successful! You can now manage availability and notes.');
-    } else {
-        hideLoader();
-        alert('Invalid credentials. Please try again.');
-    }
+    // This performs a REAL login against Firebase Auth
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            // Login Successful
+            localStorage.setItem('adminLoggedIn', 'true');
+            localStorage.setItem('adminEmail', email);
+            
+            closeAllPanels();
+            checkAdminLoginStatus(userCredential.user);
+            
+            // Refresh calendar to show admin edit controls
+            renderCalendar(currentDate);
+            
+            hideLoader();
+            alert('Admin login successful!');
+        })
+        .catch((error) => {
+            hideLoader();
+            console.error("Firebase Auth Error:", error);
+            alert(`Login Failed: ${error.message}`);
+        });
 }
-
 // Sign Out
 function signOutUser() {
     showLoader('Signing out...', 'Clearing session');
     auth.signOut().then(() => {
-        // Sign-out successful. auth.onAuthStateChanged handles UI update.
         localStorage.removeItem('adminLoggedIn');
         localStorage.removeItem('adminEmail');
         document.getElementById('admin-toggle').style.display = 'none';
-        renderCalendar(currentDate); // Re-render calendar to disable editing
+        renderCalendar(currentDate);
         closeAllPanels();
         hideLoader();
     }).catch((error) => {
@@ -2085,7 +2073,6 @@ function updateAccountModalUI(user) {
     const modalSubtitle = document.getElementById('auth-modal-subtitle');
     
     if (user) {
-        // Logged In State
         loginContainer.style.display = 'none';
         profileContainer.style.display = 'block';
         
@@ -2105,19 +2092,17 @@ function updateAccountModalUI(user) {
         
         document.getElementById('user-name-display').textContent = user.displayName || 'Joy Kumbhakar';
     } else {
-        // Logged Out State
         loginContainer.style.display = 'block';
         profileContainer.style.display = 'none';
         
         modalTitle.textContent = 'Sign In';
         modalSubtitle.textContent = 'Access your account or sign in as admin.';
         
-        // Keep the default portfolio name when logged out
         document.getElementById('user-name-display').textContent = 'Joy Kumbhakar';
     }
 }
 
-// Check Admin Status (uses both email check and Firebase login state)
+// Check Admin Status
 function checkAdminLoginStatus(user) {
     const adminToggle = document.getElementById('admin-toggle');
     const adminEmail = localStorage.getItem('adminEmail');
@@ -2145,7 +2130,6 @@ async function submitContactForm(e) {
     showLoader('Sending your message...', 'Storing data securely');
     
     try {
-        // Add a new document with a generated ID to the "messages" collection
         await db.collection("messages").add({
             name: name,
             email: email,
@@ -2217,8 +2201,8 @@ async function renderCalendar(date) {
         }
         
         // Check availability for this day
-        const dateKey = String(i).padStart(2, '0'); // e.g., '01', '15'
-        const isAvailable = availabilityData[dateKey] !== false; // Default is true (available)
+        const dateKey = String(i).padStart(2, '0');
+        const isAvailable = availabilityData[dateKey] !== false;
         
         if (isAvailable) {
             dayElement.classList.add('available');
@@ -2242,7 +2226,7 @@ async function renderCalendar(date) {
     }
     
     // Add days from next month to fill the grid
-    const totalCells = 42; // 6 rows x 7 days
+    const totalCells = 42;
     const remainingCells = totalCells - (startingDay + daysInMonth);
     for (let i = 1; i <= remainingCells; i++) {
         const dayElement = document.createElement('div');
@@ -2273,7 +2257,6 @@ async function toggleAvailability(fullDateStr, dateKey, wasAvailable, yearMonthK
              [dateKey]: newStatus ? firebase.firestore.FieldValue.delete() : false
          }, { merge: true });
 
-         // Re-render calendar immediately to show the change
          await renderCalendar(currentDate);
 
          hideLoader();
@@ -2328,18 +2311,15 @@ async function setAvailability(isAvailable) {
     try {
          const docRef = db.collection(AVAILABILITY_COLLECTION).doc(yearMonthKey);
 
-         // Use delete to remove the key if setting to default (available: true)
          await docRef.set({
              [dateKey]: isAvailable ? firebase.firestore.FieldValue.delete() : false
          }, { merge: true });
 
-         // Check if the set date is in the currently viewed month, then re-render
          const currentYearMonthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
          if (yearMonthKey === currentYearMonthKey) {
              await renderCalendar(currentDate);
          } else {
-             // Still update the status message just in case the date is today
-             updateAvailabilityStatus({}); // Will fetch fresh data when re-rendered next
+             updateAvailabilityStatus({});
          }
 
          hideLoader();
@@ -2562,7 +2542,7 @@ async function saveNote(noteId = null) {
         
         hideLoader();
         cancelNoteForm();
-        loadNotes(); // Reload all notes
+        loadNotes();
     } catch (error) {
         hideLoader();
         alert(`Error saving note: ${error.message}`);
@@ -2581,7 +2561,7 @@ async function deleteNote(noteId) {
     try {
         await db.collection(NOTES_COLLECTION).doc(noteId).delete();
         hideLoader();
-        loadNotes(); // Reload all notes
+        loadNotes();
     } catch (error) {
         hideLoader();
         alert(`Error deleting note: ${error.message}`);
@@ -2840,7 +2820,7 @@ function logoutAdmin() {
     document.getElementById('admin-toggle').style.display = 'none';
     document.getElementById('admin-panel').classList.remove('open');
     renderCalendar(currentDate);
-    loadNotes(); // Reload notes to remove admin controls
+    loadNotes();
     alert('Admin logged out successfully');
 }
 
@@ -2883,7 +2863,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize contact form for Firestore submission
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
-        contactForm.removeEventListener('submit', this.originalFormSubmit); // Clean up original
+        contactForm.removeEventListener('submit', this.originalFormSubmit);
         contactForm.addEventListener('submit', submitContactForm);
     }
     
