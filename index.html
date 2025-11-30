@@ -1079,6 +1079,196 @@
             color: white; border: none; border-radius: 12px;
             font-weight: 600; cursor: pointer; margin-top: 10px;
         }
+
+        /* Notes Section Styles */
+        .notes-section {
+            margin-top: 2rem;
+        }
+
+        .note-item {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .note-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .note-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .note-content {
+            color: var(--text-main);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .note-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .like-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .like-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #ef4444;
+        }
+
+        .like-btn.liked {
+            color: #ef4444;
+        }
+
+        .like-count {
+            font-size: 0.9rem;
+        }
+
+        .admin-note-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .edit-note-btn, .delete-note-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .edit-note-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .edit-note-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .delete-note-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .delete-note-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .add-note-btn {
+            margin-bottom: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .add-note-btn:hover {
+            background: #4f46e5;
+        }
+
+        .note-form {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .note-form h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .note-form .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .note-form .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .note-form textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .note-form-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .cancel-note-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cancel-note-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .save-note-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .save-note-btn:hover {
+            background: #4f46e5;
+        }
     </style>
 </head>
 <body class="antialiased h-screen flex flex-col">
@@ -1499,48 +1689,48 @@
                             <textarea id="html-code" class="code-textarea" placeholder="Write your HTML code here...">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-    &lt;title&gt;My Page&lt;/title&gt;
-    &lt;style&gt;
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        p {
-            font-size: 1.2rem;
-            line-height: 1.6;
-        }
-        .card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-    &lt;/style&gt;
+    &lt;title&gt;My Page&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+    &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
-    &lt;div class="container"&gt;
-        &lt;div class="card"&gt;
-            &lt;h1&gt;Welcome to My Page&lt;/h1&gt;
-            &lt;p&gt;This is a sample page created with HTML and CSS. You can edit this code and see the changes in real-time!&lt;/p&gt;
-            &lt;button style="background: white; color: #667eea; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 20px;"&gt;
-                Click Me!
-            &lt;/button&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;div class="container"&gt;
+        &lt;div class="card"&gt;
+            &lt;h1&gt;Welcome to My Page&lt;/h1&gt;
+            &lt;p&gt;This is a sample page created with HTML and CSS. You can edit this code and see the changes in real-time!&lt;/p&gt;
+            &lt;button style="background: white; color: #667eea; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 20px;"&gt;
+                Click Me!
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</textarea>
                         </div>
@@ -1716,6 +1906,21 @@
                 </div>
             </div>
         </section>
+
+        <!-- Notes Section -->
+        <section id="notes" class="hidden-section fade-enter">
+            <div class="max-w-5xl mx-auto">
+                <div class="mb-8 md:mb-12 px-2">
+                    <h2 class="text-2xl md:text-3xl font-bold text-dynamic tracking-tight">Notes & Updates</h2>
+                    <p class="text-muted-dynamic mt-1">Latest updates, thoughts, and announcements.</p>
+                </div>
+
+                <div class="notes-section">
+                    <!-- Notes will be dynamically loaded here -->
+                    <div id="notes-container"></div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <nav class="fixed bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-auto">
@@ -1738,6 +1943,10 @@
 
             <button onclick="switchTab('contact')" class="nav-item w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all duration-300 group" data-target="contact">
                 <i data-lucide="mail" class="w-6 h-6 md:w-7 md:h-7 transition-transform group-hover:scale-110"></i>
+            </button>
+
+            <button onclick="switchTab('notes')" class="nav-item w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all duration-300 group" data-target="notes">
+                <i data-lucide="file-text" class="w-6 h-6 md:w-7 md:h-7 transition-transform group-hover:scale-110"></i>
             </button>
         </div>
     </nav>
@@ -1793,627 +2002,928 @@ const firebaseConfig = {
 
 // Admin credentials
 const ADMIN_EMAIL = "joykumbhakar101@gmail.com";
-
+const ADMIN_PASSWORD = "admin123"; // You should change this in production
 
 // Initialize Firebase using the global compatibility object
 const app = firebase.initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app); // Cannot be used globally with this setup
 const auth = app.auth();
 const db = app.firestore();
     
 let currentUser = null;
+let currentEditingNoteId = null;
 
-        // --- 2. AUTHENTICATION FUNCTIONS ---
+// --- AUTHENTICATION FUNCTIONS ---
+
+// Google Sign-In
+function signInWithGoogle() {
+    closeAllPanels();
+    showLoader('Signing in...', 'Authenticating with Google');
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            // This is handled by the auth.onAuthStateChanged listener
+            hideLoader();
+        })
+        .catch((error) => {
+            hideLoader();
+            alert(`Google Sign-In Failed: ${error.message}`);
+            console.error("Google Sign-In Error:", error);
+        });
+}
+
+// Email/Password Sign-In (Used for Admin)
+function handleAdminLogin() {
+    const email = document.getElementById('admin-email').value;
+    const password = document.getElementById('admin-password').value;
+    
+    showLoader('Verifying Admin...', 'Checking credentials');
+
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        // Simulate admin login without Firebase auth for simplicity
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('adminEmail', email);
+        closeAllPanels();
+        checkAdminLoginStatus({ email: email });
+        renderCalendar(currentDate);
+        hideLoader();
+        alert('Admin login successful! You can now manage availability and notes.');
+    } else {
+        hideLoader();
+        alert('Invalid credentials. Please try again.');
+    }
+}
+
+// Sign Out
+function signOutUser() {
+    showLoader('Signing out...', 'Clearing session');
+    auth.signOut().then(() => {
+        // Sign-out successful. auth.onAuthStateChanged handles UI update.
+        localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminEmail');
+        document.getElementById('admin-toggle').style.display = 'none';
+        renderCalendar(currentDate); // Re-render calendar to disable editing
+        closeAllPanels();
+        hideLoader();
+    }).catch((error) => {
+        hideLoader();
+        console.error("Sign Out Error:", error);
+    });
+}
+
+// Firebase Auth State Listener
+auth.onAuthStateChanged((user) => {
+    currentUser = user;
+    updateAccountModalUI(user);
+    checkAdminLoginStatus(user);
+});
+
+// Update Account Modal UI based on Auth State
+function updateAccountModalUI(user) {
+    const loginContainer = document.getElementById('auth-login-container');
+    const profileContainer = document.getElementById('auth-profile-container');
+    const modalTitle = document.getElementById('auth-modal-title');
+    const modalSubtitle = document.getElementById('auth-modal-subtitle');
+    
+    if (user) {
+        // Logged In State
+        loginContainer.style.display = 'none';
+        profileContainer.style.display = 'block';
         
-        // Google Sign-In
-        function signInWithGoogle() {
+        modalTitle.textContent = `Welcome, ${user.displayName || 'User'}!`;
+        modalSubtitle.textContent = 'Manage your session.';
+
+        document.getElementById('user-display-name').textContent = user.displayName || user.email;
+        document.getElementById('user-display-email').textContent = user.email;
+        
+        const userPhoto = document.getElementById('user-photo');
+        if (user.photoURL) {
+            userPhoto.src = user.photoURL;
+            userPhoto.style.display = 'block';
+        } else {
+            userPhoto.style.display = 'none';
+        }
+        
+        document.getElementById('user-name-display').textContent = user.displayName || 'Joy Kumbhakar';
+    } else {
+        // Logged Out State
+        loginContainer.style.display = 'block';
+        profileContainer.style.display = 'none';
+        
+        modalTitle.textContent = 'Sign In';
+        modalSubtitle.textContent = 'Access your account or sign in as admin.';
+        
+        // Keep the default portfolio name when logged out
+        document.getElementById('user-name-display').textContent = 'Joy Kumbhakar';
+    }
+}
+
+// Check Admin Status (uses both email check and Firebase login state)
+function checkAdminLoginStatus(user) {
+    const adminToggle = document.getElementById('admin-toggle');
+    const adminEmail = localStorage.getItem('adminEmail');
+    const isAdmin = localStorage.getItem('adminLoggedIn') === 'true' && adminEmail === ADMIN_EMAIL;
+    
+    if (isAdmin) {
+        adminToggle.style.display = 'flex';
+    } else {
+        adminToggle.style.display = 'none';
+    }
+}
+
+// --- CONTACT FORM FUNCTIONALITY (Firestore) ---
+
+// Function to submit contact form data to Firestore
+async function submitContactForm(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('contact-name').value;
+    const email = document.getElementById('contact-email').value;
+    const subject = document.getElementById('contact-subject').value;
+    const type = document.getElementById('contact-type').value;
+    const message = document.getElementById('contact-message').value;
+
+    showLoader('Sending your message...', 'Storing data securely');
+    
+    try {
+        // Add a new document with a generated ID to the "messages" collection
+        await db.collection("messages").add({
+            name: name,
+            email: email,
+            subject: subject,
+            workType: type,
+            message: message,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        hideLoader();
+        alert('Thank you! Your message has been sent successfully and stored in the database.');
+        document.getElementById('contact-form').reset();
+    } catch (error) {
+        hideLoader();
+        alert(`Error sending message: ${error.message}. Check the console for details.`);
+        console.error("Error writing document: ", error);
+    }
+}
+
+// --- CALENDAR/AVAILABILITY FUNCTIONS (Firestore) ---
+
+let currentDate = new Date();
+const AVAILABILITY_COLLECTION = "availability";
+
+// Fetch and render calendar
+async function renderCalendar(date) {
+    const calendarGrid = document.querySelector('.calendar-grid');
+    const calendarTitle = document.getElementById('calendar-title');
+    
+    // Clear existing calendar days (except headers)
+    const dayHeaders = calendarGrid.querySelectorAll('.calendar-day-header');
+    calendarGrid.innerHTML = '';
+    dayHeaders.forEach(header => calendarGrid.appendChild(header));
+    
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    calendarTitle.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+    
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDay = firstDay.getDay();
+    const today = new Date();
+
+    // Fetch availability data for the current month from Firestore
+    const yearMonthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const docRef = db.collection(AVAILABILITY_COLLECTION).doc(yearMonthKey);
+    const doc = await docRef.get();
+    const availabilityData = doc.exists ? doc.data() : {};
+    
+    // Add days from previous month
+    const prevMonthLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+    for (let i = startingDay - 1; i >= 0; i--) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day other-month';
+        dayElement.textContent = prevMonthLastDay - i;
+        calendarGrid.appendChild(dayElement);
+    }
+    
+    // Add days of current month
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        
+        // Check if it's today
+        if (date.getMonth() === today.getMonth() && 
+            date.getFullYear() === today.getFullYear() && 
+            i === today.getDate()) {
+            dayElement.classList.add('today');
+        }
+        
+        // Check availability for this day
+        const dateKey = String(i).padStart(2, '0'); // e.g., '01', '15'
+        const isAvailable = availabilityData[dateKey] !== false; // Default is true (available)
+        
+        if (isAvailable) {
+            dayElement.classList.add('available');
+        } else {
+            dayElement.classList.add('not-available');
+        }
+        
+        dayElement.textContent = i;
+        
+        // Add click event to toggle availability (only for admin)
+        if (isAdminLoggedIn()) {
+            dayElement.addEventListener('click', function() {
+                const fullDateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${dateKey}`;
+                toggleAvailability(fullDateStr, dateKey, isAvailable, yearMonthKey);
+            });
+        } else {
+            dayElement.style.cursor = 'default';
+        }
+        
+        calendarGrid.appendChild(dayElement);
+    }
+    
+    // Add days from next month to fill the grid
+    const totalCells = 42; // 6 rows x 7 days
+    const remainingCells = totalCells - (startingDay + daysInMonth);
+    for (let i = 1; i <= remainingCells; i++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day other-month';
+        dayElement.textContent = i;
+        calendarGrid.appendChild(dayElement);
+    }
+
+    // Update today's status message
+    updateAvailabilityStatus(availabilityData);
+    hideLoader();
+}
+
+// Function to update the date-specific availability in Firestore
+async function toggleAvailability(fullDateStr, dateKey, wasAvailable, yearMonthKey) {
+     if (!isAdminLoggedIn()) {
+         showAdminLogin();
+         return;
+     }
+     
+     showLoader('Updating availability...', `Setting ${fullDateStr}`);
+
+     try {
+         const newStatus = !wasAvailable;
+         const docRef = db.collection(AVAILABILITY_COLLECTION).doc(yearMonthKey);
+
+         await docRef.set({
+             [dateKey]: newStatus ? firebase.firestore.FieldValue.delete() : false
+         }, { merge: true });
+
+         // Re-render calendar immediately to show the change
+         await renderCalendar(currentDate);
+
+         hideLoader();
+         alert(`Date ${fullDateStr} set as ${newStatus ? 'AVAILABLE' : 'BUSY'}.`);
+     } catch (error) {
+         hideLoader();
+         alert(`Error updating availability: ${error.message}`);
+         console.error("Error updating availability: ", error);
+     }
+}
+
+// Update today's availability status message
+function updateAvailabilityStatus(availabilityData) {
+    const today = new Date();
+    const todayKey = String(today.getDate()).padStart(2, '0');
+    
+    const isAvailable = availabilityData[todayKey] !== false;
+    
+    const statusElement = document.getElementById('availability-status');
+    const textElement = document.getElementById('availability-text');
+    
+    if (isAvailable) {
+        statusElement.className = 'availability-status available';
+        textElement.textContent = 'Available Today';
+    } else {
+        statusElement.className = 'availability-status not-available';
+        textElement.textContent = 'Not Available Today';
+    }
+}
+
+// Admin panel direct setting function (uses Firestore update)
+async function setAvailability(isAvailable) {
+    if (!isAdminLoggedIn()) {
+        showAdminLogin();
+        return;
+    }
+    
+    const datePicker = document.getElementById('admin-date-picker');
+    const dateStr = datePicker.value;
+    
+    if (!dateStr) {
+        alert('Please select a date first');
+        return;
+    }
+    
+    showLoader('Updating availability...', `Setting ${dateStr}`);
+    
+    const [year, month, day] = dateStr.split('-');
+    const yearMonthKey = `${year}-${month}`;
+    const dateKey = day;
+    
+    try {
+         const docRef = db.collection(AVAILABILITY_COLLECTION).doc(yearMonthKey);
+
+         // Use delete to remove the key if setting to default (available: true)
+         await docRef.set({
+             [dateKey]: isAvailable ? firebase.firestore.FieldValue.delete() : false
+         }, { merge: true });
+
+         // Check if the set date is in the currently viewed month, then re-render
+         const currentYearMonthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+         if (yearMonthKey === currentYearMonthKey) {
+             await renderCalendar(currentDate);
+         } else {
+             // Still update the status message just in case the date is today
+             updateAvailabilityStatus({}); // Will fetch fresh data when re-rendered next
+         }
+
+         hideLoader();
+         const status = isAvailable ? 'available' : 'not available';
+         alert(`Date ${dateStr} has been set as ${status}`);
+         document.getElementById('admin-panel').classList.remove('open');
+    } catch (error) {
+        hideLoader();
+        alert(`Error setting availability: ${error.message}`);
+        console.error("Error setting availability: ", error);
+    }
+}
+
+// --- NOTES FUNCTIONALITY ---
+
+const NOTES_COLLECTION = "notes";
+
+// Load all notes from Firestore
+async function loadNotes() {
+    try {
+        const notesContainer = document.getElementById('notes-container');
+        notesContainer.innerHTML = '';
+        
+        // Show add note button for admin
+        if (isAdminLoggedIn()) {
+            const addNoteBtn = document.createElement('button');
+            addNoteBtn.className = 'add-note-btn';
+            addNoteBtn.innerHTML = '<i data-lucide="plus" class="w-4 h-4 mr-2"></i> Add New Note';
+            addNoteBtn.onclick = showAddNoteForm;
+            notesContainer.appendChild(addNoteBtn);
+        }
+        
+        const querySnapshot = await db.collection(NOTES_COLLECTION)
+            .orderBy('timestamp', 'desc')
+            .get();
+            
+        if (querySnapshot.empty) {
+            const noNotesMsg = document.createElement('div');
+            noNotesMsg.className = 'text-center text-muted-dynamic py-8';
+            noNotesMsg.textContent = 'No notes available yet.';
+            notesContainer.appendChild(noNotesMsg);
+            return;
+        }
+        
+        querySnapshot.forEach((doc) => {
+            const note = doc.data();
+            note.id = doc.id;
+            renderNote(note);
+        });
+        
+        lucide.createIcons();
+    } catch (error) {
+        console.error("Error loading notes: ", error);
+        alert(`Error loading notes: ${error.message}`);
+    }
+}
+
+// Render a single note
+function renderNote(note) {
+    const notesContainer = document.getElementById('notes-container');
+    
+    const noteElement = document.createElement('div');
+    noteElement.className = 'note-item';
+    noteElement.id = `note-${note.id}`;
+    
+    const date = note.timestamp ? note.timestamp.toDate() : new Date();
+    const formattedDate = date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    noteElement.innerHTML = `
+        <div class="note-header">
+            <h3 class="note-title">${note.title}</h3>
+            <span class="note-date">${formattedDate}</span>
+        </div>
+        <div class="note-content">${note.content}</div>
+        <div class="note-actions">
+            <button class="like-btn ${note.likedBy && note.likedBy.includes(getUserIdentifier()) ? 'liked' : ''}" 
+                    onclick="toggleLike('${note.id}')">
+                <i data-lucide="heart" class="w-4 h-4"></i>
+                <span class="like-count">${note.likes || 0}</span>
+            </button>
+            ${isAdminLoggedIn() ? `
+            <div class="admin-note-actions">
+                <button class="edit-note-btn" onclick="editNote('${note.id}')">
+                    <i data-lucide="edit" class="w-3 h-3 mr-1"></i> Edit
+                </button>
+                <button class="delete-note-btn" onclick="deleteNote('${note.id}')">
+                    <i data-lucide="trash" class="w-3 h-3 mr-1"></i> Delete
+                </button>
+            </div>
+            ` : ''}
+        </div>
+    `;
+    
+    notesContainer.appendChild(noteElement);
+}
+
+// Show add note form
+function showAddNoteForm() {
+    const notesContainer = document.getElementById('notes-container');
+    
+    // Remove existing form if any
+    const existingForm = document.getElementById('note-form');
+    if (existingForm) {
+        existingForm.remove();
+    }
+    
+    const noteForm = document.createElement('div');
+    noteForm.id = 'note-form';
+    noteForm.className = 'note-form';
+    noteForm.innerHTML = `
+        <h3>Add New Note</h3>
+        <div class="form-group">
+            <input type="text" id="note-title" class="form-input" placeholder="Note Title" required>
+        </div>
+        <div class="form-group">
+            <textarea id="note-content" class="form-input" placeholder="Note Content" required></textarea>
+        </div>
+        <div class="note-form-actions">
+            <button type="button" class="cancel-note-btn" onclick="cancelNoteForm()">Cancel</button>
+            <button type="button" class="save-note-btn" onclick="saveNote()">Save Note</button>
+        </div>
+    `;
+    
+    // Insert after the add note button
+    const addNoteBtn = notesContainer.querySelector('.add-note-btn');
+    if (addNoteBtn) {
+        notesContainer.insertBefore(noteForm, addNoteBtn.nextSibling);
+    } else {
+        notesContainer.prepend(noteForm);
+    }
+}
+
+// Show edit note form
+function editNote(noteId) {
+    const noteElement = document.getElementById(`note-${noteId}`);
+    const noteTitle = noteElement.querySelector('.note-title').textContent;
+    const noteContent = noteElement.querySelector('.note-content').textContent;
+    
+    // Remove existing form if any
+    const existingForm = document.getElementById('note-form');
+    if (existingForm) {
+        existingForm.remove();
+    }
+    
+    const noteForm = document.createElement('div');
+    noteForm.id = 'note-form';
+    noteForm.className = 'note-form';
+    noteForm.innerHTML = `
+        <h3>Edit Note</h3>
+        <div class="form-group">
+            <input type="text" id="note-title" class="form-input" value="${noteTitle}" required>
+        </div>
+        <div class="form-group">
+            <textarea id="note-content" class="form-input" required>${noteContent}</textarea>
+        </div>
+        <div class="note-form-actions">
+            <button type="button" class="cancel-note-btn" onclick="cancelNoteForm()">Cancel</button>
+            <button type="button" class="save-note-btn" onclick="saveNote('${noteId}')">Update Note</button>
+        </div>
+    `;
+    
+    noteElement.style.display = 'none';
+    noteElement.parentNode.insertBefore(noteForm, noteElement);
+    currentEditingNoteId = noteId;
+}
+
+// Cancel note form
+function cancelNoteForm() {
+    const noteForm = document.getElementById('note-form');
+    if (noteForm) {
+        noteForm.remove();
+    }
+    
+    if (currentEditingNoteId) {
+        const noteElement = document.getElementById(`note-${currentEditingNoteId}`);
+        if (noteElement) {
+            noteElement.style.display = 'block';
+        }
+        currentEditingNoteId = null;
+    }
+}
+
+// Save note (create or update)
+async function saveNote(noteId = null) {
+    const title = document.getElementById('note-title').value;
+    const content = document.getElementById('note-content').value;
+    
+    if (!title || !content) {
+        alert('Please fill in both title and content');
+        return;
+    }
+    
+    showLoader(noteId ? 'Updating note...' : 'Saving note...');
+    
+    try {
+        if (noteId) {
+            // Update existing note
+            await db.collection(NOTES_COLLECTION).doc(noteId).update({
+                title: title,
+                content: content,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } else {
+            // Create new note
+            await db.collection(NOTES_COLLECTION).add({
+                title: title,
+                content: content,
+                likes: 0,
+                likedBy: [],
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        
+        hideLoader();
+        cancelNoteForm();
+        loadNotes(); // Reload all notes
+    } catch (error) {
+        hideLoader();
+        alert(`Error saving note: ${error.message}`);
+        console.error("Error saving note: ", error);
+    }
+}
+
+// Delete note
+async function deleteNote(noteId) {
+    if (!confirm('Are you sure you want to delete this note?')) {
+        return;
+    }
+    
+    showLoader('Deleting note...');
+    
+    try {
+        await db.collection(NOTES_COLLECTION).doc(noteId).delete();
+        hideLoader();
+        loadNotes(); // Reload all notes
+    } catch (error) {
+        hideLoader();
+        alert(`Error deleting note: ${error.message}`);
+        console.error("Error deleting note: ", error);
+    }
+}
+
+// Toggle like on a note
+async function toggleLike(noteId) {
+    const userIdentifier = getUserIdentifier();
+    if (!userIdentifier) {
+        alert('Please sign in to like notes');
+        return;
+    }
+    
+    const noteRef = db.collection(NOTES_COLLECTION).doc(noteId);
+    const noteDoc = await noteRef.get();
+    
+    if (!noteDoc.exists) {
+        return;
+    }
+    
+    const note = noteDoc.data();
+    const likedBy = note.likedBy || [];
+    const isLiked = likedBy.includes(userIdentifier);
+    
+    try {
+        if (isLiked) {
+            // Unlike
+            await noteRef.update({
+                likes: firebase.firestore.FieldValue.increment(-1),
+                likedBy: firebase.firestore.FieldValue.arrayRemove(userIdentifier)
+            });
+        } else {
+            // Like
+            await noteRef.update({
+                likes: firebase.firestore.FieldValue.increment(1),
+                likedBy: firebase.firestore.FieldValue.arrayUnion(userIdentifier)
+            });
+        }
+        
+        // Update UI
+        loadNotes();
+    } catch (error) {
+        console.error("Error toggling like: ", error);
+        alert(`Error toggling like: ${error.message}`);
+    }
+}
+
+// Get user identifier for likes
+function getUserIdentifier() {
+    if (currentUser) {
+        return currentUser.uid;
+    } else if (isAdminLoggedIn()) {
+        return 'admin';
+    } else {
+        // For anonymous users, use a session-based identifier
+        let sessionId = localStorage.getItem('sessionId');
+        if (!sessionId) {
+            sessionId = 'anon_' + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('sessionId', sessionId);
+        }
+        return sessionId;
+    }
+}
+
+// Check if admin is logged in
+function isAdminLoggedIn() {
+    const adminEmail = localStorage.getItem('adminEmail');
+    return localStorage.getItem('adminLoggedIn') === 'true' && adminEmail === ADMIN_EMAIL;
+}
+
+// --- UTILITY & UI FUNCTIONS ---
+
+// Initialize calendar using Firestore function
+function initializeCalendar() {
+    renderCalendar(currentDate);
+}
+
+function changeMonth(direction) {
+    showLoader('Loading calendar...', 'Updating availability');
+    
+    setTimeout(function() {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        renderCalendar(currentDate);
+    }, 500);
+}
+
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// Admin panel toggles
+function toggleAdminPanel() {
+    if (!isAdminLoggedIn()) {
+        showAdminLogin();
+        return;
+    }
+    
+    const adminPanel = document.getElementById('admin-panel');
+    adminPanel.classList.toggle('open');
+    
+    const today = new Date();
+    const todayStr = formatDate(today);
+    document.getElementById('admin-date-picker').value = todayStr;
+}
+
+function showAdminLogin() {
+    closeAllPanels();
+    document.getElementById('admin-login-modal').classList.add('open');
+    document.querySelector('.overlay').classList.add('active');
+}
+
+function toggleAccount() {
+    closeAllPanels();
+    document.getElementById('account-modal').classList.add('open');
+    document.querySelector('.overlay').classList.add('active');
+}
+
+function closeAllPanels() {
+    document.querySelector('.overlay').classList.remove('active');
+    document.getElementById('account-modal').classList.remove('open');
+    document.getElementById('admin-panel').classList.remove('open');
+    document.getElementById('admin-login-modal').classList.remove('open');
+}
+
+// Code Editor Functions
+function runCode() {
+    const htmlCode = document.getElementById('html-code').value;
+    const previewFrame = document.getElementById('preview-frame');
+    const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+    
+    previewDocument.open();
+    previewDocument.write(htmlCode);
+    previewDocument.close();
+}
+
+function resetCode() {
+    showLoader('Resetting code...');
+    
+    setTimeout(function() {
+        document.getElementById('html-code').value = `<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Welcome to My Page</h1>
+            <p>This is a sample page created with HTML and CSS. You can edit this code and see the changes in real-time!</p>
+            <button style="background: white; color: #667eea; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 20px;">
+                Click Me!
+            </button>
+        </div>
+    </div>
+</body>
+</html>`;
+        runCode();
+        hideLoader();
+    }, 500);
+}
+
+// Loader functionality
+function showLoader(text = 'Loading', subtext = 'Please wait...') {
+    document.getElementById('loader-text').textContent = text;
+    document.getElementById('loader-subtext').textContent = subtext;
+    document.getElementById('loader-overlay').classList.add('active');
+}
+
+function hideLoader() {
+    document.getElementById('loader-overlay').classList.remove('active');
+}
+
+// Theme toggle
+function toggleTheme() {
+    showLoader('Switching theme...');
+    
+    setTimeout(function() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        document.querySelector('.light-icon').classList.toggle('hidden', isLight);
+        document.querySelector('.dark-icon').classList.toggle('hidden', !isLight);
+        hideLoader();
+    }, 800);
+}
+
+// Tab switching
+function switchTab(tabId) {
+    showLoader('Loading content...');
+    
+    setTimeout(function() {
+        const sections = ['home', 'work', 'code-editor', 'about', 'contact', 'notes'];
+        document.querySelectorAll('.nav-item[data-target]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.target === tabId);
+        });
+        
+        sections.forEach(id => {
+            const el = document.getElementById(id);
+            if (id === tabId) {
+                el.classList.remove('hidden-section');
+                requestAnimationFrame(() => el.classList.add('fade-enter-active'));
+                
+                if (id === 'code-editor') {
+                    setTimeout(runCode, 100);
+                } else if (id === 'notes') {
+                    loadNotes();
+                }
+            } else {
+                el.classList.remove('fade-enter-active');
+                setTimeout(() => el.classList.add('hidden-section'), 400);
+            }
+        });
+        
+        hideLoader();
+    }, 600);
+}
+
+// Admin logout
+function logoutAdmin() {
+    localStorage.removeItem('adminLoggedIn');
+    localStorage.removeItem('adminEmail');
+    document.getElementById('admin-toggle').style.display = 'none';
+    document.getElementById('admin-panel').classList.remove('open');
+    renderCalendar(currentDate);
+    loadNotes(); // Reload notes to remove admin controls
+    alert('Admin logged out successfully');
+}
+
+// --- INITIALIZATION ---
+
+document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+    
+    // Initialize theme icons
+    const isLight = document.body.classList.contains('light-mode');
+    document.querySelector('.light-icon').classList.toggle('hidden', isLight);
+    document.querySelector('.dark-icon').classList.toggle('hidden', !isLight);
+    
+    // Run initial code for editor
+    setTimeout(runCode, 500);
+    
+    // Initialize calendar with Firestore data
+    initializeCalendar();
+    
+    // Initialize project search
+    const searchInput = document.getElementById('project-search');
+    if (searchInput) {
+         searchInput.addEventListener('input', function(e) {
+             const searchTerm = e.target.value.toLowerCase();
+             const projects = document.querySelectorAll('.project-item');
+             
+             projects.forEach(project => {
+                 const name = project.dataset.name.toLowerCase();
+                 const category = project.dataset.category.toLowerCase();
+                 
+                 if (name.includes(searchTerm) || category.includes(searchTerm)) {
+                     project.style.display = 'block';
+                 } else {
+                     project.style.display = 'none';
+                 }
+             });
+         });
+    }
+    
+    // Initialize contact form for Firestore submission
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.removeEventListener('submit', this.originalFormSubmit); // Clean up original
+        contactForm.addEventListener('submit', submitContactForm);
+    }
+    
+    // Admin Login Form
+    const adminLoginForm = document.getElementById('admin-login-form');
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleAdminLogin();
+        });
+    }
+    
+    // Email Sign-In Button (for admin/regular user)
+    document.getElementById('email-sign-in-btn').addEventListener('click', () => {
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        
+        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+            // Redirect to admin login for specific credentials
             closeAllPanels();
-            showLoader('Signing in...', 'Authenticating with Google');
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    // This is handled by the auth.onAuthStateChanged listener
+            showAdminLogin();
+            document.getElementById('admin-email').value = email;
+            document.getElementById('admin-password').value = password;
+        } else {
+            // Regular Firebase Email Sign-In
+            showLoader('Signing in...', 'Authenticating with Email/Password');
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
                     hideLoader();
+                    closeAllPanels();
                 })
                 .catch((error) => {
                     hideLoader();
-                    alert(`Google Sign-In Failed: ${error.message}`);
-                    console.error("Google Sign-In Error:", error);
+                    alert(`Sign-In Failed: ${error.message}`);
+                    console.error("Email Sign-In Error:", error);
                 });
         }
-        
-        // Email/Password Sign-In (Used for Admin)
-        function handleAdminLogin() {
-            const email = document.getElementById('admin-email').value;
-            const password = document.getElementById('admin-password').value;
-            
-            showLoader('Verifying Admin...', 'Checking credentials');
-
-            if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-                // Use Firebase Email/Password Auth if set up, or simulate as requested
-                // For this request, we simulate admin login but still manage availability via Firestore.
-                // In a real app, you'd use a special role in Firestore to verify admin status.
-                
-                auth.signInWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                         // Successfully signed in
-                         localStorage.setItem('adminLoggedIn', 'true');
-                         closeAllPanels();
-                         checkAdminLoginStatus(userCredential.user);
-                         renderCalendar(currentDate);
-                         hideLoader();
-                         alert('Admin login successful! You can now manage availability.');
-                    })
-                    .catch((error) => {
-                        // If Firebase auth fails for the admin credentials
-                        hideLoader();
-                        alert(`Admin Login Failed: ${error.message}. Please check credentials.`);
-                        console.error("Admin Login Error:", error);
-                    });
-
-            } else {
-                hideLoader();
-                alert('Invalid credentials. Please try again.');
-            }
-        }
-        
-        // Sign Out
-        function signOutUser() {
-            showLoader('Signing out...', 'Clearing session');
-            auth.signOut().then(() => {
-                // Sign-out successful. auth.onAuthStateChanged handles UI update.
-                localStorage.removeItem('adminLoggedIn');
-                document.getElementById('admin-toggle').style.display = 'none';
-                renderCalendar(currentDate); // Re-render calendar to disable editing
-                closeAllPanels();
-                hideLoader();
-            }).catch((error) => {
-                hideLoader();
-                console.error("Sign Out Error:", error);
-            });
-        }
-        
-        // Firebase Auth State Listener
-        auth.onAuthStateChanged((user) => {
-            currentUser = user;
-            updateAccountModalUI(user);
-            checkAdminLoginStatus(user);
-        });
-
-        // Update Account Modal UI based on Auth State
-        function updateAccountModalUI(user) {
-            const loginContainer = document.getElementById('auth-login-container');
-            const profileContainer = document.getElementById('auth-profile-container');
-            const modalTitle = document.getElementById('auth-modal-title');
-            const modalSubtitle = document.getElementById('auth-modal-subtitle');
-            
-            if (user) {
-                // Logged In State
-                loginContainer.style.display = 'none';
-                profileContainer.style.display = 'block';
-                
-                modalTitle.textContent = `Welcome, ${user.displayName || 'User'}!`;
-                modalSubtitle.textContent = 'Manage your session.';
-
-                document.getElementById('user-display-name').textContent = user.displayName || user.email;
-                document.getElementById('user-display-email').textContent = user.email;
-                
-                const userPhoto = document.getElementById('user-photo');
-                if (user.photoURL) {
-                    userPhoto.src = user.photoURL;
-                    userPhoto.style.display = 'block';
-                } else {
-                    userPhoto.style.display = 'none';
-                }
-                
-                document.getElementById('user-name-display').textContent = user.displayName || 'Joy Kumbhakar';
-            } else {
-                // Logged Out State
-                loginContainer.style.display = 'block';
-                profileContainer.style.display = 'none';
-                
-                modalTitle.textContent = 'Sign In';
-                modalSubtitle.textContent = 'Access your account or sign in as admin.';
-                
-                // Keep the default portfolio name when logged out
-                document.getElementById('user-name-display').textContent = 'Joy Kumbhakar';
-            }
-        }
-
-        // Check Admin Status (uses both email check and Firebase login state)
-        function checkAdminLoginStatus(user) {
-            const adminToggle = document.getElementById('admin-toggle');
-            const isAdmin = localStorage.getItem('adminLoggedIn') === 'true' && user && user.email === ADMIN_EMAIL;
-            
-            if (isAdmin) {
-                adminToggle.style.display = 'flex';
-            } else {
-                adminToggle.style.display = 'none';
-            }
-        }
-        
-        // --- 3. CONTACT FORM FUNCTIONALITY (Firestore) ---
-
-        // Function to submit contact form data to Firestore
-        async function submitContactForm(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('contact-name').value;
-            const email = document.getElementById('contact-email').value;
-            const subject = document.getElementById('contact-subject').value;
-            const type = document.getElementById('contact-type').value;
-            const message = document.getElementById('contact-message').value;
-
-            showLoader('Sending your message...', 'Storing data securely');
-            
-            try {
-                // Add a new document with a generated ID to the "messages" collection
-                await db.collection("messages").add({
-                    name: name,
-                    email: email,
-                    subject: subject,
-                    workType: type,
-                    message: message,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                hideLoader();
-                alert('Thank you! Your message has been sent successfully and stored in the database.');
-                document.getElementById('contact-form').reset();
-            } catch (error) {
-                hideLoader();
-                alert(`Error sending message: ${error.message}. Check the console for details.`);
-                console.error("Error writing document: ", error);
-            }
-        }
-        
-        // --- 4. CALENDAR/AVAILABILITY FUNCTIONS (Firestore) ---
-
-        let currentDate = new Date();
-        const AVAILABILITY_COLLECTION = "availability";
-
-        // Fetch and render calendar
-        async function renderCalendar(date) {
-            const calendarGrid = document.querySelector('.calendar-grid');
-            const calendarTitle = document.getElementById('calendar-title');
-            
-            // Clear existing calendar days (except headers)
-            const dayHeaders = calendarGrid.querySelectorAll('.calendar-day-header');
-            calendarGrid.innerHTML = '';
-            dayHeaders.forEach(header => calendarGrid.appendChild(header));
-            
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            calendarTitle.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-            
-            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-            const daysInMonth = lastDay.getDate();
-            const startingDay = firstDay.getDay();
-            const today = new Date();
-
-            // Fetch availability data for the current month from Firestore
-            const yearMonthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-            const docRef = db.collection(AVAILABILITY_COLLECTION).doc(yearMonthKey);
-            const doc = await docRef.get();
-            const availabilityData = doc.exists ? doc.data() : {};
-            
-            // Add days from previous month
-            const prevMonthLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
-            for (let i = startingDay - 1; i >= 0; i--) {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day other-month';
-                dayElement.textContent = prevMonthLastDay - i;
-                calendarGrid.appendChild(dayElement);
-            }
-            
-            // Add days of current month
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day';
-                
-                // Check if it's today
-                if (date.getMonth() === today.getMonth() && 
-                    date.getFullYear() === today.getFullYear() && 
-                    i === today.getDate()) {
-                    dayElement.classList.add('today');
-                }
-                
-                // Check availability for this day
-                const dateKey = String(i).padStart(2, '0'); // e.g., '01', '15'
-                const isAvailable = availabilityData[dateKey] !== false; // Default is true (available)
-                
-                if (isAvailable) {
-                    dayElement.classList.add('available');
-                } else {
-                    dayElement.classList.add('not-available');
-                }
-                
-                dayElement.textContent = i;
-                
-                // Add click event to toggle availability (only for admin)
-                if (isAdminLoggedIn()) {
-                    dayElement.addEventListener('click', function() {
-                        const fullDateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${dateKey}`;
-                        toggleAvailability(fullDateStr, dateKey, isAvailable, yearMonthKey);
-                    });
-                } else {
-                    dayElement.style.cursor = 'default';
-                }
-                
-                calendarGrid.appendChild(dayElement);
-            }
-            
-            // Add days from next month to fill the grid
-            const totalCells = 42; // 6 rows x 7 days
-            const remainingCells = totalCells - (startingDay + daysInMonth);
-            for (let i = 1; i <= remainingCells; i++) {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day other-month';
-                dayElement.textContent = i;
-                calendarGrid.appendChild(dayElement);
-            }
-
-            // Update today's status message
-            updateAvailabilityStatus(availabilityData);
-            hideLoader();
-        }
-        
-        // Function to update the date-specific availability in Firestore
-        async function toggleAvailability(fullDateStr, dateKey, wasAvailable, yearMonthKey) {
-             if (!isAdminLoggedIn()) {
-                 showAdminLogin();
-                 return;
-             }
-             
-             showLoader('Updating availability...', `Setting ${fullDateStr}`);
-
-             try {
-                 const newStatus = !wasAvailable;
-                 const docRef = db.collection(AVAILABILITY_COLLECTION).doc(yearMonthKey);
-
-                 await docRef.set({
-                     [dateKey]: newStatus ? firebase.firestore.FieldValue.delete() : false
-                 }, { merge: true });
-
-                 // Re-render calendar immediately to show the change
-                 await renderCalendar(currentDate);
-
-                 hideLoader();
-                 alert(`Date ${fullDateStr} set as ${newStatus ? 'AVAILABLE' : 'BUSY'}.`);
-             } catch (error) {
-                 hideLoader();
-                 alert(`Error updating availability: ${error.message}`);
-                 console.error("Error updating availability: ", error);
-             }
-        }
-        
-        // Update today's availability status message
-        function updateAvailabilityStatus(availabilityData) {
-            const today = new Date();
-            const todayKey = String(today.getDate()).padStart(2, '0');
-            
-            const isAvailable = availabilityData[todayKey] !== false;
-            
-            const statusElement = document.getElementById('availability-status');
-            const textElement = document.getElementById('availability-text');
-            
-            if (isAvailable) {
-                statusElement.className = 'availability-status available';
-                textElement.textContent = 'Available Today';
-            } else {
-                statusElement.className = 'availability-status not-available';
-                textElement.textContent = 'Not Available Today';
-            }
-        }
-
-        // Admin panel direct setting function (uses Firestore update)
-        async function setAvailability(isAvailable) {
-            if (!isAdminLoggedIn()) {
-                showAdminLogin();
-                return;
-            }
-            
-            const datePicker = document.getElementById('admin-date-picker');
-            const dateStr = datePicker.value;
-            
-            if (!dateStr) {
-                alert('Please select a date first');
-                return;
-            }
-            
-            showLoader('Updating availability...', `Setting ${dateStr}`);
-            
-            const [year, month, day] = dateStr.split('-');
-            const yearMonthKey = `${year}-${month}`;
-            const dateKey = day;
-            
-            try {
-                 const docRef = db.collection(AVAILABILITY_COLLECTION).doc(yearMonthKey);
-
-                 // Use delete to remove the key if setting to default (available: true)
-                 await docRef.set({
-                     [dateKey]: isAvailable ? firebase.firestore.FieldValue.delete() : false
-                 }, { merge: true });
-
-                 // Check if the set date is in the currently viewed month, then re-render
-                 const currentYearMonthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-                 if (yearMonthKey === currentYearMonthKey) {
-                     await renderCalendar(currentDate);
-                 } else {
-                     // Still update the status message just in case the date is today
-                     updateAvailabilityStatus({}); // Will fetch fresh data when re-rendered next
-                 }
-
-                 hideLoader();
-                 const status = isAvailable ? 'available' : 'not available';
-                 alert(`Date ${dateStr} has been set as ${status}`);
-                 document.getElementById('admin-panel').classList.remove('open');
-            } catch (error) {
-                hideLoader();
-                alert(`Error setting availability: ${error.message}`);
-                console.error("Error setting availability: ", error);
-            }
-        }
-
-        // --- 5. UTILITY & UI FUNCTIONS (Modified) ---
-
-        // Initialize calendar using Firestore function
-        function initializeCalendar() {
-            renderCalendar(currentDate);
-        }
-        
-        function changeMonth(direction) {
-            showLoader('Loading calendar...', 'Updating availability');
-            
-            setTimeout(function() {
-                currentDate.setMonth(currentDate.getMonth() + direction);
-                renderCalendar(currentDate);
-            }, 500);
-        }
-        
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        // Admin panel toggles
-        function toggleAdminPanel() {
-            if (!isAdminLoggedIn()) {
-                showAdminLogin();
-                return;
-            }
-            
-            const adminPanel = document.getElementById('admin-panel');
-            adminPanel.classList.toggle('open');
-            
-            const today = new Date();
-            const todayStr = formatDate(today);
-            document.getElementById('admin-date-picker').value = todayStr;
-        }
-
-        function showAdminLogin() {
-            closeAllPanels();
-            document.getElementById('admin-login-modal').classList.add('open');
-            document.querySelector('.overlay').classList.add('active');
-        }
-
-        function toggleAccount() {
-            closeAllPanels();
-            document.getElementById('account-modal').classList.add('open');
-            document.querySelector('.overlay').classList.add('active');
-        }
-
-        function closeAllPanels() {
-            document.querySelector('.overlay').classList.remove('active');
-            document.getElementById('account-modal').classList.remove('open');
-            document.getElementById('admin-panel').classList.remove('open');
-            document.getElementById('admin-login-modal').classList.remove('open');
-        }
-
-        // Code Editor Functions (Kept original logic)
-        function runCode() {
-            const htmlCode = document.getElementById('html-code').value;
-            const previewFrame = document.getElementById('preview-frame');
-            const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
-            
-            previewDocument.open();
-            previewDocument.write(htmlCode);
-            previewDocument.close();
-        }
-        
-        function resetCode() {
-            showLoader('Resetting code...');
-            
-            setTimeout(function() {
-                document.getElementById('html-code').value = `<!DOCTYPE html>
-<html>
-<head>
-    <title>My Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        p {
-            font-size: 1.2rem;
-            line-height: 1.6;
-        }
-        .card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="card">
-            <h1>Welcome to My Page</h1>
-            <p>This is a sample page created with HTML and CSS. You can edit this code and see the changes in real-time!</p>
-            <button style="background: white; color: #667eea; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 20px;">
-                Click Me!
-            </button>
-        </div>
-    </div>
-</body>
-</html>`;
-                runCode();
-                hideLoader();
-            }, 500);
-        }
-        
-        // Loader functionality (Keep existing logic)
-        function showLoader(text = 'Loading', subtext = 'Please wait...') {
-            document.getElementById('loader-text').textContent = text;
-            document.getElementById('loader-subtext').textContent = subtext;
-            document.getElementById('loader-overlay').classList.add('active');
-        }
-        
-        function hideLoader() {
-            document.getElementById('loader-overlay').classList.remove('active');
-        }
-
-        // Theme toggle (Keep existing logic)
-        function toggleTheme() {
-            showLoader('Switching theme...');
-            
-            setTimeout(function() {
-                document.body.classList.toggle('light-mode');
-                const isLight = document.body.classList.contains('light-mode');
-                document.querySelector('.light-icon').classList.toggle('hidden', isLight);
-                document.querySelector('.dark-icon').classList.toggle('hidden', !isLight);
-                hideLoader();
-            }, 800);
-        }
-
-        // Tab switching (Keep existing logic)
-        function switchTab(tabId) {
-            showLoader('Loading content...');
-            
-            setTimeout(function() {
-                const sections = ['home', 'work', 'code-editor', 'about', 'contact'];
-                document.querySelectorAll('.nav-item[data-target]').forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.target === tabId);
-                });
-                
-                sections.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (id === tabId) {
-                        el.classList.remove('hidden-section');
-                        requestAnimationFrame(() => el.classList.add('fade-enter-active'));
-                        
-                        if (id === 'code-editor') {
-                            setTimeout(runCode, 100);
-                        }
-                    } else {
-                        el.classList.remove('fade-enter-active');
-                        setTimeout(() => el.classList.add('hidden-section'), 400);
-                    }
-                });
-                
-                hideLoader();
-            }, 600);
-        }
-
-
-        // --- 6. INITIALIZATION ---
-
-        document.addEventListener('DOMContentLoaded', function() {
-            lucide.createIcons();
-            
-            // Initialize theme icons
-            const isLight = document.body.classList.contains('light-mode');
-            document.querySelector('.light-icon').classList.toggle('hidden', isLight);
-            document.querySelector('.dark-icon').classList.toggle('hidden', !isLight);
-            
-            // Run initial code for editor
-            setTimeout(runCode, 500);
-            
-            // Initialize calendar with Firestore data
-            initializeCalendar();
-            
-            // Initialize project search
-            const searchInput = document.getElementById('project-search');
-            if (searchInput) {
-                 // ... (existing search logic remains the same)
-                 searchInput.addEventListener('input', function(e) {
-                     const searchTerm = e.target.value.toLowerCase();
-                     const projects = document.querySelectorAll('.project-item');
-                     
-                     projects.forEach(project => {
-                         const name = project.dataset.name.toLowerCase();
-                         const category = project.dataset.category.toLowerCase();
-                         
-                         if (name.includes(searchTerm) || category.includes(searchTerm)) {
-                             project.style.display = 'block';
-                         } else {
-                             project.style.display = 'none';
-                         }
-                     });
-                 });
-            }
-            
-            // Initialize contact form for Firestore submission
-            const contactForm = document.getElementById('contact-form');
-            if (contactForm) {
-                contactForm.removeEventListener('submit', this.originalFormSubmit); // Clean up original
-                contactForm.addEventListener('submit', submitContactForm);
-            }
-            
-            // Admin Login Form
-            const adminLoginForm = document.getElementById('admin-login-form');
-            if (adminLoginForm) {
-                adminLoginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    handleAdminLogin();
-                });
-            }
-            
-            // Email Sign-In Button (for admin/regular user)
-            document.getElementById('email-sign-in-btn').addEventListener('click', () => {
-                const email = document.getElementById('auth-email').value;
-                const password = document.getElementById('auth-password').value;
-                
-                if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-                    // Redirect to admin login for specific credentials
-                    closeAllPanels();
-                    showAdminLogin();
-                    document.getElementById('admin-email').value = email;
-                    document.getElementById('admin-password').value = password;
-                } else {
-                    // Regular Firebase Email Sign-In
-                    showLoader('Signing in...', 'Authenticating with Email/Password');
-                    auth.signInWithEmailAndPassword(email, password)
-                        .then(() => {
-                            hideLoader();
-                            closeAllPanels();
-                        })
-                        .catch((error) => {
-                            hideLoader();
-                            alert(`Sign-In Failed: ${error.message}`);
-                            console.error("Email Sign-In Error:", error);
-                        });
-                }
-            });
-            
-        });
-    </script>
+    });
+    
+});
+</script>
 </body>
 </html>
