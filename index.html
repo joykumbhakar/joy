@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" type="image/png" href="images/profile.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
@@ -2074,6 +2075,115 @@
                     var(--glass-border) 50%,
                     transparent 100%);
         }
+
+ .character-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+    }
+
+    /* Common settings for all layers */
+    .layer {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%); /* Centers everything horizontally */
+        pointer-events: none;
+    }
+
+    /* --- LAYER 1: BOTTOM HALF (Nose, Mouth, Body) --- */
+    .lower-body {
+        z-index: 1;
+        width: 250px; /* Make sure this matches upper-body width */
+    }
+
+    /* --- LAYER 2: THE RING --- */
+    /* --- LAYER 2: THE ARC REACTOR RING --- */
+.ring {
+    z-index: 2;
+    width: 325px;
+    height: 325px; /* Height must equal width for a circle */
+    
+    /* Center it perfectly */
+    position: absolute;
+    left: 50%;
+    /* Adjust 'top' to move the ring up/down to match the waist seam */
+    top: 155px; 
+    
+    /* 1. The Outer Casing (Thin Tech Border) */
+    border-radius: 50%;
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    
+    /* 2. The Blue Glow (The "Power" Effect) */
+    box-shadow: 
+        0 0 15px #0ff,             /* Inner glow */
+        inset 0 0 15px #0ff,       /* Outer glow */
+        0 0 60px rgba(0, 255, 255, 0.5); /* Big ambient light */
+
+    /* 3. The Animation (Spin the whole container) */
+    animation: reactor-spin 10s linear infinite;
+}
+
+/* --- THE SEGMENTS (The "Coils" or Teeth) --- */
+.ring::before {
+    content: "";
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border-radius: 50%;
+    
+    /* 15px dashed border creates the "Blocks" of the reactor */
+    border: 25px dashed #0ff; 
+    
+    /* Blur it slightly to look like light, not just paint */
+    filter: drop-shadow(0 0 5px #0ff);
+    
+    /* Spin this layer faster in reverse for a mechanical feel */
+    animation: reactor-spin-reverse 5s linear infinite;
+}
+
+/* --- THE INNER CORE (The White Hot Energy) --- */
+.ring::after {
+    content: "";
+    position: absolute;
+    top: 0px; 
+    left: 0px; 
+    right: 0px; 
+    bottom: 0px;
+    border-radius: 50%;
+    
+    /* A thin white line to separate segments */
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    
+    /* Subtle pulse animation */
+    animation: reactor-pulse 2s ease-in-out infinite alternate;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes reactor-spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes reactor-spin-reverse {
+    from { transform: rotate(360deg); }
+    to   { transform: rotate(0deg); }
+}
+
+@keyframes reactor-pulse {
+    from { box-shadow: 0 0 10px #0ff, inset 0 0 10px #0ff; opacity: 0.8; }
+    to   { box-shadow: 0 0 25px #0ff, inset 0 0 25px #0ff; opacity: 1; }
+}
+
+    /* --- LAYER 3: TOP HALF (Eyes, Forehead) --- */
+    .upper-body {
+        z-index: 3;
+        width: 250px;
+        
+    }
+
+    @keyframes spin-2d {
+        from { transform: translateX(-50%) rotate(0deg); }
+        to   { transform: translateX(-50%) rotate(360deg); }
+    }
     </style>
 </head>
 
@@ -2683,7 +2793,7 @@
                             My journey, skills, and passion for development.
                         </p>
                     </div>
-                    <button
+                    <button herf="resume/Joy_Kumbhakar_Resume.pdf"
                         class="nav-item w-10 h-10 rounded-full flex items-center justify-center border border-white/10 bg-white/10 hover:bg-white/20 interactive-feedback"
                         onclick="downloadResume()" title="Download Resume">
                         <i data-lucide="download" class="w-5 h-5"></i>
@@ -2701,15 +2811,13 @@
 
                     <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
                         <div class="md:w-1/3 flex flex-col items-center">
-                            <div class="relative">
-                                <img src="images/profile.png" alt="Joy Kumbhakar - Frontend Developer"
-                                    class="profile-image"
-                                    onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjNjM2NkYxIi8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBkeT0iLjNlbSI+Sus8L3RleHQ+Cjwvc3ZnPg=='">
-                                <!-- Status indicator -->
-                                <div
-                                    class="absolute bottom-4 right-4 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white shadow-lg animate-pulse">
-                                </div>
+                            
+                            <div class="character-container">
+                                <img src="images/lower.png" class="layer lower-body" alt="Lower Body">
+                                <div class="layer ring"></div>
+                                <img src="images/upper.png" class="layer upper-body" alt="Upper Body">
                             </div>
+
 
                             <!-- Social Media Links -->
                             <div class="mt-6 flex flex-col items-center">
