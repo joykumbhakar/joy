@@ -2076,114 +2076,145 @@
                     transparent 100%);
         }
 
- .character-container {
-        position: relative;
-        width: 300px;
-        height: 300px;
-    }
+        .character-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
 
-    /* Common settings for all layers */
-    .layer {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%); /* Centers everything horizontally */
-        pointer-events: none;
-    }
+        /* Common settings for all layers */
+        .layer {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            /* Centers everything horizontally */
+            pointer-events: none;
+        }
 
-    /* --- LAYER 1: BOTTOM HALF (Nose, Mouth, Body) --- */
-    .lower-body {
-        z-index: 1;
-        width: 250px; /* Make sure this matches upper-body width */
-    }
+        /* --- LAYER 1: BOTTOM HALF (Nose, Mouth, Body) --- */
+        .lower-body {
+            z-index: 1;
+            width: 250px;
+            /* Make sure this matches upper-body width */
+        }
 
-    /* --- LAYER 2: THE RING --- */
-    /* --- LAYER 2: THE ARC REACTOR RING --- */
-.ring {
-    z-index: 2;
-    width: 325px;
-    height: 325px; /* Height must equal width for a circle */
-    
-    /* Center it perfectly */
-    position: absolute;
-    left: 50%;
-    /* Adjust 'top' to move the ring up/down to match the waist seam */
-    top: 155px; 
-    
-    /* 1. The Outer Casing (Thin Tech Border) */
-    border-radius: 50%;
-    border: 2px solid rgba(0, 255, 255, 0.3);
-    
-    /* 2. The Blue Glow (The "Power" Effect) */
-    box-shadow: 
-        0 0 15px #0ff,             /* Inner glow */
-        inset 0 0 15px #0ff,       /* Outer glow */
-        0 0 60px rgba(0, 255, 255, 0.5); /* Big ambient light */
+        /* --- LAYER 2: THE RING --- */
+        /* --- LAYER 2: THE ARC REACTOR RING --- */
+        .ring {
+            z-index: 2;
+            width: 325px;
+            height: 325px;
+            /* Height must equal width for a circle */
 
-    /* 3. The Animation (Spin the whole container) */
-    animation: reactor-spin 10s linear infinite;
-}
+            /* Center it perfectly */
+            position: absolute;
+            left: 50%;
+            /* Adjust 'top' to move the ring up/down to match the waist seam */
+            top: 155px;
 
-/* --- THE SEGMENTS (The "Coils" or Teeth) --- */
-.ring::before {
-    content: "";
-    position: absolute;
-    top: 10px; left: 10px; right: 10px; bottom: 10px;
-    border-radius: 50%;
-    
-    /* 15px dashed border creates the "Blocks" of the reactor */
-    border: 25px dashed #0ff; 
-    
-    /* Blur it slightly to look like light, not just paint */
-    filter: drop-shadow(0 0 5px #0ff);
-    
-    /* Spin this layer faster in reverse for a mechanical feel */
-    animation: reactor-spin-reverse 5s linear infinite;
-}
+            /* 1. The Outer Casing (Thin Tech Border) */
+            border-radius: 50%;
+            border: 2px solid rgba(0, 255, 255, 0.3);
 
-/* --- THE INNER CORE (The White Hot Energy) --- */
-.ring::after {
-    content: "";
-    position: absolute;
-    top: 0px; 
-    left: 0px; 
-    right: 0px; 
-    bottom: 0px;
-    border-radius: 50%;
-    
-    /* A thin white line to separate segments */
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    
-    /* Subtle pulse animation */
-    animation: reactor-pulse 2s ease-in-out infinite alternate;
-}
+            /* 2. The Blue Glow (The "Power" Effect) */
+            box-shadow:
+                0 0 15px #0ff,
+                /* Inner glow */
+                inset 0 0 15px #0ff,
+                /* Outer glow */
+                0 0 60px rgba(0, 255, 255, 0.5);
+            /* Big ambient light */
 
-/* --- ANIMATIONS --- */
-@keyframes reactor-spin {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to   { transform: translate(-50%, -50%) rotate(360deg); }
-}
+            /* 3. The Animation (Spin the whole container) */
+            animation: reactor-spin 10s linear infinite;
+        }
 
-@keyframes reactor-spin-reverse {
-    from { transform: rotate(360deg); }
-    to   { transform: rotate(0deg); }
-}
+        /* --- THE SEGMENTS (The "Coils" or Teeth) --- */
+        .ring::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border-radius: 50%;
 
-@keyframes reactor-pulse {
-    from { box-shadow: 0 0 10px #0ff, inset 0 0 10px #0ff; opacity: 0.8; }
-    to   { box-shadow: 0 0 25px #0ff, inset 0 0 25px #0ff; opacity: 1; }
-}
+            /* 15px dashed border creates the "Blocks" of the reactor */
+            border: 25px dashed #0ff;
 
-    /* --- LAYER 3: TOP HALF (Eyes, Forehead) --- */
-    .upper-body {
-        z-index: 3;
-        width: 250px;
-        
-    }
+            /* Blur it slightly to look like light, not just paint */
+            filter: drop-shadow(0 0 5px #0ff);
 
-    @keyframes spin-2d {
-        from { transform: translateX(-50%) rotate(0deg); }
-        to   { transform: translateX(-50%) rotate(360deg); }
-    }
+            /* Spin this layer faster in reverse for a mechanical feel */
+            animation: reactor-spin-reverse 5s linear infinite;
+        }
+
+        /* --- THE INNER CORE (The White Hot Energy) --- */
+        .ring::after {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            border-radius: 50%;
+
+            /* A thin white line to separate segments */
+            border: 2px solid rgba(255, 255, 255, 0.8);
+
+            /* Subtle pulse animation */
+            animation: reactor-pulse 2s ease-in-out infinite alternate;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes reactor-spin {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @keyframes reactor-spin-reverse {
+            from {
+                transform: rotate(360deg);
+            }
+
+            to {
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes reactor-pulse {
+            from {
+                box-shadow: 0 0 10px #0ff, inset 0 0 10px #0ff;
+                opacity: 0.8;
+            }
+
+            to {
+                box-shadow: 0 0 25px #0ff, inset 0 0 25px #0ff;
+                opacity: 1;
+            }
+        }
+
+        /* --- LAYER 3: TOP HALF (Eyes, Forehead) --- */
+        .upper-body {
+            z-index: 3;
+            width: 250px;
+
+        }
+
+        @keyframes spin-2d {
+            from {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            to {
+                transform: translateX(-50%) rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -2474,32 +2505,37 @@
         </section>
 
         <section id="work" class="hidden-section fade-enter">
-            <div class="max-w-5xl mx-auto">
-                <div class="mb-8 md:mb-12 px-2">
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-8 md:mb-12 px-4">
                     <h2 class="text-2xl md:text-3xl font-bold text-dynamic tracking-tight">My Projects</h2>
                     <p class="text-muted-dynamic mt-1">A showcase of my recent work and applications.</p>
                 </div>
 
                 <div class="search-container">
                     <i data-lucide="search" class="search-icon w-5 h-5"></i>
-                    <input type="text" id="project-search" class="search-input" placeholder="Search projects...">
+                    <input type="text" id="project-search" class="search-input"
+                        placeholder="Search projects by name, category, or technology...">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8" id="projects-container">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="projects-container">
+                    <!-- Project 1 -->
                     <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
-                        data-name="SecureThing" data-category="Security">
+                        data-name="SecureThing" data-category="Security" data-tech="java,xml,kotlin,python">
                         <div class="h-48 md:h-64 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
                                 alt="SecureThing - Secure Vault Application"
-                                class="project-image w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
                             <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
                                 <span
-                                    class="px-2 md:px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-blue-500/20">Security</span>
+                                    class="px-2 md:px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-blue-500/30">Security</span>
                                 <h3 class="text-xl md:text-2xl font-bold text-white mb-1">SecureThing</h3>
+                                <p class="text-white/80 text-sm">Secure Vault Application</p>
                             </div>
                         </div>
-                        <div class="p-4 md:p-8 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
                             <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A secure
                                 vault application for storing sensitive information with advanced encryption and user
                                 authentication.</p>
@@ -2516,7 +2552,7 @@
                             <a href="https://securethings.netlify.app" target="_blank" rel="noopener noreferrer"
                                 class="group">
                                 <button
-                                    class="flex items-center font-semibold text-indigo-400 group-hover:text-indigo-300 transition-colors text-sm md:text-base bg-transparent border-none p-0 cursor-pointer">
+                                    class="flex items-center font-semibold text-blue-400 group-hover:text-blue-300 transition-colors text-sm md:text-base bg-transparent border-none p-0 cursor-pointer">
                                     View Project <i data-lucide="arrow-right"
                                         class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
                                 </button>
@@ -2524,19 +2560,25 @@
                         </div>
                     </div>
 
+                    <!-- Project 2 -->
                     <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
-                        data-name="TornadoAI" data-category="AI">
+                        data-name="TornadoAI" data-category="AI"
+                        data-tech="python,javascript,machine learning,tensorflow">
                         <div class="h-48 md:h-64 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1332&q=80"
-                                alt="TornadoAI - AI Application" class="project-image w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1332&q=80"
+                                alt="TornadoAI - AI Application"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
                             <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
                                 <span
-                                    class="px-2 md:px-3 py-1 bg-pink-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-pink-500/20">AI</span>
+                                    class="px-2 md:px-3 py-1 bg-pink-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-pink-500/30">AI</span>
                                 <h3 class="text-xl md:text-2xl font-bold text-white mb-1">TornadoAI</h3>
+                                <p class="text-white/80 text-sm">Intelligent Analytics Platform</p>
                             </div>
                         </div>
-                        <div class="p-4 md:p-8 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
                             <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">An
                                 AI-powered application that analyzes data patterns and provides intelligent insights for
                                 decision making.</p>
@@ -2546,30 +2588,36 @@
                                 <span
                                     class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">JavaScript</span>
                                 <span
-                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Machine
-                                    Learning</span>
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">TensorFlow</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">PyTorch</span>
                             </div>
                             <div
-                                class="flex items-center font-semibold text-pink-400 group-hover:text-pink-300 transition-colors text-sm md:text-base">
+                                class="flex items-center font-semibold text-pink-400 group-hover:text-pink-300 transition-colors text-sm md:text-base cursor-pointer">
                                 View Project <i data-lucide="arrow-right"
                                     class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Project 3 -->
                     <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
-                        data-name="DocuCraft" data-category="Productivity">
+                        data-name="DocuCraft" data-category="Productivity" data-tech="html,css,javascript,templates">
                         <div class="h-48 md:h-64 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
-                                alt="DocuCraft - Document Maker" class="project-image w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
+                                alt="DocuCraft - Document Maker"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
                             <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
                                 <span
-                                    class="px-2 md:px-3 py-1 bg-amber-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-amber-500/20">Productivity</span>
+                                    class="px-2 md:px-3 py-1 bg-amber-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-amber-500/30">Productivity</span>
                                 <h3 class="text-xl md:text-2xl font-bold text-white mb-1">DocuCraft</h3>
+                                <p class="text-white/80 text-sm">Professional Document Maker</p>
                             </div>
                         </div>
-                        <div class="p-4 md:p-8 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
                             <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A document
                                 maker for creating professional resumes, CVs, and biodata with customizable templates.
                             </p>
@@ -2581,29 +2629,34 @@
                                 <span
                                     class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">JavaScript</span>
                                 <span
-                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Templates</span>
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">React</span>
                             </div>
                             <div
-                                class="flex items-center font-semibold text-amber-400 group-hover:text-amber-300 transition-colors text-sm md:text-base">
+                                class="flex items-center font-semibold text-amber-400 group-hover:text-amber-300 transition-colors text-sm md:text-base cursor-pointer">
                                 View Project <i data-lucide="arrow-right"
                                     class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Project 4 -->
                     <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
-                        data-name="Advanced Calculator" data-category="Utility">
+                        data-name="Advanced Calculator" data-category="Utility" data-tech="javascript,css,html,mathjs">
                         <div class="h-48 md:h-64 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1587145820266-a5951ee6f620?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80"
-                                alt="Advanced Calculator" class="project-image w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1587145820266-a5951ee6f620?ixlib=rb-4.0.3&auto=format&fit=crop&w=1160&q=80"
+                                alt="Advanced Calculator"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
                             <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
                                 <span
-                                    class="px-2 md:px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-green-500/20">Utility</span>
+                                    class="px-2 md:px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-green-500/30">Utility</span>
                                 <h3 class="text-xl md:text-2xl font-bold text-white mb-1">Advanced Calculator</h3>
+                                <p class="text-white/80 text-sm">Scientific & Unit Conversion</p>
                             </div>
                         </div>
-                        <div class="p-4 md:p-8 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
                             <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A
                                 feature-rich calculator with scientific functions, unit conversion, and history tracking
                                 capabilities.</p>
@@ -2618,26 +2671,31 @@
                                     class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">MathJS</span>
                             </div>
                             <div
-                                class="flex items-center font-semibold text-green-400 group-hover:text-green-300 transition-colors text-sm md:text-base">
+                                class="flex items-center font-semibold text-green-400 group-hover:text-green-300 transition-colors text-sm md:text-base cursor-pointer">
                                 View Project <i data-lucide="arrow-right"
                                     class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Project 5 -->
                     <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
-                        data-name="Weather Dashboard" data-category="Utility">
+                        data-name="Weather Dashboard" data-category="Utility" data-tech="javascript,api,css,charts">
                         <div class="h-48 md:h-64 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1065&q=80"
-                                alt="Weather Dashboard" class="project-image w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1065&q=80"
+                                alt="Weather Dashboard"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
                             <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
                                 <span
-                                    class="px-2 md:px-3 py-1 bg-cyan-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-cyan-500/20">Utility</span>
+                                    class="px-2 md:px-3 py-1 bg-cyan-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-cyan-500/30">Utility</span>
                                 <h3 class="text-xl md:text-2xl font-bold text-white mb-1">Weather Dashboard</h3>
+                                <p class="text-white/80 text-sm">Real-time Forecast & Analytics</p>
                             </div>
                         </div>
-                        <div class="p-4 md:p-8 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
                             <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A responsive
                                 weather application with real-time forecasts, location detection, and beautiful data
                                 visualizations.</p>
@@ -2649,29 +2707,35 @@
                                 <span
                                     class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">CSS</span>
                                 <span
-                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Charts</span>
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Charts.js</span>
                             </div>
                             <div
-                                class="flex items-center font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors text-sm md:text-base">
+                                class="flex items-center font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors text-sm md:text-base cursor-pointer">
                                 View Project <i data-lucide="arrow-right"
                                     class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Project 6 -->
                     <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
-                        data-name="E-commerce Platform" data-category="Business">
+                        data-name="E-commerce Platform" data-category="Business"
+                        data-tech="react,nodejs,mongodb,stripe">
                         <div class="h-48 md:h-64 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
-                                alt="E-commerce Platform" class="project-image w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
+                                alt="E-commerce Platform"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
                             <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
                                 <span
-                                    class="px-2 md:px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-red-500/20">Business</span>
+                                    class="px-2 md:px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-red-500/30">Business</span>
                                 <h3 class="text-xl md:text-2xl font-bold text-white mb-1">E-commerce Platform</h3>
+                                <p class="text-white/80 text-sm">Full-featured Online Store</p>
                             </div>
                         </div>
-                        <div class="p-4 md:p-8 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
                             <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A
                                 full-featured online store with product catalog, shopping cart, payment integration, and
                                 admin dashboard.</p>
@@ -2686,12 +2750,275 @@
                                     class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Stripe</span>
                             </div>
                             <div
-                                class="flex items-center font-semibold text-red-400 group-hover:text-red-300 transition-colors text-sm md:text-base">
+                                class="flex items-center font-semibold text-red-400 group-hover:text-red-300 transition-colors text-sm md:text-base cursor-pointer">
                                 View Project <i data-lucide="arrow-right"
                                     class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Project 7 -->
+                    <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
+                        data-name="TaskFlow" data-category="Productivity" data-tech="vue,firebase,typescript,tailwind">
+                        <div class="h-48 md:h-64 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1160&q=80"
+                                alt="TaskFlow - Task Management"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
+                            <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
+                                <span
+                                    class="px-2 md:px-3 py-1 bg-purple-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-purple-500/30">Productivity</span>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-1">TaskFlow</h3>
+                                <p class="text-white/80 text-sm">Team Task Management</p>
+                            </div>
+                        </div>
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                            <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A
+                                collaborative task management app with real-time updates, team collaboration, and
+                                progress tracking.</p>
+                            <div class="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Vue.js</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Firebase</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">TypeScript</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Tailwind</span>
+                            </div>
+                            <div
+                                class="flex items-center font-semibold text-purple-400 group-hover:text-purple-300 transition-colors text-sm md:text-base cursor-pointer">
+                                View Project <i data-lucide="arrow-right"
+                                    class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 8 -->
+                    <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
+                        data-name="FinanceTracker" data-category="Business" data-tech="react,redux,chartjs,express">
+                        <div class="h-48 md:h-64 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1111&q=80"
+                                alt="FinanceTracker - Financial Management"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
+                            <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
+                                <span
+                                    class="px-2 md:px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-emerald-500/30">Business</span>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-1">FinanceTracker</h3>
+                                <p class="text-white/80 text-sm">Personal Finance Management</p>
+                            </div>
+                        </div>
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                            <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A
+                                comprehensive finance tracking application with expense management, budgeting, and
+                                financial analytics.</p>
+                            <div class="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">React</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Redux</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Chart.js</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Express.js</span>
+                            </div>
+                            <div
+                                class="flex items-center font-semibold text-emerald-400 group-hover:text-emerald-300 transition-colors text-sm md:text-base cursor-pointer">
+                                View Project <i data-lucide="arrow-right"
+                                    class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 9 -->
+                    <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
+                        data-name="HealthMonitor" data-category="Health" data-tech="flutter,dart,firebase,rest-api">
+                        <div class="h-48 md:h-64 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
+                                alt="HealthMonitor - Health Tracking"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
+                            <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
+                                <span
+                                    class="px-2 md:px-3 py-1 bg-rose-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-rose-500/30">Health</span>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-1">HealthMonitor</h3>
+                                <p class="text-white/80 text-sm">Health & Fitness Tracking</p>
+                            </div>
+                        </div>
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                            <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A mobile app
+                                for health monitoring with activity tracking, workout plans, and nutrition guidance.</p>
+                            <div class="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Flutter</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Dart</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Firebase</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">REST
+                                    API</span>
+                            </div>
+                            <div
+                                class="flex items-center font-semibold text-rose-400 group-hover:text-rose-300 transition-colors text-sm md:text-base cursor-pointer">
+                                View Project <i data-lucide="arrow-right"
+                                    class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 10 -->
+                    <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
+                        data-name="CodeSync" data-category="Development" data-tech="socketio,nodejs,react,websockets">
+                        <div class="h-48 md:h-64 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
+                                alt="CodeSync - Collaborative Coding"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
+                            <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
+                                <span
+                                    class="px-2 md:px-3 py-1 bg-indigo-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-indigo-500/30">Development</span>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-1">CodeSync</h3>
+                                <p class="text-white/80 text-sm">Real-time Code Collaboration</p>
+                            </div>
+                        </div>
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                            <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A real-time
+                                collaborative coding platform with syntax highlighting, video chat, and code execution.
+                            </p>
+                            <div class="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Socket.io</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Node.js</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">React</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">WebSockets</span>
+                            </div>
+                            <div
+                                class="flex items-center font-semibold text-indigo-400 group-hover:text-indigo-300 transition-colors text-sm md:text-base cursor-pointer">
+                                View Project <i data-lucide="arrow-right"
+                                    class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 11 -->
+                    <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
+                        data-name="ArtGallery" data-category="Design" data-tech="nextjs,tailwind,sanity,stripe">
+                        <div class="h-48 md:h-64 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
+                                alt="ArtGallery - Digital Art Platform"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
+                            <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
+                                <span
+                                    class="px-2 md:px-3 py-1 bg-violet-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-violet-500/30">Design</span>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-1">ArtGallery</h3>
+                                <p class="text-white/80 text-sm">Digital Art Marketplace</p>
+                            </div>
+                        </div>
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                            <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">An online
+                                platform for artists to showcase and sell digital art with secure transactions and
+                                artist profiles.</p>
+                            <div class="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Next.js</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Tailwind</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Sanity</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Stripe</span>
+                            </div>
+                            <div
+                                class="flex items-center font-semibold text-violet-400 group-hover:text-violet-300 transition-colors text-sm md:text-base cursor-pointer">
+                                View Project <i data-lucide="arrow-right"
+                                    class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 12 -->
+                    <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
+                        data-name="LearnHub" data-category="Education" data-tech="angular,typescript,firebase,graphql">
+                        <div class="h-48 md:h-64 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80"
+                                alt="LearnHub - Learning Platform"
+                                class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
+                            </div>
+                            <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
+                                <span
+                                    class="px-2 md:px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-orange-500/30">Education</span>
+                                <h3 class="text-xl md:text-2xl font-bold text-white mb-1">LearnHub</h3>
+                                <p class="text-white/80 text-sm">Online Learning Platform</p>
+                            </div>
+                        </div>
+                        <div class="p-4 md:p-6 relative z-10 bg-gradient-to-b from-transparent to-black/10">
+                            <p class="text-muted-dynamic mb-4 md:mb-6 leading-relaxed text-sm md:text-base">A
+                                comprehensive e-learning platform with video courses, quizzes, certificates, and
+                                progress tracking.</p>
+                            <div class="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Angular</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">TypeScript</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Firebase</span>
+                                <span
+                                    class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">GraphQL</span>
+                            </div>
+                            <div
+                                class="flex items-center font-semibold text-orange-400 group-hover:text-orange-300 transition-colors text-sm md:text-base cursor-pointer">
+                                View Project <i data-lucide="arrow-right"
+                                    class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Pagination Controls -->
+                <div id="pagination-controls"
+                    class="flex flex-col sm:flex-row justify-center items-center mt-8 md:mt-12 gap-4">
+                    <button id="prev-btn"
+                        class="glass-panel glass-interactive px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 text-muted-dynamic hover:text-dynamic hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                        disabled>
+                        <i data-lucide="chevron-left" class="w-4 h-4 md:w-5 md:h-5"></i>
+                        <span class="font-semibold text-sm md:text-base">Previous</span>
+                    </button>
+
+                    <div class="flex items-center gap-3">
+                        <div id="page-numbers" class="flex items-center gap-2">
+                            <!-- Page numbers will be generated dynamically -->
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-muted-dynamic text-sm md:text-base">Page</span>
+                            <span id="current-page" class="font-bold text-dynamic text-sm md:text-base">1</span>
+                            <span class="text-muted-dynamic text-sm md:text-base">of</span>
+                            <span id="total-pages" class="font-bold text-dynamic text-sm md:text-base">3</span>
+                        </div>
+                    </div>
+
+                    <button id="next-btn"
+                        class="glass-panel glass-interactive px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 text-muted-dynamic hover:text-dynamic hover:scale-105 active:scale-95 transition-all duration-200">
+                        <span class="font-semibold text-sm md:text-base">Next</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 md:w-5 md:h-5"></i>
+                    </button>
                 </div>
             </div>
         </section>
@@ -2793,11 +3120,11 @@
                             My journey, skills, and passion for development.
                         </p>
                     </div>
-                    <button herf="resume/Joy_Kumbhakar_Resume.pdf"
-                        class="nav-item w-10 h-10 rounded-full flex items-center justify-center border border-white/10 bg-white/10 hover:bg-white/20 interactive-feedback"
-                        onclick="downloadResume()" title="Download Resume">
-                        <i data-lucide="download" class="w-5 h-5"></i>
-                    </button>
+                    <a href="Resume.html" target="_blank"
+                        class="nav-item w-10 h-10 rounded-full flex items-center justify-center border border-white/10 bg-white/10 hover:bg-white/20 interactive-feedback text-white"
+                        title="Open Resume">
+                        <i data-lucide="external-link" class="w-5 h-5"></i>
+                    </a>
                 </div>
 
                 <div class="glass-panel p-4 md:p-8 mb-6 md:mb-8 relative overflow-hidden">
@@ -2811,7 +3138,7 @@
 
                     <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
                         <div class="md:w-1/3 flex flex-col items-center">
-                            
+
                             <div class="character-container">
                                 <img src="images/lower.png" class="layer lower-body" alt="Lower Body">
                                 <div class="layer ring"></div>
@@ -3175,16 +3502,16 @@
 
                                 <!-- Quick Actions -->
                                 <div class="flex flex-col gap-3">
-                                    <button onclick="openEmail()"
+                                    <a href="mailto:joykumbhakar101@gmail.com"
                                         class="px-4 py-3 bg-white/10 rounded-xl text-sm text-muted-dynamic font-medium hover:bg-white/20 transition-colors flex items-center justify-center gap-2 interactive-feedback w-full">
                                         <i data-lucide="mail" class="w-4 h-4"></i>
                                         Send Email
-                                    </button>
-                                    <button onclick="downloadResume()"
+                                    </a>
+                                    <a href="Files/Joy Kumbhakar-Resume.pdf" download="Joy_Kumbhakar_Resume.pdf"
                                         class="px-4 py-3 bg-indigo-500/20 rounded-xl text-sm text-indigo-500 font-medium hover:bg-indigo-500/30 transition-colors flex items-center justify-center gap-2 interactive-feedback w-full">
                                         <i data-lucide="download" class="w-4 h-4"></i>
                                         Download Resume
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
 
@@ -4465,6 +4792,132 @@
                 });
             }
         });
+
+
+
+        // Add this pagination script to your existing JavaScript file
+        // Place it near the end of your script, after the DOMContentLoaded event listener
+
+        // ==================== PAGINATION FUNCTIONALITY ====================
+
+        // Initialize pagination
+        function initPagination() {
+            const projectItems = document.querySelectorAll('.project-item');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const currentPageEl = document.getElementById('current-page');
+            const totalPagesEl = document.getElementById('total-pages');
+            const searchInput = document.getElementById('project-search');
+            const paginationControls = document.getElementById('pagination-controls');
+
+            const projectsPerPage = 4;
+            let currentPage = 1;
+            let filteredProjects = Array.from(projectItems);
+
+            function updatePagination() {
+                const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+                totalPagesEl.textContent = totalPages;
+
+                // Hide pagination if only one page
+                if (paginationControls) {
+                    paginationControls.style.display = totalPages <= 1 ? 'none' : 'flex';
+                }
+
+                // Update button states
+                if (prevBtn) prevBtn.disabled = currentPage === 1;
+                if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+                if (currentPageEl) currentPageEl.textContent = currentPage;
+            }
+
+            function showCurrentPage() {
+                // Hide all projects
+                projectItems.forEach(project => {
+                    project.style.display = 'none';
+                });
+
+                // Calculate start and end index
+                const startIndex = (currentPage - 1) * projectsPerPage;
+                const endIndex = startIndex + projectsPerPage;
+
+                // Show projects for current page
+                filteredProjects.slice(startIndex, endIndex).forEach(project => {
+                    project.style.display = 'block';
+                });
+            }
+
+            // Event listeners
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showCurrentPage();
+                        updatePagination();
+                    }
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        showCurrentPage();
+                        updatePagination();
+                    }
+                });
+            }
+
+            // Integrate with existing search functionality
+            if (searchInput) {
+                const originalSearchHandler = searchInput.oninput;
+                searchInput.addEventListener('input', function (e) {
+                    const searchTerm = this.value.toLowerCase();
+
+                    filteredProjects = Array.from(projectItems).filter(project => {
+                        const name = project.dataset.name.toLowerCase();
+                        const category = project.dataset.category.toLowerCase();
+
+                        if (name.includes(searchTerm) || category.includes(searchTerm)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+
+                    currentPage = 1;
+                    showCurrentPage();
+                    updatePagination();
+
+                    // Also run the original search handler if it exists
+                    if (originalSearchHandler) {
+                        originalSearchHandler.call(this, e);
+                    }
+                });
+            }
+
+            // Initialize pagination
+            updatePagination();
+            showCurrentPage();
+        }
+
+        // Call initPagination when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Wait a bit for all content to load
+            setTimeout(initPagination, 100);
+
+            // Also initialize when switching to the work section
+            const workTab = document.querySelector('[data-target="work"]');
+            if (workTab) {
+                workTab.addEventListener('click', () => {
+                    setTimeout(initPagination, 100);
+                });
+            }
+        });
+
+        // Reinitialize pagination when projects might have been dynamically added
+        function refreshPagination() {
+            initPagination();
+        }
     </script>
 </body>
 
