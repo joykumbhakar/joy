@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Joy Kumbhakar - Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Add Lucide Icons Library -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Add html2canvas Library -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        :root {
+            /* Colors based on the "Richard Sanchez" Blue Design */
+            --sidebar-bg: #1f2937; /* Dark Navy */
+            --sidebar-text: #ffffff;
+            --main-bg: #ffffff;
+            --main-text: #374151;
+            --accent-color: #3b82f6; /* Brighter blue for web links */
+            --divider-color: #4b5563;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #e5e7eb; /* Grey background for browser view */
+            margin: 0;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* --- Resume Container (A4 Ratio) --- */
+        .resume-container {
+            display: grid;
+            grid-template-columns: 320px 1fr; /* Left Sidebar | Right Content */
+            width: 100%;
+            max-width: 1000px; /* Standard A4 width-ish */
+            background-color: var(--main-bg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            min-height: 1100px; /* Visual height */
+        }
+
+        /* --- LEFT SIDEBAR --- */
+        .left-sidebar {
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Profile Pic */
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid rgba(255,255,255,0.1);
+            background-color: #ccc;
+        }
+
+        /* Sidebar Section Headers */
+        .sidebar-header {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--divider-color);
+            padding-bottom: 10px;
+            color: #e2e8f0;
+        }
+
+        /* Contact Info */
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .contact-item:hover { color: white; }
+
+        /* Lucide Icon Styling */
+        .contact-item i, .contact-item svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        /* Education & Skills in Sidebar */
+        .sidebar-block {
+            margin-bottom: 10px;
+        }
+
+        .edu-item {
+            margin-bottom: 20px;
+        }
+
+        .edu-degree {
+            font-weight: 700;
+            display: block;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .edu-school {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin: 5px 0;
+        }
+
+        .edu-year {
+            font-size: 0.85rem;
+            color: #d1d5db;
+            font-style: italic;
+        }
+
+        /* Skills List */
+        .skills-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .skill-item {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #d1d5db;
+        }
+
+        .skill-dot {
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        /* --- RIGHT CONTENT --- */
+        .right-content {
+            padding: 50px;
+            background-color: white;
+        }
+
+        /* Header Name Block */
+        .main-header {
+            margin-bottom: 50px;
+        }
+
+        .name-title h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: #374151;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .name-title span {
+            color: #4b5563; /* Gray part of name if split */
+        }
+
+        .job-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            color: #6b7280;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            display: block;
+            font-weight: 600;
+        }
+
+        /* Main Section Headers */
+        .content-header {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Profile Text */
+        .profile-text {
+            color: #4b5563;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        /* Experience / Projects Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 30px;
+            border-left: 2px solid #e5e7eb;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px; /* Center on line */
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--sidebar-bg);
+            border-radius: 50%;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .project-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .project-link {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .timeline-desc {
+            font-size: 0.95rem;
+            color: #4b5563;
+            margin-bottom: 10px;
+        }
+
+        .timeline-bullets {
+            margin: 0;
+            padding-left: 20px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .timeline-bullets li { margin-bottom: 8px; }
+
+        /* --- Floating Action Buttons --- */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+            align-items: flex-end;
+        }
+
+        .btn-fab {
+            background: #1f2937;
+            color: white;
+            border: none;
+            height: 56px;
+            padding: 0 24px;
+            border-radius: 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.2s;
+        }
+        
+        .btn-fab.secondary {
+            background: #4b5563;
+            height: 48px;
+            font-size: 0.9rem;
+        }
+
+        .btn-fab:hover { transform: translateY(-3px); }
+
+        /* --- RESPONSIVE (Mobile) --- */
+        @media (max-width: 850px) {
+            .resume-container {
+                grid-template-columns: 1fr;
+                width: 100%;
+                margin: 0;
+            }
+
+            .left-sidebar {
+                padding: 40px;
+                text-align: center;
+                align-items: center;
+            }
+
+            .contact-list, .skills-list {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
+            }
+            
+            .contact-item { margin-bottom: 10px; }
+            .skill-item { margin-bottom: 10px; }
+            
+            .edu-item { text-align: center; }
+
+            .right-content {
+                padding: 30px;
+            }
+
+            .name-title h1 { font-size: 2.5rem; }
+            
+            .fab-container { bottom: 20px; right: 20px; }
+            .btn-text { display: none; }
+            .btn-fab { width: 50px; justify-content: center; padding: 0; border-radius: 50%; }
+        }
+
+        /* --- PRINT --- */
+        @media print {
+            body { background: none; padding: 0; margin: 0; }
+            .resume-container { 
+                box-shadow: none; 
+                width: 100%; 
+                max-width: 100%;
+                min-height: 100vh;
+                margin: 0;
+                /* Force background colors to print */
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+            }
+            .fab-container { display: none; }
+            a { text-decoration: none; color: inherit; }
+        }
+    </style>
+    <script>
+        function downloadVCard() {
+            const vcardData = [
+                'BEGIN:VCARD', 'VERSION:3.0',
+                'FN:Joy Kumbhakar', 'N:Kumbhakar;Joy;;;',
+                'TITLE:Frontend & Android Developer',
+                'TEL;TYPE=CELL:+919749505101',
+                'EMAIL;TYPE=INTERNET:joykumbhakar101@gmail.com',
+                'URL:https://joykumbhakar.netlify.app',
+                'ADR;TYPE=HOME:;;West Bengal;India',
+                'X-SOCIALPROFILE;type=twitter:https://x.com/ProgramPros',
+                'X-SOCIALPROFILE;type=linkedin:https://linkedin.com/in/joy-kumbhakar-889b66324',
+                'END:VCARD'
+            ].join('\n');
+            const blob = new Blob([vcardData], { type: 'text/vcard' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none'; a.href = url; a.download = 'Joy_Kumbhakar.vcf';
+            document.body.appendChild(a); a.click();
+            window.URL.revokeObjectURL(url); document.body.removeChild(a);
+        }
+
+        function saveAsImage() {
+            const element = document.querySelector('.resume-container');
+            // Show loading state cursor
+            document.body.style.cursor = 'wait';
+            
+            html2canvas(element, {
+                scale: 2, // Higher quality
+                useCORS: true, // Allow cross-origin images (like avatar)
+                backgroundColor: '#ffffff', // Ensure background is white
+                scrollY: -window.scrollY // Correct scrolling issues
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Joy_Kumbhakar_Resume.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                document.body.style.cursor = 'default';
+            }).catch(err => {
+                console.error("Image generation failed:", err);
+                document.body.style.cursor = 'default';
+                alert("Could not generate image. Please check console for details.");
+            });
+        }
+    </script>
+</head>
+<body>
+
+    <div class="fab-container">
+        <button class="btn-fab secondary" onclick="downloadVCard()">
+            <i data-lucide="save"></i>
+            <span class="btn-text">Save Contact</span>
+        </button>
+        <button class="btn-fab secondary" onclick="saveAsImage()">
+            <i data-lucide="image"></i>
+            <span class="btn-text">Save as Image</span>
+        </button>
+        <button class="btn-fab" onclick="window.print()">
+            <i data-lucide="printer"></i>
+            <span class="btn-text">Print PDF</span>
+        </button>
+    </div>
+
+    <div class="resume-container">
+        <!-- LEFT SIDEBAR -->
+        <aside class="left-sidebar">
+            <div class="profile-container">
+                <img src="images/profile.jpg" alt="Joy Kumbhakar" class="profile-pic">
+            </div>
+
+            <!-- CONTACT -->
+            <div class="sidebar-block">
+                <h3 class="sidebar-header">Contact</h3>
+                <ul class="contact-list">
+                    <li><a href="tel:+919749505101" class="contact-item"><i data-lucide="phone"></i> +91 9749505101</a></li>
+                    <li><a href="mailto:joykumbhakar101@gmail.com" class="contact-item"><i data-lucide="mail"></i> joykumbhakar101@gmail.com</a></li>
+                    <li><a href="#" class="contact-item"><i data-lucide="map-pin"></i> West Bengal, India</a></li>
+                    <li><a href="https://joykumbhakar.netlify.app" class="contact-item"><i data-lucide="globe"></i> joykumbhakar.netlify.app</a></li>
+                </ul>
+            </div>
+
+            <!-- SOCIALS -->
+            <div class="sidebar-block">
+                <h3 class="sidebar-header">Socials</h3>
+                <ul class="contact-list">
+                    <li><a href="https://www.linkedin.com/in/joy-kumbhakar-889b66324" target="_blank" class="contact-item"><i data-lucide="linkedin"></i> Joy Kumbhakar</a></li>
+                    <li><a href="https://github.com/ProgramPros-cpu" target="_blank" class="contact-item"><i data-lucide="github"></i> ProgramPros-cpu</a></li>
+                    <li><a href="https://x.com/ProgramPros" target="_blank" class="contact-item"><i data-lucide="twitter"></i> @ProgramPros</a></li>
+                    <li><a href="https://www.instagram.com/thejoykumbhakar" target="_blank" class="contact-item"><i data-lucide="instagram"></i> @thejoykumbhakar</a></li>
+                    <li><a href="https://www.facebook.com/share/1CDN59yyZ9/" target="_blank" class="contact-item"><i data-lucide="facebook"></i> Joy Kumbhakar</a></li>
+                </ul>
+            </div>
+
+            <!-- EDUCATION -->
+            <div class="sidebar-block">
+                <h3 class="sidebar-header">Education</h3>
+                <div class="edu-item">
+                    <span class="edu-degree">Higher Secondary (12th)</span>
+                    <span class="edu-school">Kanyapur High School</span>
+                    <span class="edu-year">Commerce Stream | 50%</span>
+                </div>
+                <div class="edu-item">
+                    <span class="edu-degree">Secondary (10th)</span>
+                    <span class="edu-school">Kanyapur High School</span>
+                    <span class="edu-year">General Studies | 55%</span>
+                </div>
+            </div>
+
+            <!-- SKILLS -->
+            <div class="sidebar-block">
+                <h3 class="sidebar-header">Skills</h3>
+                <ul class="skills-list">
+                    <li class="skill-item"><span class="skill-dot"></span> Java & Kotlin (Android)</li>
+                    <li class="skill-item"><span class="skill-dot"></span> HTML5, CSS3, JS</li>
+                    <li class="skill-item"><span class="skill-dot"></span> Python</li>
+                    <li class="skill-item"><span class="skill-dot"></span> App Security (AES/XML)</li>
+                    <li class="skill-item"><span class="skill-dot"></span> UI/UX Design</li>
+                    <li class="skill-item"><span class="skill-dot"></span> Backend Integration</li>
+                </ul>
+            </div>
+
+             <!-- LANGUAGES -->
+             <div class="sidebar-block">
+                <h3 class="sidebar-header">Languages</h3>
+                <ul class="skills-list">
+                    <li class="skill-item"><span class="skill-dot"></span> English (Professional)</li>
+                    <li class="skill-item"><span class="skill-dot"></span> Bengali (Native)</li>
+                    <li class="skill-item"><span class="skill-dot"></span> Hindi (Conversational)</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- RIGHT CONTENT -->
+        <main class="right-content">
+            <header class="main-header">
+                <div class="name-title">
+                    <h1>Joy <span style="font-weight: 300;">Kumbhakar</span></h1>
+                    <span class="job-title">Frontend & Android Developer | UI/UX Designer</span>
+                </div>
+            </header>
+
+            <section class="section-block">
+                <h2 class="content-header">Profile</h2>
+                <p class="profile-text">
+                    Innovative <strong>Frontend & Android Developer</strong> and <strong>UI/UX Designer</strong> with over <strong>3+ years of freelance experience</strong>. I specialize in building secure, military-grade Android applications and responsive web platforms. My expertise spans Java, Kotlin, Python, and modern web technologies. I am passionate about solving complex technical challenges and delivering clean, user-centric designs that prioritize data security and performance.
+                </p>
+            </section>
+
+            <section class="section-block">
+                <h2 class="content-header">Projects & Experience</h2>
+                
+                <!-- Experience Item -->
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <span class="project-name">Freelance Developer & Designer</span>
+                        <span style="font-size: 0.85rem; color: #6b7280; font-weight: 600;">2021 - Present</span>
+                    </div>
+                    <p class="timeline-desc">Full-stack development and UI/UX design for diverse global clients.</p>
+                    <ul class="timeline-bullets">
+                        <li>Delivered 3+ years of high-quality freelance work in frontend development and Android app creation.</li>
+                        <li>Designed intuitive UI/UX for mobile and web applications, ensuring high user retention.</li>
+                        <li>Collaborated with clients to translate business requirements into technical solutions.</li>
+                    </ul>
+                </div>
+
+                <!-- Project 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <span class="project-name">Secure Thing Android App</span>
+                        <a href="https://securethings.netlify.app" target="_blank" class="project-link">securethings.netlify.app</a>
+                    </div>
+                    <p class="timeline-desc">A high-security vault application designed for military-grade privacy and data protection.</p>
+                    <ul class="timeline-bullets">
+                        <li>Engineered a robust privacy vault application focusing on data integrity and user anonymity.</li>
+                        <li>Implemented military-grade encryption standards (AES) to protect sensitive files, photos, and videos.</li>
+                        <li>Designed a clean, intuitive User Interface (UI) ensuring seamless file management across various Android devices.</li>
+                        <li>Developed and maintained a companion website for app distribution, updates, and user documentation.</li>
+                    </ul>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <span class="project-name">Personal Developer Portfolio</span>
+                        <a href="https://joykumbhakar.netlify.app" target="_blank" class="project-link">joykumbhakar.netlify.app</a>
+                    </div>
+                    <p class="timeline-desc">A professional, responsive personal website showcasing technical projects and skills.</p>
+                    <ul class="timeline-bullets">
+                        <li>Designed and deployed a fully responsive website using semantic HTML5 and modern CSS3.</li>
+                        <li>Implemented advanced JavaScript logic for interactive elements and smooth user navigation.</li>
+                        <li>Optimized website performance and SEO to ensure high visibility and fast load times across mobile and desktop platforms.</li>
+                        <li>Integrated contact forms and backend logic for seamless communication.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="section-block">
+                <h2 class="content-header">Academic Details</h2>
+                 <p class="profile-text">
+                    <strong>Higher Secondary (Class 12) - Commerce Stream</strong><br>
+                    Demonstrated strong analytical skills with a focus on business and technology integration.
+                </p>
+                <ul class="timeline-bullets" style="margin-top: -20px;">
+                    <li><strong>Commercial Law and Preliminaries of Auditing (CLPA):</strong> Gained foundation in business laws and auditing standards.</li>
+                    <li><strong>Core Commerce Subjects:</strong> Accountancy, Business Studies (BSTD), Costing & Taxation (CSTX).</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
