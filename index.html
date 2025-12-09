@@ -4,6 +4,7 @@
 <head>
     <link rel="icon" type="image/png" href="images/logo.png">
     <meta charset="UTF-8">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
     <meta name="description"
@@ -4918,6 +4919,21 @@
         function refreshPagination() {
             initPagination();
         }
+        // Generate sitemap dynamically
+function generateSitemap() {
+    const pages = [
+        { url: '/', priority: 1.0, changefreq: 'weekly' },
+        { url: '/#work', priority: 0.9, changefreq: 'monthly' },
+        { url: '/#about', priority: 0.9, changefreq: 'monthly' },
+        { url: '/#contact', priority: 0.8, changefreq: 'monthly' },
+        { url: '/#code-editor', priority: 0.7, changefreq: 'monthly' },
+        { url: '/#notes', priority: 0.8, changefreq: 'daily' },
+        { url: '/Resume.html', priority: 0.6, changefreq: 'monthly' }
+    ];
+    
+    // Format as XML and serve via API endpoint
+    return pages;
+}
     </script>
 </body>
 
