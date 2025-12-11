@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Vector ID System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@700;900&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@100..900&family=Outfit:wght@100..900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* --- RESET & VARS --- */
+        :root {
+            --card-w: 520px;
+            --card-h: 328px;
+            --bg-app: #f0f2f5;
+
+            /* PREMIUM COLORS */
+            --royal-blue: #002D62;
+            --royal-light: #004B8D;
+            --accent-blue: #3b82f6;
+            --gold-main: #D4AF37;
+            --gold-light: #F9E5B5;
+            --gold-dark: #AA771C;
+            --verify-green: #1D9BF0;
+            --verify-green-fill: #20D16B;
+
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+
+            --grad-blue: linear-gradient(135deg, var(--royal-blue) 0%, var(--royal-light) 100%);
+            --grad-gold: linear-gradient(90deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+
+            --font-main: 'Inter', sans-serif;
+            --font-serif: 'Outfit', serif;
+            --font-sig: 'Dancing Script', cursive;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-main);
+            background: var(--bg-app);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            color: var(--text-dark);
+        }
+
+        /* --- UI LAYOUT --- */
+        header {
+            margin: 50px 0 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--royal-blue);
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .workspace {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            justify-content: center;
+            align-items: flex-start;
+            width: 95%;
+            max-width: 1400px;
+        }
+
+        /* --- CONTROLS --- */
+        .controls-panel {
+            flex: 1;
+            min-width: 320px;
+            max-width: 400px;
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group.full {
+            grid-column: span 2;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            background: #f8fafc;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--royal-blue);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(0, 45, 98, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--royal-blue);
+            font-weight: 700;
+            margin-bottom: 25px;
+            background: #f8fafc;
+            transition: 0.2s;
+        }
+
+        .file-upload:hover {
+            border-color: var(--royal-blue);
+            background: #e0f2fe;
+        }
+
+        /* --- SIGNATURE CONTROLS --- */
+        .sig-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .sig-tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 6px;
+            color: #64748b;
+            transition: 0.2s;
+        }
+
+        .sig-tab.active {
+            background: #fff;
+            color: var(--royal-blue);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .sig-panel {
+            display: none;
+        }
+
+        .sig-panel.active {
+            display: block;
+        }
+
+        .sig-canvas-wrapper {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
+            overflow: hidden;
+            position: relative;
+            cursor: crosshair;
+        }
+
+        canvas#sigCanvas {
+            display: block;
+            width: 100%;
+            height: 120px;
+        }
+
+        .canvas-tools {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+
+        .btn-clear {
+            font-size: 0.7rem;
+            color: #ef4444;
+            background: none;
+            border: 1px solid #ef4444;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-download {
+            width: 100%;
+            padding: 16px;
+            background: var(--grad-blue);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0, 45, 98, 0.3);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* --- PREVIEW --- */
+        .preview-area {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        #print-canvas {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            padding: 20px;
+        }
+
+        /* --- CARD BASE STYLES --- */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            background: #fff;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === PREMIUM VECTOR BACKGROUNDS === */
+
+        /* 1. Subtle Security Grid */
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                radial-gradient(#002d62 0.8px, transparent 0.8px),
+                radial-gradient(#002d62 0.8px, transparent 0.8px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.05;
+        }
+
+        /* 2. Abstract Geometric Waves */
+        .bg-vector-waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        /* 3. Hexagon Tech Overlay */
+        .bg-hex {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            z-index: 1;
+            opacity: 0.06;
+            color: var(--royal-blue);
+        }
+
+        /* 4. Fine Guilloche Pattern (Simulated with SVG) */
+        .bg-guilloche {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.4;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 50 Q 25 25 50 50 T 100 50' fill='none' stroke='%23e2e8f0' stroke-width='0.5'/%3E%3Cpath d='M0 40 Q 25 65 50 40 T 100 40' fill='none' stroke='%23e2e8f0' stroke-width='0.5'/%3E%3C/svg%3E");
+            background-size: 100px 100px;
+            mix-blend-mode: multiply;
+        }
+
+        /* 5. Center Watermark */
+        .bg-watermark {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            opacity: 0.04;
+            z-index: 1;
+            fill: var(--royal-blue);
+        }
+
+        /* --- HEADER DESIGN --- */
+        .header-strip {
+            height: 75px;
+            width: 100%;
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Modern Curve Header Background */
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--grad-blue);
+            z-index: -1;
+            /* Add a subtle texture to the header itself */
+            overflow: hidden;
+        }
+
+        .header-bg::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--gold-main);
+        }
+
+        /* Geometric accent in header */
+        .header-accent {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 150px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1));
+            clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        .school-title {
+            color: #fff;
+            font-family: var(--font-serif);
+            text-transform: uppercase;
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: 0.5px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+            width: 90%;
+        }
+
+        .header-sub {
+            font-size: 0.65rem;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        /* --- CONTENT BODY --- */
+        .front-body {
+            flex: 1;
+            padding: 15px 25px 20px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            z-index: 5;
+            align-items: center;
+        }
+
+        .photo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 130px;
+        }
+
+        .photo-frame {
+            width: 125px;
+            height: 155px;
+            padding: 4px;
+            background: #fff;
+            border: 2px solid var(--royal-blue);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        /* Corner accents for photo */
+        .photo-frame::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            border-top: 3px solid var(--gold-main);
+            border-left: 3px solid var(--gold-main);
+            width: 20px;
+            height: 20px;
+            border-radius: 10px 0 0 0;
+        }
+
+        .photo-frame::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            border-bottom: 3px solid var(--gold-main);
+            border-right: 3px solid var(--gold-main);
+            width: 20px;
+            height: 20px;
+            border-radius: 0 0 10px 0;
+        }
+
+        .photo-inner {
+            width: 100%;
+            height: 100%;
+            background: #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .session-tag {
+            margin-top: 10px;
+            background: var(--royal-blue);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0, 45, 98, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .student-name {
+            font-family: var(--font-serif);
+            font-size: 1.55rem;
+            font-weight: 900;
+            color: var(--royal-blue);
+            margin: 0;
+            line-height: 1;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(32, 209, 107, 0.1);
+            border: 1px solid var(--verify-green-fill);
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 0.6rem;
+            color: #15803d;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            column-gap: 15px;
+            row-gap: 6px;
+        }
+
+        .d-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-top: 2px;
+        }
+
+        .d-val {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .d-val.highlight {
+            color: var(--royal-blue);
+            font-weight: 800;
+        }
+
+        /* Gold Chip with Circuit Lines */
+        .chip-container {
+            position: absolute;
+            bottom: 20px;
+            right: 25px;
+            width: 50px;
+            height: 38px;
+        }
+
+        .gold-chip {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+        }
+
+        /* --- BACK SIDE --- */
+        .back-body {
+            flex: 1;
+            padding: 25px 35px;
+            display: grid;
+            grid-template-columns: 1fr 110px;
+            gap: 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .detail-block {
+            margin-bottom: 15px;
+        }
+
+        .detail-block h4 {
+            margin: 0 0 5px 0;
+            font-size: 0.7rem;
+            color: var(--royal-blue);
+            text-transform: uppercase;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-block h4::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--gold-main);
+            border-radius: 50%;
+        }
+
+        .detail-block p {
+            margin: 0;
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #334155;
+            padding-left: 12px;
+        }
+
+        .signatures {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+        }
+
+        .sig-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .sig-line {
+            height: 2px;
+            background: #cbd5e1;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .sig-line::after {
+            content: 'x';
+            position: absolute;
+            right: 0;
+            top: -14px;
+            font-size: 10px;
+            color: #cbd5e1;
+        }
+
+        .sig-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        .sig-display {
+            height: 40px;
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 2px;
+            justify-content: center;
+        }
+
+        .sig-display img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .sig-display span {
+            font-family: var(--font-sig);
+            font-size: 1.4rem;
+            color: var(--royal-blue);
+            transform: rotate(-2deg);
+        }
+
+        .sidebar-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 10px;
+        }
+
+        .qr-frame {
+            padding: 4px;
+            background: #fff;
+            border: 2px solid var(--royal-blue);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .qr-frame img {
+            display: block;
+            width: 90px;
+            height: 90px;
+        }
+
+        .scan-text {
+            font-size: 0.6rem;
+            color: var(--royal-blue);
+            font-weight: 800;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .preview-label {
+            background: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            margin-bottom: -35px;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>ID Card Generator</h1>
+    </header>
+
+    <div class="workspace">
+
+        <!-- CONTROL PANEL -->
+        <div class="controls-panel">
+            <label class="file-upload">
+                <input type="file" id="photoInput" accept="image/*" hidden>
+                <span id="uploadText">📸 Upload Student Photo</span>
+            </label>
+
+            <div class="input-group">
+                <label>Organization / School Name</label>
+                <input type="text" id="inSchool" value="St. Xavier's International School">
+            </div>
+
+            <div class="form-grid">
+                <div class="input-group full">
+                    <label>Student Full Name</label>
+                    <input type="text" id="inName" value="Aditya Roy Kapur">
+                </div>
+
+                <div class="input-group">
+                    <label>Class/Grade</label>
+                    <input type="text" id="inClass" value="XII (Senior)">
+                </div>
+                <div class="input-group">
+                    <label>Stream/Dept</label>
+                    <input type="text" id="inSec" value="Science">
+                </div>
+
+                <div class="input-group full">
+                    <label>Roll Number / ID</label>
+                    <input type="text" id="inRoll" value="ROLL-2025-084">
+                </div>
+
+                <div class="input-group">
+                    <label>Date of Birth</label>
+                    <input type="text" id="inDob" value="14/05/2007">
+                </div>
+                <div class="input-group">
+                    <label>Valid Year</label>
+                    <input type="text" id="inSession" value="2025-2026">
+                </div>
+
+                <div class="input-group full">
+                    <label>Registration ID</label>
+                    <input type="text" id="inReg" value="REG-99281-XT">
+                </div>
+
+                <div class="input-group full">
+                    <label>Guardian Name</label>
+                    <input type="text" id="inCo" value="Mr. Rajesh Roy Kapur">
+                </div>
+
+                <div class="input-group full">
+                    <label>Address</label>
+                    <textarea
+                        id="inAddress">Flat 4B, Greenwood Estate, Park Street Avenue, Kolkata - 700016, WB</textarea>
+                </div>
+            </div>
+
+            <!-- Signature Controls -->
+            <div class="input-group full" style="margin-top: 25px;">
+                <label>Student Signature</label>
+
+                <div class="sig-tabs">
+                    <div class="sig-tab active" onclick="setSigMode('type')">Type Name</div>
+                    <div class="sig-tab" onclick="setSigMode('draw')">Draw Sign</div>
+                    <div class="sig-tab" onclick="setSigMode('upload')">Upload Image</div>
+                </div>
+
+                <!-- 1. Text Mode -->
+                <div id="sigPanel-type" class="sig-panel active">
+                    <div style="font-size: 0.8rem; color: #666; font-style: italic; padding: 10px;">
+                        Generates a cursive signature from the name.
+                    </div>
+                </div>
+
+                <!-- 2. Draw Mode -->
+                <div id="sigPanel-draw" class="sig-panel">
+                    <div class="sig-canvas-wrapper">
+                        <canvas id="sigCanvas" width="350" height="120"></canvas>
+                    </div>
+                    <div class="canvas-tools">
+                        <button class="btn-clear" onclick="clearCanvas()">Clear Pad</button>
+                    </div>
+                </div>
+
+                <!-- 3. Upload Mode -->
+                <div id="sigPanel-upload" class="sig-panel">
+                    <input type="file" id="sigUploadInput" accept="image/*" style="margin-top: 10px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-top: 5px;">Use a transparent PNG for best
+                        results.</div>
+                </div>
+            </div>
+
+            <button class="btn-download" onclick="downloadIds()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Download ID Card (PNG)
+            </button>
+        </div>
+
+        <!-- PREVIEW AREA -->
+        <div class="preview-area">
+
+            <div id="print-canvas">
+
+                <div class="preview-label">FRONT SIDE</div>
+
+                <!-- FRONT CARD -->
+                <div class="card" id="card-front">
+                    <!-- Vector Background Layers -->
+                    <div class="bg-grid"></div>
+                    <div class="bg-guilloche"></div>
+                    <svg class="bg-vector-waves" viewBox="0 0 520 328" preserveAspectRatio="none">
+                        <path d="M0,250 C150,300 350,200 520,280 L520,328 L0,328 Z" fill="#002D62" opacity="0.05" />
+                        <path d="M0,280 C180,320 380,240 520,300 L520,328 L0,328 Z" fill="#D4AF37" opacity="0.1" />
+                    </svg>
+                    <svg class="bg-hex" viewBox="0 0 100 100">
+                        <path d="M50 0 L93 25 L93 75 L50 100 L7 75 L7 25 Z" fill="none" stroke="currentColor"
+                            stroke-width="1" />
+                        <circle cx="50" cy="50" r="20" stroke="currentColor" stroke-width="0.5" fill="none" />
+                        <path d="M50 20 L50 80 M20 50 L80 50" stroke="currentColor" stroke-width="0.5" />
+                    </svg>
+                    <svg class="bg-watermark" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"
+                            fill="currentColor" />
+                    </svg>
+
+                    <div class="header-strip">
+                        <div class="header-bg">
+                            <div class="header-accent"></div>
+                        </div>
+                        <div class="school-title" id="outSchoolFront">St. Xavier's International School</div>
+                        <div class="header-sub">Official Student Identity Card</div>
+                    </div>
+
+                    <div class="front-body">
+                        <div class="photo-section">
+                            <div class="photo-frame">
+                                <div class="photo-inner">
+                                    <img id="displayPhoto"
+                                        src="https://via.placeholder.com/150x200/e2e8f0/94a3b8?text=PHOTO">
+                                </div>
+                            </div>
+                            <div class="session-tag" id="outSession">2025-2026</div>
+                        </div>
+
+                        <div class="info-section">
+                            <div class="name-row">
+                                <h2 class="student-name" id="outNameFront">Aditya Roy Kapur</h2>
+                                <div class="verified-badge">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                    </svg>
+                                    Verified
+                                </div>
+                            </div>
+
+                            <div class="data-grid">
+                                <div class="d-label">Class:</div>
+                                <div class="d-val" id="outClass">XII (Senior)</div>
+                                <div class="d-label">Stream:</div>
+                                <div class="d-val" id="outSec">Science</div>
+                                <div class="d-label">Roll No:</div>
+                                <div class="d-val highlight" id="outRoll">ROLL-2025-084</div>
+                                <div class="d-label">Reg ID:</div>
+                                <div class="d-val highlight" id="outReg">REG-99281-XT</div>
+                                <div class="d-label">DOB:</div>
+                                <div class="d-val" id="outDob">14/05/2007</div>
+                            </div>
+
+                            <div class="chip-container">
+                                <svg class="gold-chip" viewBox="0 0 60 45">
+                                    <defs>
+                                        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#F3E5B5" />
+                                            <stop offset="50%" stop-color="#D4AF37" />
+                                            <stop offset="100%" stop-color="#AA771C" />
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="60" height="45" rx="6" fill="url(#goldGrad)" stroke="#AA771C"
+                                        stroke-width="0.5" />
+                                    <path d="M10 0 v45 M30 10 v25 M50 0 v45 M0 22.5 h60" stroke="rgba(0,0,0,0.2)"
+                                        stroke-width="1" />
+                                    <rect x="18" y="12" width="24" height="21" rx="2" fill="none"
+                                        stroke="rgba(0,0,0,0.3)" stroke-width="1.5" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-label">BACK SIDE</div>
+
+                <!-- BACK CARD -->
+                <div class="card" id="card-back">
+                    <!-- Repeated Vectors for Back -->
+                    <div class="bg-grid"></div>
+                    <div class="bg-guilloche" style="opacity: 0.3;"></div>
+                    <svg class="bg-hex" viewBox="0 0 100 100"
+                        style="left: -40px; right: auto; transform: rotate(180deg);">
+                        <path d="M50 0 L93 25 L93 75 L50 100 L7 75 L7 25 Z" fill="none" stroke="currentColor"
+                            stroke-width="1" />
+                    </svg>
+
+                    <div class="header-strip" style="height: 50px;">
+                        <div class="header-bg"></div>
+                        <div class="school-title" style="font-size: 0.9rem;">Terms of Use & Details</div>
+                    </div>
+
+                    <div class="back-body">
+                        <div class="details-col">
+                            <div class="detail-block">
+                                <h4>Guardian / C.O</h4>
+                                <p id="outCo">Mr. Rajesh Roy Kapur</p>
+                            </div>
+                            <div class="detail-block">
+                                <h4>Permanent Address</h4>
+                                <p id="outAddress">Flat 4B, Greenwood Estate, Park Street Avenue, Kolkata - 700016, WB
+                                </p>
+                            </div>
+                            <div class="detail-block">
+                                <p style="font-size: 0.65rem; color: #94a3b8; font-style: italic; margin-top: 20px;">
+                                    This card is the property of the institution. If found, please return to the school
+                                    office.
+                                </p>
+                            </div>
+
+                            <div class="signatures">
+                                <div class="sig-box">
+                                    <div class="sig-display" id="outSigContainer">
+                                        <!-- Content injected by JS -->
+                                        <span>Aditya Roy Kapur</span>
+                                    </div>
+                                    <div class="sig-line"></div>
+                                    <div class="sig-label">Student Signature</div>
+                                </div>
+                                <div class="sig-box">
+                                    <div
+                                        style="height: 40px; display: flex; align-items: flex-end; justify-content: center;">
+                                        <svg width="100" height="35" viewBox="0 0 100 40">
+                                            <path d="M10,30 Q30,5 50,30 T90,20" fill="none" stroke="#002D62"
+                                                stroke-width="2" />
+                                        </svg>
+                                    </div>
+                                    <div class="sig-line"></div>
+                                    <div class="sig-label">Authority Signature</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-col">
+                            <div class="qr-frame"><img id="qrCode" src="" alt="QR"></div>
+                            <div class="scan-text">SCAN CODE</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA BINDING ---
+        const ids = ['inSchool', 'inName', 'inClass', 'inSec', 'inRoll', 'inDob', 'inReg', 'inCo', 'inAddress', 'inSession'];
+
+        // State
+        let currentSigMode = 'type';
+        let uploadedSigData = null;
+
+        function updateUI() {
+            // Text Fields
+            document.getElementById('outSchoolFront').innerText = document.getElementById('inSchool').value;
+            document.getElementById('outNameFront').innerText = document.getElementById('inName').value;
+
+            document.getElementById('outClass').innerText = document.getElementById('inClass').value;
+            document.getElementById('outSec').innerText = document.getElementById('inSec').value;
+            document.getElementById('outRoll').innerText = document.getElementById('inRoll').value;
+            document.getElementById('outReg').innerText = document.getElementById('inReg').value;
+            document.getElementById('outDob').innerText = document.getElementById('inDob').value;
+            document.getElementById('outSession').innerText = document.getElementById('inSession').value;
+
+            document.getElementById('outCo').innerText = document.getElementById('inCo').value;
+            document.getElementById('outAddress').innerText = document.getElementById('inAddress').value;
+
+            updateSignatureDisplay();
+
+            // QR Code Generation
+            const qrData = `School: ${document.getElementById('inSchool').value}\nName: ${document.getElementById('inName').value}\nID: ${document.getElementById('inRoll').value}\nReg: ${document.getElementById('inReg').value}\nValid: ${document.getElementById('inSession').value}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
+            document.getElementById('qrCode').src = qrUrl;
+        }
+
+        // --- SIGNATURE LOGIC ---
+        function setSigMode(mode) {
+            currentSigMode = mode;
+            // Update tabs
+            document.querySelectorAll('.sig-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sig-tab').forEach(t => {
+                if (t.getAttribute('onclick').includes(mode)) t.classList.add('active');
+            });
+            // Show panel
+            document.querySelectorAll('.sig-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`sigPanel-${mode}`).classList.add('active');
+
+            updateSignatureDisplay();
+        }
+
+        function updateSignatureDisplay() {
+            const container = document.getElementById('outSigContainer');
+            container.innerHTML = ''; // Clear
+
+            if (currentSigMode === 'type') {
+                const span = document.createElement('span');
+                span.innerText = document.getElementById('inName').value;
+                container.appendChild(span);
+            }
+            else if (currentSigMode === 'draw') {
+                const img = document.createElement('img');
+                img.src = canvas.toDataURL();
+                container.appendChild(img);
+            }
+            else if (currentSigMode === 'upload' && uploadedSigData) {
+                const img = document.createElement('img');
+                img.src = uploadedSigData;
+                container.appendChild(img);
+            }
+        }
+
+        // --- CANVAS DRAWING ---
+        const canvas = document.getElementById('sigCanvas');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+        function finishedPosition() {
+            painting = false;
+            ctx.beginPath();
+            updateSignatureDisplay();
+        }
+        function draw(e) {
+            if (!painting) return;
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            // Handle touch or mouse
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#002D62';
+
+            ctx.lineTo(clientX - rect.left, clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(clientX - rect.left, clientY - rect.top);
+        }
+
+        // Events
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', finishedPosition);
+        canvas.addEventListener('mousemove', draw);
+        // Touch events
+        canvas.addEventListener('touchstart', startPosition);
+        canvas.addEventListener('touchend', finishedPosition);
+        canvas.addEventListener('touchmove', draw);
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateSignatureDisplay();
+        }
+
+        // --- FILE UPLOADS ---
+        document.getElementById('photoInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => document.getElementById('displayPhoto').src = evt.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('sigUploadInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    uploadedSigData = evt.target.result;
+                    updateSignatureDisplay();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Listeners for text inputs
+        ids.forEach(id => {
+            document.getElementById(id).addEventListener('input', updateUI);
+        });
+
+        // Initialize
+        updateUI();
+
+        // --- DOWNLOAD ---
+        function downloadIds() {
+            const canvasArea = document.getElementById('print-canvas');
+            const labels = document.querySelectorAll('.preview-label');
+            // Hide labels for cleaner print
+            labels.forEach(l => l.style.display = 'none');
+            // Remove gap temporarily
+            const originalGap = canvasArea.style.gap;
+            canvasArea.style.gap = "20px";
+
+            html2canvas(canvasArea, {
+                scale: 3, // High resolution
+                backgroundColor: null,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                // Restore UI
+                labels.forEach(l => l.style.display = 'block');
+                canvasArea.style.gap = originalGap;
+
+                const link = document.createElement('a');
+                const name = document.getElementById('inName').value.replace(/\s+/g, '_');
+                link.download = `ID_${name}_2025.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+    </script>
+</body>
+
+</html>

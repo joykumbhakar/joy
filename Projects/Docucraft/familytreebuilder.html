@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ancestry Architect | Family Tree Builder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --bg-color: #f8fafc;
+            --grid-color: #e2e8f0;
+            --primary: #4f46e5;
+            /* Indigo */
+            --primary-light: #818cf8;
+            --accent: #10b981;
+            /* Emerald */
+            --danger: #ef4444;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --line-color: #cbd5e1;
+            --header-h: 64px;
+
+            /* Gender Colors */
+            --color-m: #3b82f6;
+            /* Blue */
+            --color-f: #ec4899;
+            /* Pink */
+            --color-n: #94a3b8;
+            /* Neutral */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Outfit", sans-serif;
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(var(--grid-color) 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-main);
+            /* Prevent pull-to-refresh on mobile */
+            overscroll-behavior: none;
+        }
+
+        /* --- UI OVERLAYS --- */
+        .ui-layer {
+            position: fixed;
+            z-index: 100;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            height: auto;
+            min-height: var(--header-h);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 24px;
+            pointer-events: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+            margin: 0 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: #f1f5f9;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            background: white;
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-main);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+
+        button.primary:hover {
+            background: #4338ca;
+        }
+
+        button.danger {
+            color: var(--danger);
+            border-color: #fecaca;
+            background: #fff;
+        }
+
+        button.danger:hover {
+            background: #fef2f2;
+            border-color: var(--danger);
+        }
+
+        /* --- EDITOR SIDEBAR --- */
+        .sidebar {
+            position: absolute;
+            top: 0;
+            /* Cover full height on mobile */
+            right: 0;
+            bottom: 0;
+            width: 360px;
+            background: white;
+            border-left: 1px solid #e2e8f0;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 200;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: max(20px, env(safe-area-inset-top));
+            /* Safe area for mobile notch */
+        }
+
+        .sidebar-header h3 {
+            font-family: "Outfit", sans-serif;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+            padding: 5px;
+            box-shadow: none;
+        }
+
+        .sidebar-content {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-section h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            /* Larger touch target */
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 16px;
+            /* Prevent zoom on iOS input focus */
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .photo-uploader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        .sidebar-actions {
+            padding: 20px 24px;
+            border-top: 1px solid #f1f5f9;
+            background: #fff;
+            display: flex;
+            gap: 12px;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+        }
+
+        .sidebar-actions button {
+            flex: 1;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        /* --- CANVAS AREA --- */
+        #viewport {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: grab;
+            position: relative;
+            background-color: var(--bg-color);
+            touch-action: none;
+            /* Disable default browser zooming/scrolling */
+        }
+
+        #viewport:active {
+            cursor: grabbing;
+        }
+
+        #tree-canvas {
+            position: absolute;
+            transform-origin: 0 0;
+            top: 50%;
+            left: 50%;
+            transition: transform 0.1s linear;
+            /* Faster for touch */
+            padding: 100px;
+            /* buffer for image export */
+        }
+
+        /* --- TREE CSS STRUCTURE --- */
+        .tree ul {
+            padding-top: 30px;
+            position: relative;
+            transition: all 0.5s;
+            display: flex;
+            justify-content: center;
+        }
+
+        .tree li {
+            float: left;
+            text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 30px 15px 0 15px;
+            transition: all 0.5s;
+        }
+
+        /* Connectors */
+        .tree li::before,
+        .tree li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 2px solid var(--line-color);
+            width: 50%;
+            height: 30px;
+        }
+
+        .tree li::after {
+            right: auto;
+            left: 50%;
+            border-left: 2px solid var(--line-color);
+        }
+
+        .tree li:only-child::after,
+        .tree li:only-child::before {
+            display: none;
+        }
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree li:first-child::before,
+        .tree li:last-child::after {
+            border: 0 none;
+        }
+
+        .tree li:last-child::before {
+            border-right: 2px solid var(--line-color);
+            border-radius: 0 12px 0 0;
+        }
+
+        .tree li:first-child::after {
+            border-radius: 12px 0 0 0;
+        }
+
+        .tree ul ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 2px solid var(--line-color);
+            width: 0;
+            height: 30px;
+        }
+
+        /* --- NODE DESIGN --- */
+        .node-wrapper {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            border-radius: 60px;
+            padding: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+            margin-bottom: 20px;
+            /* Space for button */
+        }
+
+        /* Removed hover requirement for shadows/buttons */
+        .node-wrapper {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .person-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 16px 6px 6px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: background 0.2s;
+            min-width: 190px;
+            text-align: left;
+            border: 2px solid transparent;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .person-card:active {
+            background: #f1f5f9;
+        }
+
+        /* Selection Highlight */
+        .person-card.active {
+            background: #eef2ff;
+            border-color: var(--primary-light);
+        }
+
+        /* Search Dimming */
+        body.is-searching .person-card {
+            opacity: 0.3;
+            filter: grayscale(1);
+        }
+
+        body.is-searching .person-card.matched {
+            opacity: 1;
+            filter: grayscale(0);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3);
+            background: #ecfdf5;
+        }
+
+        .person-card.empty-partner {
+            opacity: 1;
+            /* Always visible */
+            border: 2px dashed #cbd5e1;
+            justify-content: center;
+            padding: 0;
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            margin-left: 4px;
+            color: #94a3b8;
+        }
+
+        .person-card.empty-partner:active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #f8fafc;
+        }
+
+        /* Avatar Styling */
+        .avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            /* Supports SVGs nicely */
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: #f1f5f9;
+            transition: border-color 0.2s;
+        }
+
+        .person-card[data-gender="m"] .avatar {
+            border-color: var(--color-m);
+        }
+
+        .person-card[data-gender="f"] .avatar {
+            border-color: var(--color-f);
+        }
+
+        .person-card[data-gender="n"] .avatar {
+            border-color: var(--color-n);
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Partner Connector */
+        .partner-connector {
+            width: 24px;
+            height: 2px;
+            background: #cbd5e1;
+            margin: 0 4px;
+            position: relative;
+        }
+
+        .partner-connector::after {
+            content: '❤';
+            position: absolute;
+            top: -11px;
+            left: 6px;
+            font-size: 10px;
+            color: #f43f5e;
+            background: white;
+            padding: 0 2px;
+        }
+
+        /* Add Child Button - Always Visible now */
+        .add-child-btn {
+            position: absolute;
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            opacity: 1;
+            /* Always visible */
+        }
+
+        .add-child-btn:active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        /* Zoom Controls */
+        .zoom-controls {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: auto;
+            background: white;
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .zoom-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .zoom-btn:active {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        /* --- MOBILE OPTIMIZATIONS --- */
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 15px;
+                gap: 15px;
+            }
+
+            .logo {
+                flex: 1;
+            }
+
+            .search-container {
+                order: 3;
+                /* Move search below logo/controls */
+                width: 100%;
+                max-width: none;
+                margin: 0;
+            }
+
+            .controls {
+                flex: 0;
+            }
+
+            .controls button span {
+                display: none;
+            }
+
+            /* Hide text, show icons only */
+            .controls button {
+                padding: 8px 12px;
+            }
+
+            .sidebar {
+                width: 100%;
+                /* Full width sidebar */
+                border-left: none;
+            }
+
+            .node-wrapper {
+                margin-bottom: 25px;
+                /* More space for fingers */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- UI Overlay -->
+    <div class="ui-layer">
+        <header class="header">
+            <div class="controls">
+                <button onclick="saveData()">
+                    <i class="fa-solid fa-floppy-disk"></i> <span>Save</span>
+                </button>
+                <button onclick="document.getElementById('fileInput').click()">
+                    <i class="fa-solid fa-folder-open"></i> <span>Load</span>
+                </button>
+                <button class="primary" onclick="exportImage()">
+                    <i class="fa-solid fa-image"></i> <span>Export</span>
+                </button>
+                <input type="file" id="fileInput" hidden accept=".json" onchange="loadData(this)">
+            </div>
+
+            <div class="search-container">
+                <i class="fa-solid fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search ancestors..."
+                    oninput="searchPerson(this.value)">
+            </div>
+        </header>
+
+        <div class="zoom-controls">
+            <button class="zoom-btn" onclick="zoom(0.1)" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+            <button class="zoom-btn" onclick="resetZoom()" title="Reset View"><i
+                    class="fa-solid fa-compress"></i></button>
+            <button class="zoom-btn" onclick="zoom(-0.1)" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+        </div>
+
+        <!-- Editor Sidebar -->
+        <div id="editor" class="sidebar">
+            <div class="sidebar-header">
+                <h3 id="editor-title">Edit Profile</h3>
+                <button class="close-btn" onclick="closeEditor()" title="Close (Esc)">×</button>
+            </div>
+
+            <div class="sidebar-content">
+                <div class="photo-uploader">
+                    <img id="edit-img-preview" src="" class="photo-preview">
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" onclick="document.getElementById('edit-photo').click()"
+                            style="width: auto;">
+                            <i class="fa-solid fa-upload"></i> Upload
+                        </button>
+                        <button type="button" onclick="regenerateAvatar()" style="width: auto;">
+                            <i class="fa-solid fa-dice"></i> Random
+                        </button>
+                    </div>
+                    <input type="file" id="edit-photo" hidden accept="image/*" onchange="handlePhotoUpload(this)">
+                </div>
+
+                <div class="form-section">
+                    <h4>Basic Info</h4>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="edit-name" placeholder="First Last">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="edit-gender">
+                            <option value="n">Not Specified / Other</option>
+                            <option value="m">Male</option>
+                            <option value="f">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Occupation</label>
+                        <input type="text" id="edit-job" placeholder="e.g. Blacksmith">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Timeline</h4>
+                    <div class="form-group">
+                        <label>Birth Date</label>
+                        <input type="date" id="edit-dob">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Death Date (Leave empty if living)</label>
+                        <input type="date" id="edit-dod">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="edit-loc" placeholder="City, Country">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Biography</h4>
+                    <div class="form-group">
+                        <label>Notes & Stories</label>
+                        <textarea id="edit-notes" placeholder="Write a short biography or notes..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-actions">
+                <button class="primary" onclick="saveEditor()">
+                    <i class="fa-solid fa-check"></i> Save
+                </button>
+                <button class="danger" onclick="deleteCurrentNode()">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas -->
+    <div id="viewport">
+        <div id="tree-canvas">
+            <div class="tree" id="tree-root"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STRUCTURE ---
+        const generateId = () => '_' + Math.random().toString(36).substr(2, 9);
+
+        // Generate a random vector avatar URL using DiceBear Avataaars
+        // ADDED flip=true to mirror/reverse the avatars
+        const getVectorAvatar = (seed) => {
+            const randomSeed = seed || Math.random().toString(36).substring(7);
+            // using api.dicebear.com/9.x/avataaars/svg
+            return `https://api.dicebear.com/9.x/avataaars/svg?seed=${randomSeed}&flip=true&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+        };
+
+        const createPerson = (name, gender, job) => {
+            const id = generateId();
+            return {
+                id: id,
+                name: name || "New Person",
+                gender: gender || "n",
+                dob: "",
+                dod: "",
+                job: job || "",
+                location: "",
+                photo: getVectorAvatar(id), // Automatic Vector Character
+                notes: ""
+            };
+        };
+
+        // Initial Data
+        // SWAPPED person1 and person2
+        let rootNode = {
+            id: generateId(),
+            person1: createPerson("Grandmother", "f", "Matriarch"),
+            person2: createPerson("Grandfather", "m", "Patriarch"),
+            children: []
+        };
+
+        // --- STATE ---
+        let scale = 1;
+        let panX = 0;
+        let panY = 0;
+        let isDragging = false;
+        let startX, startY;
+
+        let editingPersonId = null;
+        let editingNodeId = null;
+
+        // --- DOM ---
+        const treeRoot = document.getElementById('tree-root');
+        const treeCanvas = document.getElementById('tree-canvas');
+        const viewport = document.getElementById('viewport');
+        const editor = document.getElementById('editor');
+        const searchInput = document.getElementById('searchInput');
+
+        // --- INIT ---
+        function init() {
+            renderTree();
+            centerTree();
+
+            // Keyboard Listeners
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "Escape") {
+                    closeEditor();
+                    searchInput.value = '';
+                    searchPerson('');
+                }
+            });
+        }
+
+        // --- RENDER ENGINE ---
+        function renderTree() {
+            treeRoot.innerHTML = '';
+            const ul = document.createElement('ul');
+            ul.appendChild(createNodeElement(rootNode));
+            treeRoot.appendChild(ul);
+        }
+
+        function createNodeElement(node) {
+            const li = document.createElement('li');
+
+            // Wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'node-wrapper';
+            wrapper.id = 'node-' + node.id;
+
+            // Person 1
+            wrapper.appendChild(createPersonCard(node.person1, node.id, 1));
+
+            // Connector & Person 2
+            if (node.person2) {
+                const conn = document.createElement('div');
+                conn.className = 'partner-connector';
+                wrapper.appendChild(conn);
+                wrapper.appendChild(createPersonCard(node.person2, node.id, 2));
+            } else {
+                // Add Partner Placeholder
+                const addPartnerBtn = document.createElement('div');
+                addPartnerBtn.className = 'person-card empty-partner';
+                addPartnerBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+                addPartnerBtn.title = "Add Partner";
+                addPartnerBtn.onclick = (e) => { e.stopPropagation(); addPartner(node.id); };
+
+                const conn = document.createElement('div');
+                conn.className = 'partner-connector';
+                conn.style.opacity = '0.3';
+                wrapper.appendChild(conn);
+                wrapper.appendChild(addPartnerBtn);
+            }
+
+            // Add Child Button (Always visible on mobile)
+            const childBtn = document.createElement('div');
+            childBtn.className = 'add-child-btn';
+            childBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+            childBtn.title = "Add Child Branch";
+            childBtn.onclick = (e) => { e.stopPropagation(); addChild(node.id); };
+            wrapper.appendChild(childBtn);
+
+            li.appendChild(wrapper);
+
+            // Children
+            if (node.children && node.children.length > 0) {
+                const childrenUl = document.createElement('ul');
+                node.children.forEach(childNode => {
+                    childrenUl.appendChild(createNodeElement(childNode));
+                });
+                li.appendChild(childrenUl);
+            }
+
+            return li;
+        }
+
+        function createPersonCard(person, nodeId, slotIndex) {
+            const div = document.createElement('div');
+            div.className = 'person-card';
+            div.dataset.id = person.id;
+            div.dataset.gender = person.gender;
+
+            // Search matching hook
+            div.dataset.searchName = person.name.toLowerCase();
+
+            div.innerHTML = `
+                <img src="${person.photo}" class="avatar">
+                <div class="info">
+                    <span class="name">${person.name}</span>
+                    <span class="meta">${getYear(person.dob)} ${person.job ? '• ' + person.job : ''}</span>
+                </div>
+            `;
+
+            div.onclick = (e) => {
+                e.stopPropagation();
+                centerOnElement(div);
+                openEditor(person.id, nodeId, slotIndex);
+            };
+
+            return div;
+        }
+
+        function getYear(dateString) {
+            if (!dateString) return '';
+            return new Date(dateString).getFullYear();
+        }
+
+        // --- TREE LOGIC ---
+
+        function findNodeRecursive(node, id) {
+            if (node.id === id) return node;
+            for (let child of node.children) {
+                const found = findNodeRecursive(child, id);
+                if (found) return found;
+            }
+            return null;
+        }
+
+        function findParentNode(current, targetId) {
+            for (let child of current.children) {
+                if (child.id === targetId) return current;
+                const found = findParentNode(child, targetId);
+                if (found) return found;
+            }
+            return null;
+        }
+
+        function addPartner(nodeId) {
+            const node = findNodeRecursive(rootNode, nodeId);
+            if (node) {
+                const p1Gender = node.person1.gender;
+                const newGender = p1Gender === 'm' ? 'f' : (p1Gender === 'f' ? 'm' : 'n');
+                node.person2 = createPerson("Partner", newGender);
+                renderTree();
+            }
+        }
+
+        function addChild(parentId) {
+            const parent = findNodeRecursive(rootNode, parentId);
+            if (parent) {
+                const newChild = {
+                    id: generateId(),
+                    person1: createPerson("Descendant", "n"),
+                    person2: null,
+                    children: []
+                };
+                parent.children.push(newChild);
+                renderTree();
+            }
+        }
+
+        // --- EDITOR LOGIC ---
+
+        function openEditor(personId, nodeId, slotIndex) {
+            editingPersonId = personId;
+            editingNodeId = nodeId;
+
+            const node = findNodeRecursive(rootNode, nodeId);
+            const person = slotIndex === 1 ? node.person1 : node.person2;
+
+            // Fill Form
+            document.getElementById('edit-name').value = person.name;
+            document.getElementById('edit-gender').value = person.gender;
+            document.getElementById('edit-dob').value = person.dob;
+            document.getElementById('edit-dod').value = person.dod;
+            document.getElementById('edit-job').value = person.job;
+            document.getElementById('edit-loc').value = person.location;
+            document.getElementById('edit-notes').value = person.notes || "";
+            document.getElementById('edit-img-preview').src = person.photo;
+
+            // Highlight Active
+            document.querySelectorAll('.person-card').forEach(c => c.classList.remove('active'));
+            const activeCard = document.querySelector(`.person-card[data-id="${personId}"]`);
+            if (activeCard) activeCard.classList.add('active');
+
+            editor.classList.add('open');
+        }
+
+        function closeEditor() {
+            editor.classList.remove('open');
+            document.querySelectorAll('.person-card').forEach(c => c.classList.remove('active'));
+            editingPersonId = null;
+        }
+
+        function saveEditor() {
+            if (!editingPersonId || !editingNodeId) return;
+
+            const node = findNodeRecursive(rootNode, editingNodeId);
+            let person = node.person1.id === editingPersonId ? node.person1 : node.person2;
+
+            // Update Data
+            person.name = document.getElementById('edit-name').value;
+            person.gender = document.getElementById('edit-gender').value;
+            person.dob = document.getElementById('edit-dob').value;
+            person.dod = document.getElementById('edit-dod').value;
+            person.job = document.getElementById('edit-job').value;
+            person.location = document.getElementById('edit-loc').value;
+            person.notes = document.getElementById('edit-notes').value;
+            person.photo = document.getElementById('edit-img-preview').src;
+
+            // Re-render
+            renderTree();
+
+            // Re-highlight since DOM was destroyed
+            const newCard = document.querySelector(`.person-card[data-id="${editingPersonId}"]`);
+            if (newCard) newCard.classList.add('active');
+        }
+
+        function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('edit-img-preview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function regenerateAvatar() {
+            const newUrl = getVectorAvatar();
+            document.getElementById('edit-img-preview').src = newUrl;
+        }
+
+        function deleteCurrentNode() {
+            if (!confirm("Delete this profile? This cannot be undone.")) return;
+
+            const node = findNodeRecursive(rootNode, editingNodeId);
+
+            // 1. Delete Partner
+            if (node.person2 && node.person2.id === editingPersonId) {
+                node.person2 = null;
+                closeEditor();
+                renderTree();
+                return;
+            }
+
+            // 2. Delete Primary (Removes branch)
+            if (node.id === rootNode.id) {
+                alert("Cannot delete the root ancestor. You can only edit them.");
+                return;
+            }
+
+            const parent = findParentNode(rootNode, node.id);
+            if (parent) {
+                parent.children = parent.children.filter(child => child.id !== node.id);
+                closeEditor();
+                renderTree();
+            }
+        }
+
+        // --- SEARCH ---
+        function searchPerson(query) {
+            query = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.person-card');
+
+            if (!query) {
+                document.body.classList.remove('is-searching');
+                cards.forEach(c => c.classList.remove('matched'));
+                return;
+            }
+
+            document.body.classList.add('is-searching');
+            let found = false;
+
+            cards.forEach(c => {
+                const name = c.dataset.searchName;
+                if (name.includes(query)) {
+                    c.classList.add('matched');
+                    if (!found) { found = true; }
+                } else {
+                    c.classList.remove('matched');
+                }
+            });
+        }
+
+        // --- NAVIGATION ---
+
+        function updateTransform() {
+            treeCanvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+        }
+
+        function centerTree() {
+            const rect = viewport.getBoundingClientRect();
+            panX = rect.width / 2 - 150;
+            panY = 100;
+            updateTransform();
+        }
+
+        function centerOnElement(el) {
+            const rect = el.getBoundingClientRect();
+            const viewRect = viewport.getBoundingClientRect();
+
+            const offsetX = (viewRect.width / 2) - (rect.left + rect.width / 2);
+            const offsetY = (viewRect.height / 2) - (rect.top + rect.height / 2);
+
+            panX += offsetX;
+            panY += offsetY;
+            updateTransform();
+        }
+
+        function zoom(delta) {
+            scale += delta;
+            scale = Math.min(Math.max(0.2, scale), 3);
+            updateTransform();
+        }
+
+        function resetZoom() {
+            scale = 1;
+            const rootEl = treeRoot.querySelector('.node-wrapper');
+            if (rootEl) {
+                centerOnElement(rootEl);
+                panX = (viewport.offsetWidth / 2) - (rootEl.offsetWidth / 2);
+                panY = 100;
+            }
+            updateTransform();
+        }
+
+        // Mouse Pan Logic
+        viewport.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.person-card') || e.target.closest('.add-child-btn')) return;
+            isDragging = true;
+            startX = e.clientX - panX;
+            startY = e.clientY - panY;
+            viewport.style.cursor = 'grabbing';
+        });
+
+        viewport.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            panX = e.clientX - startX;
+            panY = e.clientY - startY;
+            updateTransform();
+        });
+
+        viewport.addEventListener('mouseup', () => { isDragging = false; viewport.style.cursor = 'grab'; });
+        viewport.addEventListener('mouseleave', () => { isDragging = false; });
+
+        // Touch Pan Logic (Improved for Mobile)
+        viewport.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.person-card') || e.target.closest('.add-child-btn')) return;
+            isDragging = true;
+            startX = e.touches[0].clientX - panX;
+            startY = e.touches[0].clientY - panY;
+        });
+
+        viewport.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            // Only prevent default if we are dragging to prevent page scroll
+            e.preventDefault();
+            panX = e.touches[0].clientX - startX;
+            panY = e.touches[0].clientY - startY;
+            updateTransform();
+        });
+
+        viewport.addEventListener('touchend', () => { isDragging = false; });
+
+        viewport.addEventListener('wheel', (e) => {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                zoom(e.deltaY > 0 ? -0.1 : 0.1);
+            }
+        });
+
+        // --- FILE OPS ---
+        function saveData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rootNode));
+            const a = document.createElement('a');
+            a.href = dataStr;
+            a.download = `family_tree_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+        }
+
+        function loadData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    rootNode = JSON.parse(e.target.result);
+                    renderTree();
+                    resetZoom();
+                } catch (err) { alert("Invalid File"); }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportImage() {
+            const prevTransform = treeCanvas.style.transform;
+            treeCanvas.style.transform = 'none';
+            treeCanvas.style.width = 'max-content';
+
+            html2canvas(treeCanvas, {
+                backgroundColor: "#f8fafc",
+                scale: 2
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'my_ancestry.png';
+                link.href = canvas.toDataURL();
+                link.click();
+                treeCanvas.style.transform = prevTransform;
+                treeCanvas.style.width = 'auto';
+            });
+        }
+
+        window.onload = init;
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume Builder</title>
+    
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- LIQUID THEME ENGINE (Editor UI) --- */
+        :root {
+            --bg-color: #f3f4f6;
+            --text-main: #1f2937;
+            
+            /* Glass UI */
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+            
+            --primary: #4f46e5;
+            --accent-glow: rgba(79, 70, 229, 0.1);
+            
+            /* Resume Colors (Strict Format) */
+            --sidebar-bg: #1f2937; 
+            --sidebar-text: #ffffff;
+            --main-bg: #ffffff;
+            --main-text: #374151;
+            --accent-color: #3b82f6;
+            --divider-color: #4b5563;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Blobs */
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.6; animation: morph 20s infinite alternate; }
+        .blob-1 { top: -20%; left: -20%; width: 60vw; height: 60vw; background: #e0e7ff; }
+        .blob-2 { bottom: -20%; right: -20%; width: 60vw; height: 60vw; background: #fce7f3; }
+        @keyframes morph { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+        /* Layout */
+        .app-container {
+            display: grid; grid-template-columns: 450px 1fr; gap: 40px;
+            width: 100%; max-width: 1800px; padding: 30px; height: 100vh; box-sizing: border-box;
+        }
+
+        /* Editor Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 24px;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        .editor-header {
+            padding: 20px 30px; background: rgba(255,255,255,0.4);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .editor-header h2 { margin: 0; font-size: 1.2rem; font-weight: 800; color: #111; display: flex; align-items: center; gap: 10px; }
+
+        .editor-content { flex: 1; padding: 30px; overflow-y: auto; scrollbar-width: thin; }
+
+        /* Form Elements */
+        .section-label {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--primary); font-weight: 800; margin: 30px 0 15px 0;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-label:first-child { margin-top: 0; }
+        .section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--accent-glow), transparent); }
+
+        .glass-input {
+            width: 100%; background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.1);
+            padding: 12px 15px; border-radius: 12px; font-family: inherit; font-size: 0.9rem;
+            box-sizing: border-box; transition: 0.2s; margin-bottom: 10px;
+        }
+        .glass-input:focus { background: #fff; border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--accent-glow); }
+
+        /* Repeater */
+        .repeater-item {
+            background: rgba(255,255,255,0.4); border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 12px; padding: 15px; margin-bottom: 10px; position: relative;
+        }
+        .btn-remove {
+            position: absolute; top: 10px; right: 10px; background: rgba(239,68,68,0.1);
+            color: #ff0000; border: none; border-radius: 6px; width: 24px; height: 24px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Buttons */
+        .editor-footer {
+            padding: 20px 30px; background: rgba(255,255,255,0.5); border-top: 1px solid rgba(0,0,0,0.06);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+        .btn-solid {
+            background: #0f0f11; color: white; border: none; padding: 12px;
+            border-radius: 10px; font-weight: 700; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; gap: 8px; transition: 0.2s;
+        }
+        .btn-add { background: #10101a; width: 100%; margin-top: 10px; font-size: 0.85rem; }
+
+        /* --- PREVIEW AREA (A4 Resume) --- */
+        .preview-area {
+            display: flex; justify-content: center; align-items: flex-start;
+            overflow-y: auto; padding-bottom: 50px;
+        }
+
+        #resume-sheet {
+            width: 210mm; min-height: 297mm; background: white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            display: grid; grid-template-columns: 75mm 1fr; /* Sidebar | Content */
+            transform-origin: top center; box-sizing: border-box;
+        }
+
+        /* Editable Style for Preview */
+        [contenteditable]:hover {
+            outline: 2px dashed rgba(79, 70, 229, 0.3);
+            background-color: rgba(79, 70, 229, 0.05);
+            cursor: text;
+        }
+        [contenteditable]:focus {
+            outline: 2px solid var(--primary);
+            background-color: white;
+            color: #000;
+        }
+
+        /* Resume CSS (Internal - Matching Format) */
+        .left-sidebar {
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 30px 20px;
+            display: flex; flex-direction: column; gap: 25px;
+        }
+
+        .profile-pic-container {
+            width: 140px; height: 140px; margin: 0 auto;
+            border-radius: 50%; overflow: hidden;
+            border: 4px solid rgba(255,255,255,0.1);
+            background: #374151;
+        }
+        .profile-pic-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .sidebar-section h3 {
+            font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px; margin: 0 0 15px 0;
+            border-bottom: 1px solid var(--divider-color); padding-bottom: 8px;
+            color: #e2e8f0;
+        }
+
+        .contact-list, .skills-list { list-style: none; padding: 0; margin: 0; }
+        
+        .contact-item {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+            font-size: 13px; color: #d1d5db; font-family: 'Open Sans', sans-serif;
+            text-decoration: none;
+        }
+        .contact-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        .edu-item { margin-bottom: 15px; }
+        .edu-degree { font-weight: 700; display: block; font-size: 13px; color: white; font-family: 'Open Sans', sans-serif; }
+        .edu-school { font-size: 12px; color: #9ca3af; display: block; margin: 2px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .edu-year { font-size: 11px; color: #6b7280; font-style: italic; }
+
+        .skill-item {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+            font-size: 13px; color: #d1d5db; font-family: 'Open Sans', sans-serif;
+        }
+        .skill-dot { width: 6px; height: 6px; background: white; border-radius: 50%; }
+
+        /* Right Content */
+        .right-content { padding: 40px; background: white; color: var(--main-text); }
+
+        .main-header { margin-bottom: 35px; }
+        .main-header h1 {
+            font-family: 'Montserrat', sans-serif; font-size: 38px; font-weight: 700;
+            margin: 0; text-transform: uppercase; line-height: 1; color: #1f2937;
+        }
+        .main-header .job-title {
+            font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600;
+            color: #6b7280; text-transform: uppercase; letter-spacing: 2px;
+            margin-top: 8px; display: block;
+        }
+
+        .content-section { margin-top: 30px; }
+        .section-head {
+            font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; color: #1f2937;
+            margin-bottom: 15px; display: flex; align-items: center; gap: 10px;
+        }
+
+        .profile-summary { font-family: 'Open Sans', sans-serif; font-size: 14px; line-height: 1.6; color: #4b5563; text-align: justify; }
+
+        .timeline-item {
+            padding-left: 25px; border-left: 2px solid #e5e7eb;
+            margin-bottom: 25px; position: relative;
+        }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -6px; top: 6px;
+            width: 10px; height: 10px; background: var(--sidebar-bg); border-radius: 50%;
+        }
+        .timeline-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+        .timeline-role { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 15px; color: #111; }
+        .timeline-link { font-size: 13px; color: var(--accent-color); font-weight: 600; font-family: 'Open Sans', sans-serif; text-decoration: none; }
+        .timeline-date { font-size: 12px; color: #6b7280; font-weight: 600; }
+        .timeline-desc { font-size: 13px; color: #4b5563; margin-top: 5px; line-height: 1.5; font-family: 'Open Sans', sans-serif; margin-bottom: 5px; }
+        .timeline-bullets { margin: 0; padding-left: 15px; color: #6b7280; font-size: 13px; font-family: 'Open Sans', sans-serif; }
+        .timeline-bullets li { margin-bottom: 4px; }
+
+        /* Modal */
+        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-box { background: white; width: 90%; max-width: 500px; border-radius: 15px; overflow: hidden; padding: 20px; }
+        .cropper-area { height: 350px; background: #333; margin-bottom: 15px; }
+
+        @media (max-width: 1100px) {
+            .app-container { grid-template-columns: 1fr; padding: 10px; height: auto; }
+            #resume-sheet { transform: scale(0.65); transform-origin: top left; margin-bottom: -300px; }
+            .preview-area { overflow-x: auto; display: block; padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="liquid-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Cropper Modal -->
+    <div id="cropper-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top:0;">Adjust Photo</h3>
+            <div class="cropper-area"><img id="crop-img" style="max-width:100%;"></div>
+            <div style="display:flex; justify-content:end; gap:10px;">
+                <button onclick="closeModal()" class="btn-solid" style="background:#e5e7eb; color:#333;">Cancel</button>
+                <button onclick="cropImage()" class="btn-solid" style="background:#4f46e5;">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- LEFT EDITOR -->
+        <div class="glass-panel">
+            <div class="editor-header">
+                <h2><i data-lucide="file-text"></i> Resume Builder</h2>
+            </div>
+            
+            <div class="editor-content">
+                <p style="font-size:0.85rem; color:var(--primary); font-weight:600; background:rgba(79, 70, 229, 0.1); padding:10px; border-radius:8px; margin-bottom:20px;">
+                    <i data-lucide="edit-3" style="width:14px; display:inline;"></i> Tip: You can click and type directly on the resume preview!
+                </p>
+
+                <div class="section-label"><i data-lucide="camera" size="14"></i> Profile Photo</div>
+                <div style="text-align:center;">
+                    <input type="file" id="photo-input" accept="image/*" style="display:none;" onchange="initCrop(event)">
+                    <button class="btn-solid" onclick="document.getElementById('photo-input').click()" style="width:100%; background:rgba(255,255,255,0.5); color:#333; border:1px dashed #ccc;">
+                        <i data-lucide="upload"></i> Upload Photo
+                    </button>
+                </div>
+
+                <div class="section-label"><i data-lucide="user" size="14"></i> Header Info</div>
+                <input type="text" id="in-name" class="glass-input" placeholder="Full Name" oninput="render()">
+                <input type="text" id="in-title" class="glass-input" placeholder="Job Title" oninput="render()">
+                
+                <div class="section-label"><i data-lucide="align-left" size="14"></i> Summary</div>
+                <textarea id="in-summary" class="glass-input" rows="4" placeholder="Professional summary..." oninput="render()"></textarea>
+
+                <div class="section-label"><i data-lucide="phone" size="14"></i> Contact Details</div>
+                <input type="text" id="in-phone" class="glass-input" placeholder="Phone Number" oninput="render()">
+                <input type="text" id="in-email" class="glass-input" placeholder="Email Address" oninput="render()">
+                <input type="text" id="in-loc" class="glass-input" placeholder="Location (City, Country)" oninput="render()">
+                <input type="text" id="in-web" class="glass-input" placeholder="Website / Portfolio URL" oninput="render()">
+                
+                <div class="section-label"><i data-lucide="share-2" size="14"></i> Social Links</div>
+                <div id="socials-container"></div>
+                <button class="btn-solid btn-add" onclick="addSocial()"><i data-lucide="plus" size="14"></i> Add Social Link</button>
+
+                <div class="section-label"><i data-lucide="code" size="14"></i> Skills</div>
+                <div id="skills-container"></div>
+                <button class="btn-solid btn-add" onclick="addSkill()"><i data-lucide="plus" size="14"></i> Add Skill</button>
+
+                <div class="section-label"><i data-lucide="briefcase" size="14"></i> Projects & Experience</div>
+                <div id="exp-container"></div>
+                <button class="btn-solid btn-add" onclick="addExp()"><i data-lucide="plus" size="14"></i> Add Job/Project</button>
+
+                <div class="section-label"><i data-lucide="graduation-cap" size="14"></i> Education</div>
+                <div id="edu-container"></div>
+                <button class="btn-solid btn-add" onclick="addEdu()"><i data-lucide="plus" size="14"></i> Add Education</button>
+
+                <div class="section-label"><i data-lucide="languages" size="14"></i> Languages</div>
+                <div id="lang-container"></div>
+                <button class="btn-solid btn-add" onclick="addLang()"><i data-lucide="plus" size="14"></i> Add Language</button>
+
+            </div>
+
+            <div class="editor-footer">
+                <button class="btn-solid" onclick="savePDF()" style="background:#ef4444;"><i data-lucide="file-down"></i> PDF</button>
+                <button class="btn-solid" onclick="saveImage()" style="background:#3b82f6;"><i data-lucide="image"></i> IMG</button>
+                <button class="btn-solid" onclick="downloadVCard()" style="background:#10b981;"><i data-lucide="save"></i> vCard</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PREVIEW -->
+        <div class="preview-area">
+            <div id="resume-sheet">
+                <!-- Sidebar -->
+                <div class="left-sidebar">
+                    <div class="profile-pic-container">
+                        <img id="out-photo" src="https://via.placeholder.com/150" alt="Profile">
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Contact</h3>
+                        <div id="out-contacts"></div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Socials</h3>
+                        <div id="out-socials"></div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Education</h3>
+                        <div id="out-edu"></div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Skills</h3>
+                        <div id="out-skills"></div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Languages</h3>
+                        <div id="out-langs"></div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="right-content">
+                    <header class="main-header">
+                        <h1 id="out-name" contenteditable="true" oninput="syncInput('in-name', this.innerText)">YOUR NAME</h1>
+                        <span class="job-title" id="out-title" contenteditable="true" oninput="syncInput('in-title', this.innerText)">JOB TITLE</span>
+                    </header>
+
+                    <div class="content-section">
+                        <h2 class="section-head">Profile</h2>
+                        <p class="profile-summary" id="out-summary" contenteditable="true" oninput="syncInput('in-summary', this.innerText)">
+                            Innovative professional with experience in...
+                        </p>
+                    </div>
+
+                    <div class="content-section">
+                        <h2 class="section-head">Projects & Experience</h2>
+                        <div id="out-exp"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        let cropper;
+
+        // Data Storage
+        let skills = ['Java', 'Kotlin', 'HTML/CSS', 'UI Design'];
+        let languages = ['English (Professional)', 'Bengali (Native)'];
+        let socials = [
+            { platform: 'linkedin', user: 'Joy Kumbhakar', link: '#' },
+            { platform: 'github', user: 'ProgramPros-cpu', link: '#' }
+        ];
+        let education = [{ degree: 'Higher Secondary (12th)', school: 'Kanyapur High School', year: 'Commerce Stream | 50%' }];
+        let experience = [{ 
+            name: 'Freelance Developer', 
+            link: '', 
+            date: '2021 - Present', 
+            desc: 'Full-stack development and UI/UX design.',
+            bullets: 'Delivered high-quality freelance work.\nDesigned intuitive UI/UX.'
+        }];
+
+        // Sync Helper: Preview -> Input
+        function syncInput(inputId, value) {
+            document.getElementById(inputId).value = value;
+        }
+
+        function render() {
+            // Basic Info
+            const nameIn = document.getElementById('in-name');
+            const titleIn = document.getElementById('in-title');
+            const sumIn = document.getElementById('in-summary');
+
+            // Only update preview if it's NOT the focused element (avoids cursor jumping)
+            if(document.activeElement !== document.getElementById('out-name')) 
+                document.getElementById('out-name').innerText = nameIn.value || 'YOUR NAME';
+            
+            if(document.activeElement !== document.getElementById('out-title'))
+                document.getElementById('out-title').innerText = titleIn.value || 'JOB TITLE';
+                
+            if(document.activeElement !== document.getElementById('out-summary'))
+                document.getElementById('out-summary').innerText = sumIn.value || 'Professional summary goes here...';
+
+            // Contacts
+            const phone = document.getElementById('in-phone').value;
+            const email = document.getElementById('in-email').value;
+            const loc = document.getElementById('in-loc').value;
+            const web = document.getElementById('in-web').value;
+            
+            let contactHtml = '';
+            if(phone) contactHtml += `<div class="contact-item" contenteditable="true"><i data-lucide="phone" contenteditable="false"></i> ${phone}</div>`;
+            if(email) contactHtml += `<div class="contact-item" contenteditable="true"><i data-lucide="mail" contenteditable="false"></i> ${email}</div>`;
+            if(loc) contactHtml += `<div class="contact-item" contenteditable="true"><i data-lucide="map-pin" contenteditable="false"></i> ${loc}</div>`;
+            if(web) contactHtml += `<div class="contact-item" contenteditable="true"><i data-lucide="globe" contenteditable="false"></i> ${web}</div>`;
+            document.getElementById('out-contacts').innerHTML = contactHtml;
+
+            // Socials
+            document.getElementById('out-socials').innerHTML = socials.map(s => `
+                <a href="${s.link}" target="_blank" class="contact-item">
+                    <i data-lucide="${s.platform}"></i> ${s.user}
+                </a>
+            `).join('');
+
+            // Skills
+            document.getElementById('out-skills').innerHTML = skills.map(s => `
+                <div class="skill-item" contenteditable="true"><span class="skill-dot" contenteditable="false"></span> ${s}</div>
+            `).join('');
+
+            // Languages
+            document.getElementById('out-langs').innerHTML = languages.map(l => `
+                <div class="skill-item" contenteditable="true"><span class="skill-dot" contenteditable="false"></span> ${l}</div>
+            `).join('');
+
+            // Education
+            document.getElementById('out-edu').innerHTML = education.map(e => `
+                <div class="edu-item">
+                    <span class="edu-degree" contenteditable="true">${e.degree}</span>
+                    <span class="edu-school" contenteditable="true">${e.school}</span>
+                    <span class="edu-year" contenteditable="true">${e.year}</span>
+                </div>
+            `).join('');
+
+            // Experience
+            document.getElementById('out-exp').innerHTML = experience.map(e => `
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <div>
+                            <span class="timeline-role" contenteditable="true">${e.name}</span>
+                            ${e.link ? `<a href="${e.link}" target="_blank" class="timeline-link">${e.link.replace('https://','')}</a>` : ''}
+                        </div>
+                        <span class="timeline-date" contenteditable="true">${e.date}</span>
+                    </div>
+                    <div class="timeline-desc" contenteditable="true">${e.desc}</div>
+                    <ul class="timeline-bullets">
+                        ${e.bullets.split('\n').map(b => b ? `<li contenteditable="true">${b}</li>` : '').join('')}
+                    </ul>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // --- DYNAMIC FIELDS HELPERS ---
+        function renderEditors() {
+            // Skills Editor
+            document.getElementById('skills-container').innerHTML = skills.map((s, i) => `
+                <div class="repeater-item" style="display:flex; gap:10px;">
+                    <input class="glass-input" value="${s}" oninput="skills[${i}] = this.value; render()" style="margin:0;">
+                    <button class="btn-remove" style="position:static;" onclick="skills.splice(${i},1); renderEditors(); render()"><i data-lucide="trash-2" size="14"></i></button>
+                </div>
+            `).join('');
+
+            // Lang Editor
+            document.getElementById('lang-container').innerHTML = languages.map((l, i) => `
+                <div class="repeater-item" style="display:flex; gap:10px;">
+                    <input class="glass-input" value="${l}" oninput="languages[${i}] = this.value; render()" style="margin:0;">
+                    <button class="btn-remove" style="position:static;" onclick="languages.splice(${i},1); renderEditors(); render()"><i data-lucide="trash-2" size="14"></i></button>
+                </div>
+            `).join('');
+
+            // Socials Editor
+            document.getElementById('socials-container').innerHTML = socials.map((s, i) => `
+                <div class="repeater-item">
+                    <button class="btn-remove" onclick="socials.splice(${i},1); renderEditors(); render()"><i data-lucide="trash-2" size="14"></i></button>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <input class="glass-input" placeholder="Platform (e.g. github)" value="${s.platform}" oninput="socials[${i}].platform = this.value; render()">
+                        <input class="glass-input" placeholder="Username" value="${s.user}" oninput="socials[${i}].user = this.value; render()">
+                    </div>
+                    <input class="glass-input" placeholder="Link (https://...)" value="${s.link}" oninput="socials[${i}].link = this.value; render()" style="margin-bottom:0;">
+                </div>
+            `).join('');
+
+            // Edu Editor
+            document.getElementById('edu-container').innerHTML = education.map((e, i) => `
+                <div class="repeater-item">
+                    <button class="btn-remove" onclick="education.splice(${i},1); renderEditors(); render()"><i data-lucide="trash-2" size="14"></i></button>
+                    <input class="glass-input" placeholder="Degree" value="${e.degree}" oninput="education[${i}].degree = this.value; render()">
+                    <input class="glass-input" placeholder="School/Uni" value="${e.school}" oninput="education[${i}].school = this.value; render()">
+                    <input class="glass-input" placeholder="Details (Stream | %)" value="${e.year}" oninput="education[${i}].year = this.value; render()">
+                </div>
+            `).join('');
+
+            // Exp Editor
+            document.getElementById('exp-container').innerHTML = experience.map((e, i) => `
+                <div class="repeater-item">
+                    <button class="btn-remove" onclick="experience.splice(${i},1); renderEditors(); render()"><i data-lucide="trash-2" size="14"></i></button>
+                    <input class="glass-input" placeholder="Project/Job Name" value="${e.name}" oninput="experience[${i}].name = this.value; render()">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <input class="glass-input" placeholder="Link (Optional)" value="${e.link}" oninput="experience[${i}].link = this.value; render()">
+                        <input class="glass-input" placeholder="Date/Duration" value="${e.date}" oninput="experience[${i}].date = this.value; render()">
+                    </div>
+                    <input class="glass-input" placeholder="Short Description" value="${e.desc}" oninput="experience[${i}].desc = this.value; render()">
+                    <textarea class="glass-input" placeholder="Bullet points (one per line)" rows="3" oninput="experience[${i}].bullets = this.value; render()">${e.bullets}</textarea>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function addSkill() { skills.push(''); renderEditors(); }
+        function addLang() { languages.push(''); renderEditors(); }
+        function addSocial() { socials.push({platform:'link', user:'', link:''}); renderEditors(); }
+        function addEdu() { education.push({degree:'', school:'', year:''}); renderEditors(); }
+        function addExp() { experience.push({name:'', link:'', date:'', desc:'', bullets:''}); renderEditors(); }
+
+        // --- CROPPER ---
+        function initCrop(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    document.getElementById('crop-img').src = evt.target.result;
+                    document.getElementById('cropper-modal').style.display = 'flex';
+                    if(cropper) cropper.destroy();
+                    cropper = new Cropper(document.getElementById('crop-img'), { aspectRatio: 1, viewMode: 1 });
+                };
+                reader.readAsDataURL(file);
+            }
+            e.target.value = '';
+        }
+        function cropImage() {
+            if(cropper) {
+                document.getElementById('out-photo').src = cropper.getCroppedCanvas({width:300, height:300}).toDataURL();
+                closeModal();
+            }
+        }
+        function closeModal() { document.getElementById('cropper-modal').style.display = 'none'; if(cropper) cropper.destroy(); }
+
+        // --- EXPORT ---
+        async function saveImage() {
+            const el = document.getElementById('resume-sheet');
+            document.body.style.cursor = 'wait';
+            const cvs = await html2canvas(el, { scale: 2, useCORS: true, scrollY: -window.scrollY });
+            const a = document.createElement('a');
+            a.download = 'Resume.png';
+            a.href = cvs.toDataURL();
+            a.click();
+            document.body.style.cursor = 'default';
+        }
+
+        async function savePDF() {
+            const el = document.getElementById('resume-sheet');
+            document.body.style.cursor = 'wait';
+            const cvs = await html2canvas(el, { scale: 2, useCORS: true, scrollY: -window.scrollY });
+            const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+            const w = pdf.internal.pageSize.getWidth();
+            const h = (cvs.height * w) / cvs.width;
+            pdf.addImage(cvs.toDataURL('image/png'), 'PNG', 0, 0, w, h);
+            pdf.save('Resume.pdf');
+            document.body.style.cursor = 'default';
+        }
+
+        function downloadVCard() {
+            const name = document.getElementById('in-name').value || 'User';
+            const phone = document.getElementById('in-phone').value;
+            const email = document.getElementById('in-email').value;
+            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
+            const blob = new Blob([vcard], { type: 'text/vcard' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none'; a.href = url; a.download = `${name.replace(' ', '_')}.vcf`;
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a);
+        }
+
+        // Init
+        renderEditors();
+        render();
+    </script>
+</body>
+</html>

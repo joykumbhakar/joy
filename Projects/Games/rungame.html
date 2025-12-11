@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Temple Rush 3D</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        #game-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        /* UI Overlay */
+        #ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        .hud {
+            padding: 20px;
+            display: flex; justify-content: space-between;
+            text-shadow: 2px 2px 0 #000;
+            color: #ffd700;
+            font-weight: 900;
+            font-size: 24px;
+            transition: opacity 0.3s;
+        }
+
+        .center-menu {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 20px;
+            border: 4px solid #ffd700;
+            display: flex; flex-direction: column; gap: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h1 { margin: 0; color: #ffd700; font-size: 3rem; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 5px 10px rgba(0,0,0,0.5); }
+        p { color: white; font-size: 1.2rem; margin: 0; }
+
+        button {
+            background: linear-gradient(to bottom, #ffd700, #ffaa00);
+            border: none; padding: 15px 40px;
+            font-size: 1.5rem; font-weight: bold; color: #3e2723;
+            border-radius: 50px; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.1s, filter 0.1s;
+        }
+        button:hover { filter: brightness(1.1); }
+        button:active { transform: scale(0.95); }
+
+        .hidden { display: none !important; }
+
+        /* Mobile Controls Hint */
+        .controls-hint {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container"></div>
+
+    <div id="ui-layer">
+        <div id="hud" class="hud hidden">
+            <div id="score">SCORE: 0</div>
+            <div id="coins">COINS: 0</div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="center-menu">
+            <h1>TEMPLE<br>RUSH</h1>
+            <p>Swipe or Arrow Keys to Move</p>
+            <button onclick="Game.start()">RUN!</button>
+            <div class="controls-hint">Desktop: Arrow Keys / WASD<br>Mobile: Swipe</div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="center-menu hidden">
+            <h1 style="color:#ff4444">CRASHED!</h1>
+            <p>Score: <span id="final-score">0</span></p>
+            <button onclick="Game.reset()">TRY AGAIN</button>
+        </div>
+    </div>
+
+<script>
+    // --- Configuration ---
+    const CONFIG = {
+        laneWidth: 3,
+        pathLength: 20, // Number of active segments visible
+        segmentLength: 10,
+        speed: 0.4,
+        speedIncrement: 0.0001,
+        maxSpeed: 1.2,
+        jumpForce: 0.35,
+        gravity: 0.015,
+        colors: {
+            ground: 0x967969, // Sandy stone
+            wall: 0x5d4037,   // Dark wood/stone
+            player: 0x00d2ff, // Neon blue player
+            obstacle: 0xb71c1c, // Red
+            coin: 0xffd700,
+            fog: 0xe6ccb3     // Dusty fog
+        }
+    };
+
+    const Game = {
+        state: 'menu', // menu, playing, gameover
+        scene: null, camera: null, renderer: null,
+        player: null,
+        
+        // Game variables
+        speed: CONFIG.speed,
+        score: 0,
+        coins: 0,
+        distance: 0,
+        
+        // Player state
+        lane: 0, // -1 (Left), 0 (Center), 1 (Right)
+        isJumping: false,
+        isSliding: false,
+        yVelocity: 0,
+        targetX: 0,
+        
+        // World generation
+        segments: [],
+        items: [], // coins and obstacles
+        segmentIndex: 0,
+
+        // Input
+        touchStartX: 0, touchStartY: 0,
+
+        init() {
+            // 1. Scene & Fog
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(CONFIG.colors.fog);
+            this.scene.fog = new THREE.Fog(CONFIG.colors.fog, 20, 90);
+
+            // 2. Camera
+            this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+            this.camera.position.set(0, 5, 8);
+            this.camera.lookAt(0, 0, -5);
+
+            // 3. Renderer
+            this.renderer = new THREE.WebGLRenderer({ antialias: true });
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.shadowMap.enabled = true;
+            document.getElementById('game-container').appendChild(this.renderer.domElement);
+
+            // 4. Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            this.scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(10, 20, 10);
+            dirLight.castShadow = true;
+            dirLight.shadow.camera.top = 20;
+            dirLight.shadow.camera.bottom = -20;
+            dirLight.shadow.camera.left = -20;
+            dirLight.shadow.camera.right = 20;
+            dirLight.shadow.mapSize.width = 1024;
+            dirLight.shadow.mapSize.height = 1024;
+            this.scene.add(dirLight);
+
+            // 5. Player
+            this.createPlayer();
+
+            // 6. Initial World
+            this.initWorld();
+
+            // 7. Inputs
+            window.addEventListener('resize', () => this.onWindowResize(), false);
+            document.addEventListener('keydown', (e) => this.handleInput(e));
+            document.addEventListener('touchstart', (e) => this.handleTouchStart(e), {passive: false});
+            document.addEventListener('touchmove', (e) => e.preventDefault(), {passive: false}); // Prevent scroll
+            document.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+
+            // Start Loop
+            this.animate();
+        },
+
+        createPlayer() {
+            const geometry = new THREE.BoxGeometry(1, 1.8, 1);
+            const material = new THREE.MeshLambertMaterial({ color: CONFIG.colors.player });
+            this.player = new THREE.Mesh(geometry, material);
+            this.player.castShadow = true;
+            this.player.position.y = 0.9; // Half height
+            this.scene.add(this.player);
+        },
+
+        initWorld() {
+            // Create initial path buffer (empty path to start)
+            for (let i = 0; i < CONFIG.pathLength; i++) {
+                this.spawnSegment(i * -CONFIG.segmentLength);
+            }
+        },
+
+        spawnSegment(zPosition) {
+            // A segment contains the floor
+            const length = CONFIG.segmentLength;
+            
+            // Floor
+            const geo = new THREE.BoxGeometry(CONFIG.laneWidth * 3 + 2, 1, length);
+            const mat = new THREE.MeshLambertMaterial({ color: CONFIG.colors.ground });
+            const floor = new THREE.Mesh(geo, mat);
+            floor.position.set(0, -0.5, zPosition - length / 2);
+            floor.receiveShadow = true;
+            this.scene.add(floor);
+            
+            // Add to management array
+            const segment = { mesh: floor, z: zPosition };
+            this.segments.push(segment);
+
+            // Spawn Obstacles or Coins (Not on first few segments to give player time)
+            if (this.segmentIndex > 3) {
+                this.spawnObstacles(zPosition, length);
+            }
+            this.segmentIndex++;
+        },
+
+        spawnObstacles(zPos, length) {
+            const type = Math.random();
+            const z = zPos - length / 2; // Center of segment
+
+            // 30% Empty, just coins
+            if (type < 0.3) {
+                this.spawnCoinRow(z);
+            } 
+            // 70% Obstacle
+            else {
+                // Pick a lane for obstacle
+                const blockedLane = Math.floor(Math.random() * 3) - 1; // -1, 0, 1
+                
+                // Obstacle Type: 0-0.4 Low (Jump), 0.4-0.7 High (Slide), 0.7-1 Pillar (Dodge)
+                const obsType = Math.random();
+
+                if (obsType < 0.4) {
+                    // Low Wall (Jumpable)
+                    this.createObstacle(blockedLane * CONFIG.laneWidth, 0.5, z, 2.5, 1, 0.5, 'jump');
+                } else if (obsType < 0.7) {
+                    // High Wall (Slideable) - Flying block
+                    this.createObstacle(blockedLane * CONFIG.laneWidth, 2.0, z, 2.5, 1.5, 0.5, 'slide');
+                } else {
+                    // Pillar (Must Dodge)
+                    this.createObstacle(blockedLane * CONFIG.laneWidth, 1, z, 2.5, 2, 1, 'block');
+                }
+
+                // Add coins in other lanes to guide player
+                [-1, 0, 1].forEach(l => {
+                    if (l !== blockedLane) this.createCoin(l * CONFIG.laneWidth, 1, z);
+                });
+            }
+        },
+
+        createObstacle(x, y, z, w, h, d, type) {
+            const geo = new THREE.BoxGeometry(w, h, d);
+            const mat = new THREE.MeshLambertMaterial({ color: CONFIG.colors.obstacle });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(x, y, z);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            this.scene.add(mesh);
+            
+            // Hitbox calculation
+            const box = new THREE.Box3().setFromObject(mesh);
+            // Shrink hitbox slightly to be forgiving
+            box.expandByScalar(-0.2);
+
+            this.items.push({ mesh: mesh, type: 'obstacle', subtype: type, box: box, active: true });
+        },
+
+        createCoin(x, y, z) {
+            const geo = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16);
+            const mat = new THREE.MeshPhongMaterial({ color: CONFIG.colors.coin, shininess: 100 });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(x, y, z);
+            mesh.rotation.z = Math.PI / 2; // Stand up like a wheel
+            mesh.castShadow = true;
+            this.scene.add(mesh);
+
+            const box = new THREE.Box3().setFromObject(mesh);
+            this.items.push({ mesh: mesh, type: 'coin', box: box, active: true });
+        },
+
+        spawnCoinRow(z) {
+            const pattern = Math.floor(Math.random() * 3);
+            if (pattern === 0) { // Center line
+                this.createCoin(0, 1, z - 2);
+                this.createCoin(0, 1, z);
+                this.createCoin(0, 1, z + 2);
+            } else { // Random scattering
+                this.createCoin(-CONFIG.laneWidth, 1, z);
+                this.createCoin(CONFIG.laneWidth, 1, z);
+            }
+        },
+
+        start() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('hud').classList.remove('hidden');
+            this.state = 'playing';
+        },
+
+        reset() {
+            // Reset state
+            this.state = 'playing';
+            this.score = 0;
+            this.coins = 0;
+            this.speed = CONFIG.speed;
+            this.distance = 0;
+            this.lane = 0;
+            this.targetX = 0;
+            this.player.position.set(0, 0.9, 0);
+            this.player.scale.set(1, 1, 1);
+            this.segmentIndex = 0;
+
+            // Clear world
+            this.segments.forEach(s => this.scene.remove(s.mesh));
+            this.segments = [];
+            this.items.forEach(i => this.scene.remove(i.mesh));
+            this.items = [];
+
+            // Rebuild
+            this.initWorld();
+            
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('hud').classList.remove('hidden');
+            this.updateUI();
+        },
+
+        gameOver() {
+            this.state = 'gameover';
+            document.getElementById('hud').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = Math.floor(this.score);
+        },
+
+        handleInput(e) {
+            if (this.state !== 'playing') return;
+
+            switch(e.key) {
+                case 'ArrowLeft': case 'a': this.moveLane(-1); break;
+                case 'ArrowRight': case 'd': this.moveLane(1); break;
+                case 'ArrowUp': case 'w': this.jump(); break;
+                case 'ArrowDown': case 's': this.slide(); break;
+            }
+        },
+
+        handleTouchStart(e) {
+            this.touchStartX = e.changedTouches[0].screenX;
+            this.touchStartY = e.changedTouches[0].screenY;
+        },
+
+        handleTouchEnd(e) {
+            if (this.state !== 'playing') return;
+            const endX = e.changedTouches[0].screenX;
+            const endY = e.changedTouches[0].screenY;
+            const diffX = endX - this.touchStartX;
+            const diffY = endY - this.touchStartY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Horizontal Swipe
+                if (Math.abs(diffX) > 30) { // Threshold
+                    if (diffX > 0) this.moveLane(-1); // Left swipe moves left
+                    else this.moveLane(1); // Right swipe moves right
+                }
+            } else {
+                // Vertical Swipe
+                if (Math.abs(diffY) > 30) {
+                    if (diffY < 0) this.jump(); // Swipe Up
+                    else this.slide(); // Swipe Down
+                }
+            }
+        },
+
+        moveLane(dir) {
+            this.lane += dir;
+            if (this.lane < -1) this.lane = -1;
+            if (this.lane > 1) this.lane = 1;
+            this.targetX = this.lane * CONFIG.laneWidth;
+        },
+
+        jump() {
+            if (!this.isJumping) {
+                this.isJumping = true;
+                this.yVelocity = CONFIG.jumpForce;
+                // Stop slide if sliding
+                if (this.isSliding) {
+                    this.isSliding = false;
+                    this.player.scale.y = 1;
+                }
+            }
+        },
+
+        slide() {
+            if (!this.isSliding && !this.isJumping) {
+                this.isSliding = true;
+                this.player.scale.y = 0.5; // Squash
+                // Auto recover after time
+                setTimeout(() => {
+                    if (this.state === 'playing' && !this.isJumping) {
+                        this.isSliding = false;
+                        this.player.scale.y = 1;
+                    }
+                }, 800);
+            } else if (this.isJumping) {
+                // Fast drop
+                this.yVelocity = -0.5;
+            }
+        },
+
+        updatePhysics() {
+            // Speed up
+            if (this.speed < CONFIG.maxSpeed) this.speed += CONFIG.speedIncrement;
+            this.distance += this.speed;
+            this.score = Math.floor(this.distance);
+
+            // Forward Movement (We move player backwards in Z, world is static relative to segments)
+            // Wait, infinite runner standard: Player stays at Z=0, world moves? 
+            // Or Player moves -Z? 
+            // In this engine: Player moves -Z. Camera follows.
+            this.player.position.z -= this.speed;
+            
+            // Camera follow
+            this.camera.position.z = this.player.position.z + 8;
+            this.camera.position.x += (this.player.position.x - this.camera.position.x) * 0.1; // Smooth x follow
+
+            // Lane interpolation
+            this.player.position.x += (this.targetX - this.player.position.x) * 0.15;
+
+            // Jump Physics
+            if (this.isJumping) {
+                this.player.position.y += this.yVelocity;
+                this.yVelocity -= CONFIG.gravity;
+
+                // Land
+                if (this.player.position.y <= 0.9) {
+                    this.player.position.y = 0.9;
+                    this.isJumping = false;
+                    this.yVelocity = 0;
+                }
+            } else if (this.isSliding) {
+                this.player.position.y = 0.45; // Half of 0.9
+            } else {
+                this.player.position.y = 0.9;
+            }
+
+            // World Gen / Cleanup
+            // If the last segment is too close, spawn new one
+            const lastSegment = this.segments[this.segments.length - 1];
+            if (lastSegment.z > this.player.position.z - (CONFIG.pathLength * CONFIG.segmentLength)) {
+                this.spawnSegment(lastSegment.z - CONFIG.segmentLength);
+            }
+
+            // Remove old segments & items to save memory
+            // Items behind the camera
+            if (this.segments[0].z > this.player.position.z + 10) {
+                this.scene.remove(this.segments[0].mesh);
+                this.segments.shift();
+            }
+            
+            // Clean items
+            for (let i = this.items.length - 1; i >= 0; i--) {
+                const item = this.items[i];
+                if (item.mesh.position.z > this.player.position.z + 10 || !item.active) {
+                    this.scene.remove(item.mesh);
+                    this.items.splice(i, 1);
+                }
+            }
+        },
+
+        checkCollisions() {
+            // Player Box (in world space)
+            const playerBox = new THREE.Box3().setFromObject(this.player);
+            // Shrink player box slightly for forgiveness
+            playerBox.expandByScalar(-0.2); 
+
+            for (let item of this.items) {
+                if (!item.active) continue;
+
+                if (playerBox.intersectsBox(item.box)) {
+                    if (item.type === 'coin') {
+                        // Collect
+                        item.active = false;
+                        item.mesh.visible = false;
+                        this.coins++;
+                        this.score += 50; // Bonus score
+                    } else if (item.type === 'obstacle') {
+                        this.gameOver();
+                    }
+                }
+                
+                // Spin coins
+                if (item.type === 'coin') {
+                    item.mesh.rotation.y += 0.1;
+                }
+            }
+        },
+
+        updateUI() {
+            document.getElementById('score').innerText = `SCORE: ${this.score}`;
+            document.getElementById('coins').innerText = `COINS: ${this.coins}`;
+        },
+
+        animate() {
+            requestAnimationFrame(() => this.animate());
+
+            if (this.state === 'playing') {
+                this.updatePhysics();
+                this.checkCollisions();
+                this.updateUI();
+            }
+
+            this.renderer.render(this.scene, this.camera);
+        },
+
+        onWindowResize() {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    };
+
+    // Initialize on load
+    window.onload = () => Game.init();
+
+</script>
+</body>
+</html>

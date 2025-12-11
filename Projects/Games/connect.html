@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Royal Connect</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-grad-start: #1a0f0f;
+            --bg-grad-end: #3d2b1f;
+            /* Wood & Gold Theme */
+            --board-wood: #5d3a1a;
+            --board-grain: #3e2713;
+            --board-trim: #d4af37; /* Gold */
+            --board-shadow: #1a120b;
+            
+            /* Ruby & Amber Chips */
+            --p1-color: #d92027; /* Ruby Red */
+            --p1-dark: #8c1115;
+            --p2-color: #ffc107; /* Amber Gold */
+            --p2-dark: #b38600;
+
+            --cell-size: min(13vw, 80px);
+            --gap: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-grad-start);
+            background-image: radial-gradient(circle at center, var(--bg-grad-end) 0%, var(--bg-grad-start) 100%);
+            height: 100dvh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+            overflow: hidden;
+            /* Subtle Felt Texture */
+            /* background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N8fHxqeG9leGtjdGpibGlhbGlhbGlhbGldbWldbWldbWlcbWlcbGlbbGlbbGlbbGlabGlbbGlbbGlbbGlbbGlabGla... etc, using a simple noise texture instead for size */
+        }
+        
+        /* --- Header --- */
+        .header {
+            position: absolute; top: 20px;
+            display: flex; align-items: center; gap: 20px;
+            background: rgba(61, 43, 31, 0.8);
+            border: 2px solid var(--board-trim);
+            backdrop-filter: blur(10px);
+            padding: 10px 25px; border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 2px 5px rgba(212, 175, 55, 0.3);
+            z-index: 50;
+        }
+        .turn-badge {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--p1-color);
+            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.5), 0 0 10px var(--p1-color);
+            transition: background 0.3s, box-shadow 0.3s;
+            border: 2px solid var(--board-trim);
+        }
+        .status-text { color: var(--board-trim); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .reset-btn {
+            background: none; border: none; color: var(--board-trim); cursor: pointer; display: flex;
+            opacity: 0.8; transition: 0.2s; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+        }
+        .reset-btn:hover { opacity: 1; transform: rotate(90deg); color: white; }
+
+        /* --- Game Board Wrapper --- */
+        .game-wrapper {
+            position: relative;
+            padding: 20px;
+            /* Table Base - Dark felt/leather */
+            background: #2a1c13;
+            border-radius: 24px;
+            box-shadow: 
+                0 30px 60px rgba(0,0,0,0.6),
+                inset 0 2px 5px rgba(255,255,255,0.05);
+            transform: perspective(1000px) rotateX(10deg);
+            border: 4px solid var(--board-trim);
+        }
+
+        /* The Board Mesh (Front Plate) */
+        .board-plate {
+            display: grid;
+            grid-template-columns: repeat(7, var(--cell-size));
+            grid-template-rows: repeat(6, var(--cell-size));
+            gap: var(--gap);
+            padding: var(--gap);
+            
+            /* Rich Wood Texture with Gold Trim */
+            background: var(--board-wood);
+            background-image: 
+                linear-gradient(to bottom, rgba(212,175,55,0.1), rgba(0,0,0,0.3)),
+                repeating-linear-gradient(45deg, var(--board-grain) 0px, var(--board-grain) 2px, transparent 2px, transparent 8px);
+            
+            border-radius: 12px;
+            border: 3px solid var(--board-trim);
+
+            /* Create holes */
+            -webkit-mask-image: radial-gradient(circle at center, transparent 46%, black 48%);
+            mask-image: radial-gradient(circle at center, transparent 46%, black 48%);
+            -webkit-mask-size: calc(var(--cell-size) + var(--gap)) calc(var(--cell-size) + var(--gap));
+            mask-size: calc(var(--cell-size) + var(--gap)) calc(var(--cell-size) + var(--gap));
+            -webkit-mask-position: center;
+            mask-position: center;
+            -webkit-mask-repeat: repeat;
+            mask-repeat: repeat;
+            
+            position: relative;
+            z-index: 10;
+            /* 3D Depth & Lighting */
+            box-shadow: 
+                inset 0 0 30px rgba(0,0,0,0.7), /* Deep shadow inside holes */
+                inset 0 2px 2px rgba(255,255,255,0.2), /* Top edge highlight */
+                0 15px 25px rgba(0,0,0,0.5); /* Drop shadow */
+            pointer-events: none;
+        }
+
+        /* Clickable Columns */
+        .input-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            z-index: 20;
+        }
+        .col-trigger {
+            height: 100%; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .col-trigger:hover { background: rgba(212, 175, 55, 0.1); }
+
+        /* Chip Container */
+        .chips-layer {
+            position: absolute;
+            top: var(--gap); left: var(--gap);
+            width: calc(100% - var(--gap)*2);
+            height: calc(100% - var(--gap)*2);
+            z-index: 5;
+        }
+
+        /* The Chips - Glossy & Realistic */
+        .chip {
+            position: absolute;
+            width: var(--cell-size);
+            height: var(--cell-size);
+            border-radius: 50%;
+            /* Realistic Lighting & Depth */
+            box-shadow: 
+                inset 0 5px 15px rgba(255,255,255,0.6), /* Top specular highlight */
+                inset 0 -5px 15px rgba(0,0,0,0.5), /* Bottom shadow */
+                0 8px 10px rgba(0,0,0,0.4); /* Drop shadow */
+            top: -100px;
+            transition: top 0.5s cubic-bezier(0.5, 0, 0.75, 0);
+            border: 2px solid rgba(255,255,255,0.2);
+            /* Internal light refraction effect */
+            background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, transparent 60%);
+        }
+        
+        .chip.red { background-color: var(--p1-color); }
+        .chip.yellow { background-color: var(--p2-color); }
+
+        .chip.bounce { animation: bounce 0.4s ease-out; }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            30% { transform: translateY(-20px); }
+            60% { transform: translateY(0); }
+            80% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Win Line Highlight - Glowing */
+        .win-marker {
+            position: absolute;
+            z-index: 15;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 25px white, 0 0 10px white;
+            opacity: 0.9;
+            mix-blend-mode: overlay;
+        }
+
+        /* --- UI Overlays --- */
+        .overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(26, 15, 15, 0.85); backdrop-filter: blur(8px);
+            z-index: 100; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .card {
+            background: linear-gradient(135deg, #3d2b1f, #2a1c13);
+            border: 3px solid var(--board-trim);
+            padding: 2.5rem; border-radius: 24px;
+            text-align: center; max-width: 360px; width: 90%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7), inset 0 2px 5px rgba(212, 175, 55, 0.2);
+            transform: translateY(20px); transition: 0.3s; color: var(--board-trim);
+        }
+        .overlay.active .card { transform: translateY(0); }
+
+        .btn {
+            background: linear-gradient(to bottom, var(--board-trim), #b38f2d);
+            color: #3d2b1f; border: none;
+            padding: 18px 30px; border-radius: 12px;
+            font-weight: 800; font-size: 1.2rem;
+            margin-top: 25px; cursor: pointer; width: 100%;
+            transition: transform 0.1s, filter 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+        }
+        .btn:hover { filter: brightness(1.1); }
+        .btn:active { transform: scale(0.98); }
+
+        /* Confetti - Gold & Gems */
+        .confetti { position: absolute; width: 12px; height: 12px; z-index: 200; animation: fall 3s linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Start Menu -->
+    <div id="menu-overlay" class="overlay active">
+        <div class="card">
+            <h1 style="font-size:3rem; margin-bottom:10px; color:var(--board-trim); text-shadow: 0 2px 5px rgba(0,0,0,0.5);">ROYAL CONNECT</h1>
+            <p style="color:#c0a080; margin-bottom:30px; font-style: italic;">The Classic Game of Strategy</p>
+            
+            <div style="background:rgba(0,0,0,0.3); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; border: 1px solid rgba(212, 175, 55, 0.3);">
+                <span style="font-weight:700; color:var(--board-trim); font-size: 1.1rem;">Opponent</span>
+                <button id="mode-btn" onclick="Game.toggleMode()" 
+                    style="background:var(--p2-color); color:#3d2b1f; border:none; padding:8px 20px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: background 0.3s;">
+                    CPU
+                </button>
+            </div>
+
+            <button class="btn" onclick="Game.start()">START GAME</button>
+        </div>
+    </div>
+
+    <!-- Win Screen -->
+    <div id="win-overlay" class="overlay">
+        <div class="card">
+            <i data-lucide="crown" size="80" color="#d4af37" style="margin-bottom:20px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));"></i>
+            <h2 id="winner-text" style="font-size:2.5rem; margin-bottom:15px; color:var(--board-trim); text-shadow: 0 2px 5px rgba(0,0,0,0.5);">RED WINS!</h2>
+            <button class="btn" onclick="Game.showMenu()">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <!-- Game Header -->
+    <div class="header">
+        <div class="turn-badge" id="turn-badge"></div>
+        <div class="status-text" id="status">Red's Turn</div>
+        <button class="reset-btn" onclick="Game.showMenu()"><i data-lucide="rotate-ccw" size="24"></i></button>
+    </div>
+
+    <!-- The Board -->
+    <div class="game-wrapper">
+        <!-- Visual Board (Masked) -->
+        <div class="board-plate">
+            <!-- Holes are transparent via CSS Mask -->
+        </div>
+        
+        <!-- Chips container (Behind plate) -->
+        <div class="chips-layer" id="chips-layer"></div>
+
+        <!-- Input Layer (Invisible columns on top) -->
+        <div class="input-layer">
+            <div class="col-trigger" onclick="Game.drop(0)"></div>
+            <div class="col-trigger" onclick="Game.drop(1)"></div>
+            <div class="col-trigger" onclick="Game.drop(2)"></div>
+            <div class="col-trigger" onclick="Game.drop(3)"></div>
+            <div class="col-trigger" onclick="Game.drop(4)"></div>
+            <div class="col-trigger" onclick="Game.drop(5)"></div>
+            <div class="col-trigger" onclick="Game.drop(6)"></div>
+        </div>
+    </div>
+
+<script>
+    // --- Audio System ---
+    const Sfx = {
+        ctx: null,
+        init() { if(!window.AudioContext) return; this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+        play(freq, type, decay, vol=0.1) {
+            if(!this.ctx) this.init(); if(!this.ctx) return;
+            const o = this.ctx.createOscillator(); const g = this.ctx.createGain();
+            o.type = type; o.frequency.value = freq;
+            g.gain.setValueAtTime(vol, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + decay);
+            o.connect(g); g.connect(this.ctx.destination);
+            o.start(); o.stop(this.ctx.currentTime + decay);
+        },
+        drop() { 
+            // Thump + Slide
+            if(!this.ctx) this.init(); if(!this.ctx) return;
+            const o = this.ctx.createOscillator(); const g = this.ctx.createGain();
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(150, this.ctx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.4);
+            g.gain.setValueAtTime(0.3, this.ctx.currentTime);
+            g.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
+            o.connect(g); g.connect(this.ctx.destination);
+            o.start(); o.stop(this.ctx.currentTime + 0.4);
+        },
+        land() { 
+            // Heavy clack
+            this.play(100, 'square', 0.15, 0.4); 
+            setTimeout(() => this.play(150, 'sine', 0.2, 0.2), 50);
+        },
+        win() { 
+            // Royal Fanfare
+            [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+                setTimeout(() => this.play(f, 'triangle', 0.6, 0.3), i*200);
+            });
+            setTimeout(() => {
+                 [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((f, i) => {
+                    setTimeout(() => this.play(f, 'triangle', 0.8, 0.25), i*150);
+                });
+            }, 800);
+        }
+    };
+
+    const Game = {
+        rows: 6, cols: 7,
+        board: [], // 0=empty, 1=red, 2=yellow
+        turn: 1, // 1 or 2
+        active: false,
+        vsCpu: true,
+        cpuThinking: false,
+
+        els: {
+            chips: document.getElementById('chips-layer'),
+            badge: document.getElementById('turn-badge'),
+            status: document.getElementById('status'),
+            menu: document.getElementById('menu-overlay'),
+            win: document.getElementById('win-overlay'),
+            modeBtn: document.getElementById('mode-btn')
+        },
+
+        init() {
+            lucide.createIcons();
+        },
+
+        toggleMode() {
+            this.vsCpu = !this.vsCpu;
+            this.els.modeBtn.innerText = this.vsCpu ? 'CPU' : '2 Player';
+            this.els.modeBtn.style.background = this.vsCpu ? 'var(--p2-color)' : '#27ae60';
+            this.els.modeBtn.style.color = this.vsCpu ? '#3d2b1f' : 'white';
+        },
+
+        start() {
+            this.els.menu.classList.remove('active');
+            this.reset();
+        },
+
+        showMenu() {
+            this.els.win.classList.remove('active');
+            this.els.menu.classList.add('active');
+        },
+
+        reset() {
+            this.board = Array(6).fill().map(() => Array(7).fill(0));
+            this.turn = 1;
+            this.active = true;
+            this.cpuThinking = false;
+            this.els.chips.innerHTML = '';
+            document.querySelectorAll('.win-marker').forEach(e => e.remove());
+            this.updateUI();
+        },
+
+        drop(col) {
+            if(!this.active || this.cpuThinking) return;
+            this.makeMove(col);
+        },
+
+        makeMove(col) {
+            let row = -1;
+            for(let r = 5; r >= 0; r--) {
+                if(this.board[r][col] === 0) {
+                    row = r; break;
+                }
+            }
+
+            if(row === -1) return;
+
+            this.board[row][col] = this.turn;
+            this.animateDrop(row, col, this.turn);
+
+            if(this.checkWin(row, col)) {
+                this.active = false;
+                setTimeout(() => this.triggerWin(), 600);
+                return;
+            }
+
+            if(this.board.every(r => r.every(c => c !== 0))) {
+                this.active = false;
+                this.els.status.innerText = "DRAW!";
+                return;
+            }
+
+            this.turn = this.turn === 1 ? 2 : 1;
+            this.updateUI();
+
+            if(this.vsCpu && this.turn === 2 && this.active) {
+                this.cpuThinking = true;
+                setTimeout(() => this.cpuMove(), 800);
+            }
+        },
+
+        animateDrop(row, col, player) {
+            Sfx.drop();
+            const chip = document.createElement('div');
+            chip.className = `chip ${player === 1 ? 'red' : 'yellow'}`;
+            
+            chip.style.left = `calc(${col} * (var(--cell-size) + var(--gap)))`;
+            const targetTop = `calc(${row} * (var(--cell-size) + var(--gap)))`;
+            chip.style.top = targetTop; 
+            
+            chip.style.transition = 'none';
+            chip.style.transform = `translateY(-${(row + 1) * 600}px)`;
+            
+            this.els.chips.appendChild(chip);
+
+            requestAnimationFrame(() => {
+                chip.style.transition = `transform 0.5s cubic-bezier(0.5, 0, 0.75, 0)`;
+                chip.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    Sfx.land();
+                    chip.classList.add('bounce');
+                }, 500);
+            });
+        },
+
+        cpuMove() {
+            let move = -1;
+            const testMove = (p) => {
+                for(let c=0; c<7; c++) {
+                    let r = -1;
+                    for(let i=5; i>=0; i--) if(this.board[i][c]===0) { r=i; break; }
+                    if(r===-1) continue;
+                    this.board[r][c] = p;
+                    if(this.checkWin(r,c)) {
+                        this.board[r][c] = 0; return c;
+                    }
+                    this.board[r][c] = 0;
+                }
+                return -1;
+            };
+
+            move = testMove(2);
+            if(move === -1) move = testMove(1);
+            if(move === -1) {
+                const valid = [];
+                for(let c=0; c<7; c++) if(this.board[0][c] === 0) valid.push(c);
+                if(valid.length > 0) move = valid[Math.floor(Math.random() * valid.length)];
+            }
+
+            this.cpuThinking = false;
+            if(move !== -1) this.makeMove(move);
+        },
+
+        checkWin(r, c) {
+            const player = this.board[r][c];
+            const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];
+
+            for (let [dr, dc] of dirs) {
+                let count = 1;
+                for(let i=1; i<4; i++) {
+                    const nr = r + dr*i, nc = c + dc*i;
+                    if(nr<0||nr>5||nc<0||nc>6||this.board[nr][nc]!==player) break;
+                    count++;
+                }
+                for(let i=1; i<4; i++) {
+                    const nr = r - dr*i, nc = c - dc*i;
+                    if(nr<0||nr>5||nc<0||nc>6||this.board[nr][nc]!==player) break;
+                    count++;
+                }
+                if (count >= 4) return true;
+            }
+            return false;
+        },
+
+        updateUI() {
+            const color = this.turn === 1 ? 'var(--p1-color)' : 'var(--p2-color)';
+            const name = this.turn === 1 ? "Red's Turn" : "Yellow's Turn";
+            this.els.badge.style.background = color;
+            this.els.badge.style.boxShadow = `inset 0 -2px 5px rgba(0,0,0,0.5), 0 0 10px ${color}`;
+            this.els.status.innerText = this.cpuThinking ? "CPU Thinking..." : name;
+            this.els.status.style.color = this.cpuThinking ? '#c0a080' : 'var(--board-trim)';
+        },
+
+        triggerWin() {
+            Sfx.win();
+            
+            const name = this.turn === 1 ? "RED" : "YELLOW";
+            const color = this.turn === 1 ? "var(--p1-color)" : "var(--p2-color)";
+            
+            document.getElementById('winner-text').innerText = `${name} WINS!`;
+            document.getElementById('winner-text').style.color = color;
+            document.getElementById('winner-text').style.textShadow = `0 2px 10px ${color}, 0 2px 5px rgba(0,0,0,0.5)`;
+            
+            this.els.win.classList.add('active');
+            this.createConfetti();
+        },
+
+        createConfetti() {
+            for(let i=0; i<80; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random()*100 + '%';
+                c.style.width = (8 + Math.random()*8) + 'px';
+                c.style.height = c.style.width;
+                // Ruby, Gold, and Diamond confetti
+                const colors = ['var(--p1-color)', 'var(--p2-color)', '#ffffff', '#d4af37'];
+                c.style.background = colors[Math.floor(Math.random()*colors.length)];
+                c.style.boxShadow = `0 2px 5px rgba(0,0,0,0.3)`;
+                c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                c.style.animationDuration = (2.5 + Math.random()*3) + 's';
+                document.body.appendChild(c);
+            }
+        }
+    };
+
+    Game.init();
+</script>
+</body>
+</html>

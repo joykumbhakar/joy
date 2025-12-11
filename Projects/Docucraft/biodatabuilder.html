@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume Builder</title>
+    
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- LIQUID THEME ENGINE --- */
+        :root {
+            /* Light Mode Variables */
+            --bg-color: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            
+            /* Liquid Glass Variables */
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-highlight: rgba(255, 255, 255, 0.9);
+            --glass-blur: 24px;
+            --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.6);
+            
+            --accent-glow: rgba(79, 70, 229, 0.1);
+
+            /* Gradient Definitions */
+            --gradient-start: #0f172a;
+            --gradient-end: #334155;
+            
+            /* Blobs */
+            --blob-1: #e0e7ff; /* Soft Indigo */
+            --blob-2: #fce7f3; /* Soft Pink */
+            --blob-3: #ccfbf1; /* Soft Teal */
+            
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* --- LIQUID BACKGROUND BLOBS --- */
+        .liquid-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; pointer-events: none; overflow: hidden;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.7;
+            animation: morph 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, border-radius;
+        }
+        .blob-1 { top: -20%; left: -20%; width: 60vw; height: 60vw; background: var(--blob-1); animation-delay: 0s; }
+        .blob-2 { bottom: -20%; right: -20%; width: 60vw; height: 60vw; background: var(--blob-2); animation-delay: -5s; }
+        .blob-3 { top: 30%; left: 30%; width: 50vw; height: 50vw; background: var(--blob-3); animation-delay: -10s; opacity: 0.5; }
+
+        @keyframes morph {
+            0% { transform: translate(0, 0) scale(1); border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            33% { transform: translate(40px, -60px) scale(1.1); border-radius: 50% 50% 20% 80% / 25% 80% 20% 75%; }
+            66% { transform: translate(-30px, 30px) scale(0.9); border-radius: 67% 33% 47% 53% / 37% 59% 41% 63%; }
+            100% { transform: translate(0, 0) scale(1); border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        }
+
+        /* --- LAYOUT --- */
+        .app-container {
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 1700px;
+            padding: 30px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* --- GLASS PANEL (Editor) --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid var(--glass-highlight);
+            border-left: 1px solid var(--glass-highlight);
+            box-shadow: var(--glass-shadow);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .editor-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            background: rgba(255,255,255,0.4);
+        }
+
+        .grad-text {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,0,0,0.1) transparent;
+        }
+
+        /* --- FORMS & INPUTS --- */
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+            font-weight: 700;
+            margin: 32px 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-label:first-child { margin-top: 0; }
+        .section-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--accent-glow), transparent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .form-group { margin-bottom: 16px; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Glass Input Style */
+        .glass-input {
+            width: 100%;
+            background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(0,0,0,0.08);
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+            font-weight: 500;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .glass-input:focus {
+            background: #fff;
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+        .glass-input::placeholder { color: rgba(0,0,0,0.3); }
+
+        /* File Upload */
+        .file-upload-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .file-upload-btn {
+            border: 2px dashed rgba(0,0,0,0.15);
+            background: rgba(255,255,255,0.4);
+            color: var(--text-muted);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        /* No hover effect */
+        .file-upload-btn:hover {
+            /* Keep initial styles on hover */
+            background: rgba(255,255,255,0.4);
+            border-color: rgba(0,0,0,0.15);
+            color: var(--text-muted);
+            transform: none;
+        }
+        .file-upload-wrapper input[type=file] {
+            position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;
+        }
+
+        /* Education Repeater Styles */
+        .edu-entry {
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+            transition: 0.2s;
+        }
+        /* No hover effect */
+        .edu-entry:hover { 
+            background: rgba(255,255,255,0.5); 
+            box-shadow: none; 
+        }
+        .edu-remove {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: none;
+            border-radius: 8px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        /* No hover effect */
+        .edu-remove:hover { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: #ef4444; 
+        }
+
+        /* --- BUTTONS --- */
+        .editor-footer {
+            padding: 24px 32px;
+            background: rgba(255,255,255,0.5);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-solid {
+            background: linear-gradient(135deg, var(--text-main), var(--text-muted));
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.02em;
+        }
+        /* No hover effect */
+        .btn-solid:hover { 
+            transform: none; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            filter: none; 
+        }
+        
+        /* Variants for buttons */
+        .btn-img { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+        .btn-pdf { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .btn-doc { background: linear-gradient(135deg, #4f46e5, #4338ca); }
+        .btn-add { background: linear-gradient(135deg, #10b981, #059669); margin-top: 12px; width: 100%; border-radius: 12px; font-size: 0.9rem; }
+
+        /* --- PREVIEW AREA --- */
+        .preview-area {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding-bottom: 60px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,0,0,0.1) transparent;
+        }
+
+        /* The Paper Sheet */
+        #resume-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 25mm 25mm 30mm 25mm; /* Standard A4 Margins */
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            position: relative;
+            color: #1a1a1a;
+            box-sizing: border-box;
+            /* Using a cleaner, more professional font pairing */
+            font-family: 'Merriweather', serif; 
+            transform-origin: top center;
+            line-height: 1.6;
+            z-index: 10;
+        }
+
+        /* --- BIODATA INTERNAL STYLES --- */
+        .bio-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            min-height: 150px;
+            border-bottom: 2px solid #1a1a1a;
+            padding-bottom: 30px;
+        }
+        .bio-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            color: #000;
+        }
+        .bio-contact {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #444;
+            font-weight: 500;
+        }
+        .bio-photo {
+            position: absolute;
+            top: 0; right: 0;
+            width: 35mm; height: 45mm;
+            border: 1px solid #ccc;
+            padding: 5px; background: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .bio-photo img { width: 100%; height: 100%; object-fit: cover; border: 1px solid #eee; }
+        .bio-photo-placeholder { font-family: 'Inter', sans-serif; font-size: 10px; color: #999; text-align: center; line-height: 1.4; text-transform: uppercase; letter-spacing: 1px; }
+
+        .doc-section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            color: #1a1a1a;
+            background-color: #f1f5f9;
+            padding: 8px 16px; margin-top: 35px; margin-bottom: 20px;
+            border-left: 4px solid #1a1a1a; 
+        }
+
+        .info-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        .info-table td { padding: 10px 12px; vertical-align: top; border-bottom: 1px solid #e2e8f0; }
+        .info-table tr:last-child td { border-bottom: none; }
+        .info-table .label-col { width: 180px; font-weight: 700; color: #333; font-family: 'Inter', sans-serif; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; }
+        .info-table .sep-col { width: 24px; text-align: center; color: #94a3b8; font-weight: 400; }
+
+        .present-address-block {
+            font-size: 15px; line-height: 1.8; margin-bottom: 20px;
+            background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 4px;
+            white-space: pre-wrap; font-family: 'Merriweather', serif; color: #334155;
+        }
+
+        .edu-table {
+            width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 40px;
+            font-size: 14px; border: 1px solid #e2e8f0;
+        }
+        .edu-table th {
+            background-color: #1e293b; color: white; padding: 12px;
+            text-transform: uppercase; font-size: 12px; font-weight: 700; letter-spacing: 1px;
+            font-family: 'Inter', sans-serif; text-align: center; border: 1px solid #1e293b;
+        }
+        .edu-table td { border: 1px solid #e2e8f0; padding: 12px; text-align: center; vertical-align: middle; }
+
+        .doc-declaration {
+            margin-top: 50px; font-size: 14px; text-align: justify;
+            font-style: italic; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 25px;
+            line-height: 1.8;
+        }
+        .doc-footer { width: 100%; margin-top: 80px; font-size: 15px; font-family: 'Inter', sans-serif; }
+        .signature-area { display: inline-block; text-align: center; }
+        .signature-area img { max-height: 60px; max-width: 200px; margin-bottom: -15px; display: block; margin-left: auto; margin-right: auto; }
+
+        /* --- CROPPER MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px);
+            z-index: 1000; display: none; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 700px; border-radius: 24px;
+            overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            display: flex; flex-direction: column;
+            max-height: 90vh;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .modal-header {
+            padding: 20px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;
+            background: #f8fafc;
+        }
+        .modal-header h3 { margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a; font-family: 'Inter', sans-serif; }
+        .modal-body {
+            flex: 1; overflow: hidden; background: #0f172a; height: 500px;
+            position: relative; display: flex; align-items: center; justify-content: center;
+        }
+        .cropper-container {
+            width: 100%; height: 100%;
+        }
+        .modal-footer {
+            padding: 16px 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; gap: 12px; background: white;
+            flex-wrap: wrap;
+        }
+        .btn-modal {
+            padding: 12px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 8px; justify-content: center;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        /* No active/hover effects */
+        .btn-modal:active { transform: none; }
+        .btn-modal-cancel { background: linear-gradient(180deg,rgb(112, 1, 1) 0%, rgba(150, 0, 0, 1) 50%, rgb(124, 1, 1) 100%); color: #ffffff; }
+        .btn-modal-cancel:hover { background: #940202; }
+        .btn-modal-save { background: linear-gradient(180deg,rgb(19, 119, 1) 0%, rgba(13, 150, 0, 1) 50%, rgb(1, 119, 11) 100%); color: white; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2); }
+        .btn-modal-save:hover { background: #18c901; }
+        .btn-modal-bg { background: #9900ff; color: white; box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.2); }
+        .btn-modal-bg:hover { background: #a200ff; }
+
+        /* --- MOBILE --- */
+        @media (max-width: 1100px) {
+            .app-container { grid-template-columns: 1fr; height: auto; display: block; padding: 16px; }
+            .glass-panel { margin-bottom: 24px; border-radius: 20px; }
+            .editor-content { max-height: none; padding: 24px; }
+            .preview-area { padding-bottom: 40px; }
+            #resume-sheet { margin: 0 auto; width: 100%; min-width: 0; padding: 15mm; }
+            .editor-footer { grid-template-columns: 1fr; }
+            .modal-content { width: 95%; max-height: 80vh; }
+            .modal-body { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Liquid Background -->
+    <div class="liquid-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div style="position: absolute; inset:0; background: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.04\'/%3E%3C/svg%3E'); opacity:0.6; mix-blend-mode: overlay;"></div>
+    </div>
+
+    <!-- Image Cropper Modal -->
+    <div id="cropper-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Photo Studio</h3>
+                <button onclick="closeModal()" style="background:none; border:none; cursor:pointer; padding:8px; color: #64748b;"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="cropper-container">
+                    <img id="image-to-crop" src="" style="max-width: 100%; display: block;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-modal-cancel" onclick="closeModal()">Cancel</button>
+                <div style="display:flex; gap:12px;">
+                    <button class="btn-modal btn-modal-bg" onclick="magicRemoveBackground()" title="Remove white/solid background">
+                        <i data-lucide="wand-2" style="width:18px;"></i> Magic Clean
+                    </button>
+                    <button class="btn-modal btn-modal-save" onclick="cropImage()">
+                        <i data-lucide="check" style="width:18px;"></i> Save Photo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- LEFT: GLASS EDITOR -->
+        <div class="glass-panel">
+            <div class="editor-header">
+                <h2 class="grad-text" style="font-size: 1.5rem; margin:0; display:flex; align-items:center; gap:12px;">
+                    <i data-lucide="file-edit" style="width:28px;"></i> Bio-Data Builder
+                </h2>
+            </div>
+            
+            <div class="editor-content">
+                
+                <div class="section-label"><i data-lucide="camera" style="width:16px;"></i> &nbsp; Photos & Signature</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Passport Photo</label>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-btn glass-input">
+                                <i data-lucide="image" style="width:24px; opacity:0.6;"></i>
+                                <span>Upload & Edit</span>
+                            </div>
+                            <!-- Trigger Photo Upload Logic -->
+                            <input type="file" accept="image/*" onchange="initPhotoUpload(event)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Signature</label>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-btn glass-input">
+                                <i data-lucide="pen-tool" style="width:24px; opacity:0.6;"></i>
+                                <span>Upload Sign</span>
+                            </div>
+                            <input type="file" accept="image/*" onchange="loadFile(event, 'sig-img', null)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-label"><i data-lucide="user" style="width:16px;"></i> &nbsp; Personal Information</div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="in-name" class="glass-input" oninput="update()" placeholder="Your Name">
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Email ID</label>
+                        <input type="text" id="in-email" class="glass-input" oninput="update()" placeholder="Email Address">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone No.</label>
+                        <input type="text" id="in-phone" class="glass-input" oninput="update()" placeholder="Phone Number">
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Father's Name</label>
+                        <input type="text" id="in-father" class="glass-input" oninput="update()" placeholder="Father's Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" id="in-dob" class="glass-input" oninput="update()">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group"><label>Height</label><input type="text" id="in-height" class="glass-input" oninput="update()" placeholder="Height"></div>
+                    <div class="form-group"><label>Weight</label><input type="text" id="in-weight" class="glass-input" oninput="update()" placeholder="Weight"></div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="in-gender" class="glass-input" onchange="update()">
+                            <option value="">Select Gender</option>
+                            <option>Male</option><option>Female</option><option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Caste</label><input type="text" id="in-caste" class="glass-input" oninput="update()" placeholder="Caste"></div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group"><label>Marital Status</label><input type="text" id="in-marital" class="glass-input" oninput="update()" placeholder="Marital Status"></div>
+                    <div class="form-group"><label>Nationality</label><input type="text" id="in-nation" class="glass-input" oninput="update()" placeholder="Nationality"></div>
+                </div>
+
+                <div class="form-group"><label>Religion</label><input type="text" id="in-religion" class="glass-input" oninput="update()" placeholder="Religion"></div>
+                <div class="form-group"><label>Languages Known</label><input type="text" id="in-lang" class="glass-input" oninput="update()" placeholder="Languages"></div>
+                <div class="form-group">
+                    <label>Skills</label>
+                    <textarea id="in-skills" class="glass-input" oninput="update()" rows="2" placeholder="Your Skills"></textarea>
+                </div>
+
+                <div class="section-label"><i data-lucide="map-pin" style="width:16px;"></i> &nbsp; Address Details</div>
+                <div class="form-group">
+                    <label>Present Address</label>
+                    <textarea id="in-address" class="glass-input" oninput="updateAddress()" rows="4" placeholder="Vill: ..., PO: ..., PS: ..., Dist: ..., PIN: ..."></textarea>
+                </div>
+
+                <div class="section-label"><i data-lucide="graduation-cap" style="width:16px;"></i> &nbsp; Education</div>
+                <div id="education-container">
+                    <!-- Dynamic Education Entries -->
+                </div>
+                <button onclick="addEducationRow()" class="btn-solid btn-add">
+                    <i data-lucide="plus" style="width:18px;"></i> Add Qualification
+                </button>
+
+                <div class="section-label"><i data-lucide="check-circle" style="width:16px;"></i> &nbsp; Finalize</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Date</label><input type="text" id="in-date" class="glass-input" oninput="update()" placeholder="Today's Date"></div>
+                    <div class="form-group"><label>Place</label><input type="text" id="in-place" class="glass-input" oninput="update()" placeholder="Current City"></div>
+                </div>
+
+            </div>
+
+            <div class="editor-footer">
+                <button class="btn-solid btn-img" onclick="saveAsImage()">
+                    <i data-lucide="image" style="width:18px;"></i> Image
+                </button>
+                <button class="btn-solid btn-pdf" onclick="saveAsPDF()">
+                    <i data-lucide="file-text" style="width:18px;"></i> PDF
+                </button>
+                <button class="btn-solid btn-doc" onclick="saveAsWord()">
+                    <i data-lucide="file" style="width:18px;"></i> Word
+                </button>
+            </div>
+        </div>
+
+        <!-- RIGHT: PREVIEW -->
+        <div class="preview-area">
+            <div id="resume-sheet">
+                
+                <div class="bio-header">
+                    <div class="bio-name" id="out-name"></div>
+                    <div class="bio-contact">
+                        E-Mail ID: <span id="out-email"></span> &nbsp; Phone No.: <span id="out-phone"></span>
+                    </div>
+                    
+                    <div class="bio-photo">
+                        <img id="photo-img" src="" style="display:none;">
+                        <div id="photo-ph" class="bio-photo-placeholder">Passport<br>Size<br>Photo</div>
+                    </div>
+                </div>
+
+                <div class="doc-section-title">Personal Details</div>
+
+                <table class="info-table">
+                    <tr><td class="label-col">Father's Name</td><td class="sep-col">:</td><td id="out-father"></td></tr>
+                    <tr><td class="label-col">Marital Status</td><td class="sep-col">:</td><td id="out-marital"></td></tr>
+                    <tr><td class="label-col">Gender</td><td class="sep-col">:</td><td id="out-gender"></td></tr>
+                    <tr><td class="label-col">Cast</td><td class="sep-col">:</td><td id="out-caste"></td></tr>
+                    <tr><td class="label-col">Date of Birth</td><td class="sep-col">:</td><td id="out-dob"></td></tr>
+                    <tr><td class="label-col">Height</td><td class="sep-col">:</td><td id="out-height"></td></tr>
+                    <tr><td class="label-col">Weight</td><td class="sep-col">:</td><td id="out-weight"></td></tr>
+                    <tr><td class="label-col">Religion</td><td class="sep-col">:</td><td id="out-religion"></td></tr>
+                    <tr><td class="label-col">Nationality</td><td class="sep-col">:</td><td id="out-nation"></td></tr>
+                    <tr><td class="label-col">Languages Known</td><td class="sep-col">:</td><td id="out-lang"></td></tr>
+                    <tr><td class="label-col">Skills</td><td class="sep-col">:</td><td id="out-skills"></td></tr>
+                </table>
+
+                <div class="doc-section-title">Present Address</div>
+                
+                <div class="present-address-block" id="out-address-block">
+                    <!-- Address will be injected here -->
+                </div>
+
+                <div class="doc-section-title">Education Details</div>
+                <table class="edu-table">
+                    <thead>
+                        <tr>
+                            <th>Qualifications</th>
+                            <th>School/Collage/University Name</th>
+                            <th>Year of Pass</th>
+                            <th>Total Marks/Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="out-edu-body">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+
+                <div class="doc-declaration">
+                    <strong>Disclaimer:</strong> I do hereby declare that all the above information is true to the best of my knowledge and belief.
+                </div>
+
+                <table class="doc-footer">
+                    <tr>
+                        <td style="width: 50%; vertical-align: bottom;">
+                            Date: <span id="out-date"></span><br><br>
+                            Place: <span id="out-place"></span>
+                        </td>
+                        <td style="width: 50%; text-align: right; vertical-align: bottom;">
+                            <div class="signature-area">
+                                <img id="sig-img" src="" style="display:none;">
+                            </div>
+                            <div style="font-weight: bold; border-top: 1px dashed #000; display: inline-block; padding-top: 5px; min-width: 200px; text-align: center;">Signature</div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // --- GLOBAL VARS FOR CROPPER ---
+        let cropper;
+        const imageElement = document.getElementById('image-to-crop');
+        const modal = document.getElementById('cropper-modal');
+
+        // --- Live Update Logic ---
+        function update() {
+            const fields = [
+                'name', 'email', 'phone', 'father', 'height', 'weight', 'caste', 'marital', 
+                'nation', 'religion', 'lang', 'skills', 
+                'date', 'place'
+            ];
+
+            fields.forEach(id => {
+                const el = document.getElementById('in-' + id);
+                const out = document.getElementById('out-' + id);
+                if(el && out) out.innerText = el.value;
+            });
+
+            // Date Format
+            const dobIn = document.getElementById('in-dob').value;
+            if(dobIn) {
+                const d = new Date(dobIn);
+                document.getElementById('out-dob').innerText = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+            }
+            
+            document.getElementById('out-gender').innerText = document.getElementById('in-gender').value;
+        }
+
+        // --- UPDATED: Address Update Logic (Single Block) ---
+        function updateAddress() {
+            const addressRaw = document.getElementById('in-address').value;
+            document.getElementById('out-address-block').innerText = addressRaw;
+        }
+
+        // --- DYNAMIC EDUCATION LOGIC ---
+        let eduCount = 0;
+
+        function addEducationRow(qual = '', school = '', year = '', marks = '') {
+            eduCount++;
+            const container = document.getElementById('education-container');
+            const div = document.createElement('div');
+            div.className = 'edu-entry';
+            div.id = `edu-row-${eduCount}`;
+            
+            div.innerHTML = `
+                <button class="edu-remove" onclick="removeEducationRow(${eduCount})"><i data-lucide="trash-2" style="width:16px;"></i></button>
+                <div class="form-group">
+                    <label>Qualification</label>
+                    <input type="text" class="glass-input edu-qual" placeholder="e.g. 10th / 12th" oninput="renderEducation()" value="${qual}">
+                </div>
+                <div class="form-group">
+                    <label>School / University</label>
+                    <input type="text" class="glass-input edu-school" placeholder="Institute Name" oninput="renderEducation()" value="${school}">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="text" class="glass-input edu-year" placeholder="Year" oninput="renderEducation()" value="${year}">
+                    </div>
+                    <div class="form-group">
+                        <label>Percentage/Marks</label>
+                        <input type="text" class="glass-input edu-marks" placeholder="%" oninput="renderEducation()" value="${marks}">
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(div);
+            lucide.createIcons();
+            renderEducation();
+        }
+
+        function removeEducationRow(id) {
+            const row = document.getElementById(`edu-row-${id}`);
+            if (row) row.remove();
+            renderEducation();
+        }
+
+        function renderEducation() {
+            const tbody = document.getElementById('out-edu-body');
+            tbody.innerHTML = '';
+            
+            const rows = document.querySelectorAll('.edu-entry');
+            rows.forEach(row => {
+                const qual = row.querySelector('.edu-qual').value;
+                const school = row.querySelector('.edu-school').value;
+                const year = row.querySelector('.edu-year').value;
+                const marks = row.querySelector('.edu-marks').value;
+                
+                // Only add if at least one field has data
+                if (qual || school || year || marks) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${qual}</td><td>${school}</td><td>${year}</td><td>${marks}</td>`;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+
+        // --- Signature Loader (Simple) ---
+        function loadFile(event, imgId, placeholderId) {
+            const output = document.getElementById(imgId);
+            if(event.target.files[0]) {
+                output.src = URL.createObjectURL(event.target.files[0]);
+                output.style.display = 'block';
+                if(placeholderId) {
+                    document.getElementById(placeholderId).style.display = 'none';
+                }
+            }
+        }
+
+        // --- PHOTO CROPPER & EDITING LOGIC ---
+        function initPhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imageElement.src = e.target.result;
+                    openModal();
+                };
+                reader.readAsDataURL(file);
+            }
+            // Reset input so same file can be selected again
+            event.target.value = '';
+        }
+
+        function openModal() {
+            modal.style.display = 'flex';
+            if (cropper) {
+                cropper.destroy();
+            }
+            cropper = new Cropper(imageElement, {
+                aspectRatio: 3.5 / 4.5, // Standard Passport Ratio
+                viewMode: 1,
+                background: false
+            });
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
+
+        function cropImage() {
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 350, height: 450 // Optimize size
+                });
+                
+                const finalImage = document.getElementById('photo-img');
+                finalImage.src = canvas.toDataURL();
+                finalImage.style.display = 'block';
+                document.getElementById('photo-ph').style.display = 'none';
+                
+                closeModal();
+            }
+        }
+
+        // Simple Client-Side "Magic Remove" 
+        function magicRemoveBackground() {
+            if (!cropper) return;
+            
+            const canvas = cropper.getCroppedCanvas();
+            const ctx = canvas.getContext('2d');
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+            
+            // Threshold for "White" (0-255)
+            const threshold = 230; 
+
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                
+                // If pixel is very bright/white
+                if (r > threshold && g > threshold && b > threshold) {
+                    data[i + 3] = 0; // Set Alpha to 0 (Transparent)
+                }
+            }
+            
+            ctx.putImageData(imgData, 0, 0);
+            
+            cropper.destroy();
+            imageElement.src = canvas.toDataURL();
+            cropper = new Cropper(imageElement, {
+                aspectRatio: 3.5 / 4.5,
+                viewMode: 1,
+                background: true 
+            });
+        }
+
+        // --- Export Actions ---
+
+        async function saveAsImage() {
+            const element = document.getElementById('resume-sheet');
+            // Higher scale for crisp image export
+            const canvas = await html2canvas(element, { scale: 3, useCORS: true });
+            const link = document.createElement('a');
+            link.download = 'Biodata.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        async function saveAsPDF() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById('resume-sheet');
+            
+            // Generate canvas for PDF
+            const canvas = await html2canvas(element, { scale: 3 });
+            const imgData = canvas.toDataURL('image/png');
+            
+            // A4 dimensions (mm)
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('Biodata.pdf');
+        }
+
+        function saveAsWord() {
+            const clone = document.getElementById("resume-sheet").cloneNode(true);
+            
+            // Add border attribute explicitly for Word compatibility
+            clone.querySelectorAll('table').forEach(tbl => {
+                if(tbl.classList.contains('edu-table')) {
+                    tbl.border = '1';
+                }
+            });
+
+            const header = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                      xmlns:w='urn:schemas-microsoft-com:office:word' 
+                      xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>Biodata</title>
+                    <style>
+                        body { font-family: 'Times New Roman', serif; }
+                        table { border-collapse: collapse; width: 100%; }
+                        td, th { padding: 5px; }
+                        .edu-table td, .edu-table th { border: 1px solid black; }
+                    </style>
+                </head><body>`;
+            
+            const footer = "</body></html>";
+            const sourceHTML = header + clone.innerHTML + footer;
+            
+            const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+            const fileDownload = document.createElement("a");
+            document.body.appendChild(fileDownload);
+            fileDownload.href = source;
+            fileDownload.download = 'Biodata.doc';
+            fileDownload.click();
+            document.body.removeChild(fileDownload);
+        }
+
+        // Init
+        update();
+        updateAddress();
+        addEducationRow('10th', '', '', ''); // Add one default row
+    </script>
+
+</body>
+</html>
