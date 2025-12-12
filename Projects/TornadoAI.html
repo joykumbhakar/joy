@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Tornado AI | UI Prototype</title>
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2438/2438078.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Theme Config */
+            --bg-color: #f0f2f5;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent-primary: #4f46e5;
+            --accent-glow: rgba(79, 70, 229, 0.15);
+
+            /* Glass */
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-blur: 20px;
+            --sidebar-bg: rgba(255, 255, 255, 0.85);
+
+            /* Chat */
+            --msg-user-bg: #4f46e5;
+            --msg-user-text: #ffffff;
+            --msg-ai-bg: rgba(255, 255, 255, 0.6);
+
+            /* Canvas */
+            --canvas-bg: #ffffff;
+            --canvas-header: #f8fafc;
+
+            /* Markdown Extras */
+            --table-head-bg: rgba(0, 0, 0, 0.05);
+            --table-border: rgba(0, 0, 0, 0.1);
+            --quote-border: #4f46e5;
+            --quote-bg: rgba(79, 70, 229, 0.05);
+            --hr-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            --bg-color: #020617;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-primary: #818cf8;
+            --accent-glow: rgba(129, 140, 248, 0.15);
+
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --sidebar-bg: rgba(2, 6, 23, 0.8);
+
+            --msg-user-bg: #4f46e5;
+            --msg-user-text: #ffffff;
+            --msg-ai-bg: rgba(30, 41, 59, 0.6);
+
+            --canvas-bg: #0f172a;
+            --canvas-header: #1e293b;
+
+            /* Markdown Extras */
+            --table-head-bg: rgba(255, 255, 255, 0.05);
+            --table-border: rgba(255, 255, 255, 0.1);
+            --quote-border: #818cf8;
+            --quote-bg: rgba(129, 140, 248, 0.1);
+            --hr-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        /* --- BACKGROUND --- */
+        .liquid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(20px, -20px) scale(1.1);
+            }
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: #c7d2fe;
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: #e9d5ff;
+        }
+
+        body.dark-mode .blob-1 {
+            background: #312e81;
+            opacity: 0.3;
+        }
+
+        body.dark-mode .blob-2 {
+            background: #581c87;
+            opacity: 0.3;
+        }
+
+        /* --- GLASS COMPONENTS --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+        }
+
+        /* --- LAYOUT UTILS --- */
+        .layout-container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--glass-border);
+            backdrop-filter: blur(30px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Chat Area */
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
+            transition: margin-right 0.3s ease;
+        }
+
+        /* Canvas (Right Panel) */
+        .canvas-panel {
+            width: 0;
+            flex-shrink: 0;
+            border-left: 1px solid var(--glass-border);
+            background: var(--canvas-bg);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .canvas-panel.open {
+            width: 45%;
+        }
+
+        /* Mobile Layout Overrides */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                height: 100%;
+                z-index: 50;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .canvas-panel {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 40;
+                transform: translateY(100%);
+                transition: transform 0.3s ease;
+                border-left: none;
+                width: 100% !important;
+            }
+
+            .canvas-panel.open {
+                transform: translateY(0);
+            }
+        }
+
+        /* --- CHAT BUBBLES --- */
+        .msg {
+            max-width: 85%;
+            padding: 1rem 1.25rem;
+            border-radius: 1.25rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            position: relative;
+            animation: fadeUp 0.3s ease-out;
+        }
+
+        .msg-user {
+            background: var(--msg-user-bg);
+            color: var(--msg-user-text);
+            margin-left: auto;
+            border-bottom-right-radius: 0.25rem;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+        }
+
+        .msg-ai {
+            background: var(--msg-ai-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+            border-bottom-left-radius: 0.25rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- CANVAS STYLES --- */
+        .canvas-header {
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            background: var(--canvas-header);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .canvas-content {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* --- MARKDOWN & CODE STYLING --- */
+        /* Code Blocks */
+        .code-wrapper {
+            margin: 1rem 0;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            background: #1e293b;
+            /* Dark bg for code always looks better */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .code-lang {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+        }
+
+        .copy-btn:hover {
+            color: white;
+        }
+
+        pre {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+        }
+
+        .hljs {
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* Markdown Typography */
+        .prose h1,
+        .prose h2,
+        .prose h3,
+        .prose h4 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .prose h1 {
+            font-size: 1.5em;
+        }
+
+        .prose h2 {
+            font-size: 1.25em;
+        }
+
+        .prose h3 {
+            font-size: 1.1em;
+        }
+
+        .prose p {
+            margin-bottom: 1em;
+        }
+
+        .prose p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Lists */
+        .prose ul,
+        .prose ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1em;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+        }
+
+        .prose ol {
+            list-style-type: decimal;
+        }
+
+        .prose li {
+            margin-bottom: 0.25em;
+        }
+
+        /* Inline Code */
+        .prose :not(pre)>code {
+            background: rgba(150, 150, 150, 0.2);
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: inherit;
+        }
+
+        /* Blockquotes */
+        .prose blockquote {
+            border-left: 4px solid var(--quote-border);
+            background: var(--quote-bg);
+            padding: 0.5rem 1rem;
+            margin: 1em 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+            font-style: italic;
+        }
+
+        /* Links */
+        .prose a {
+            color: var(--accent-primary);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .prose a:hover {
+            opacity: 0.8;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1em 0;
+            border-radius: 0.5rem;
+            border: 1px solid var(--table-border);
+        }
+
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+
+        .prose th {
+            background: var(--table-head-bg);
+            text-align: left;
+            padding: 0.75rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--table-border);
+        }
+
+        .prose td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--table-border);
+        }
+
+        .prose tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* HR */
+        .prose hr {
+            border: 0;
+            border-top: 1px solid var(--hr-color);
+            margin: 1.5em 0;
+        }
+
+        /* --- Input Area --- */
+        .input-area {
+            padding: 1rem;
+            background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+            z-index: 20;
+        }
+
+        .input-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: flex-end;
+            padding: 0.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-box:focus-within {
+            border-color: var(--accent-primary);
+            box-shadow: 0 8px 32px var(--accent-glow);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Tabs */
+        .mobile-tabs {
+            display: none;
+            height: 3rem;
+            background: var(--sidebar-bg);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        @media(max-width: 768px) {
+            .mobile-tabs.active {
+                display: flex;
+            }
+        }
+
+        .typing-dot {
+            width: 5px;
+            height: 5px;
+            background: currentColor;
+            border-radius: 50%;
+            display: inline-block;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="liquid-bg">
+        <div class="blob-container">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
+        <div
+            style="position: absolute; inset:0; background: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.04\'/%3E%3C/svg%3E'); mix-blend-mode: overlay;">
+        </div>
+    </div>
+
+    <div class="layout-container">
+
+        <aside id="sidebar" class="sidebar">
+            <div class="p-4 border-b border-[var(--glass-border)] flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                        <svg width="400" height="400" viewBox="0 0 400 400" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="tornado-gradient" x1="100" y1="300" x2="300" y2="50"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#0052D4" />
+                                    <stop offset="50%" stop-color="#4364F7" />
+                                    <stop offset="100%" stop-color="#6FB1FC" />
+                                </linearGradient>
+                                <linearGradient id="circuit-gradient" x1="150" y1="280" x2="250" y2="100"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#6FB1FC" />
+                                    <stop offset="100%" stop-color="#00C9FF" />
+                                </linearGradient>
+                            </defs>
+
+                            <g transform="translate(50, 50)">
+                                <path
+                                    d="M200,300 C160,290 130,250 130,200 C130,140 160,100 200,80 C240,60 280,90 280,150 C280,210 240,260 200,300 Z M200,270 C230,240 250,190 250,150 C250,110 230,90 200,100 C170,110 150,160 150,200 C150,240 170,260 200,270 Z"
+                                    fill="url(#tornado-gradient)" opacity="0.9" />
+
+                                <g stroke="url(#circuit-gradient)" stroke-width="2" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M165,245 L180,230 L175,210 L195,190 L190,160 L210,140 L205,110" />
+                                    <path d="M180,230 L200,235" />
+                                    <path d="M195,190 L220,185" />
+                                    <path d="M210,140 L230,130" />
+                                </g>
+
+                                <g fill="#00C9FF">
+                                    <circle cx="165" cy="245" r="3" />
+                                    <circle cx="180" cy="230" r="2.5" />
+                                    <circle cx="195" cy="190" r="2.5" />
+                                    <circle cx="210" cy="140" r="3" />
+                                    <circle cx="205" cy="110" r="2.5" />
+                                    <circle cx="200" cy="235" r="2" />
+                                    <circle cx="220" cy="185" r="2" />
+                                    <circle cx="230" cy="130" r="2" />
+                                    <circle cx="200" cy="180" r="5" fill="#FFFFFF" stroke="#00C9FF" stroke-width="2" />
+                                </g>
+
+                                <text x="200" y="350" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700"
+                                    font-size="36" text-anchor="middle" fill="#0f172a">
+                                    Tornado<tspan fill="#4364F7">AI</tspan>
+                                </text>
+                                <text x="200" y="375" font-family="'Plus Jakarta Sans', sans-serif" font-weight="500"
+                                    font-size="14" text-anchor="middle" fill="#64748b" letter-spacing="1">
+                                    INTELLIGENT MOMENTUM
+                                </text>
+                            </g>
+                        </svg>
+                    </div>
+                    <span class="font-bold text-lg tracking-tight">TornadoAI</span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden p-2 text-[var(--text-secondary)]"><i data-lucide="x"
+                        class="w-5 h-5"></i></button>
+            </div>
+
+            <div class="p-4">
+                <button onclick="startNewChat()"
+                    class="w-full py-3 px-4 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:bg-white/50 transition-all flex items-center gap-3 text-sm font-bold shadow-sm group">
+                    <div
+                        class="w-6 h-6 rounded bg-[var(--accent-primary)] text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    </div>
+                    New Chat
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-2 space-y-1" id="history-list">
+                <div
+                    class="px-3 py-2 text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-70">
+                    Mock History</div>
+                <div onclick="alert('This is a prototype history item.')"
+                    class="px-3 py-2.5 mx-1 rounded-xl cursor-pointer text-sm truncate transition-all flex items-center gap-3 text-[var(--text-secondary)] hover:bg-white/10">
+                    <i data-lucide="message-square" class="w-4 h-4 opacity-70"></i>
+                    <span>React Navbar Design</span>
+                </div>
+                <div onclick="alert('This is a prototype history item.')"
+                    class="px-3 py-2.5 mx-1 rounded-xl cursor-pointer text-sm truncate transition-all flex items-center gap-3 text-[var(--text-secondary)] hover:bg-white/10">
+                    <i data-lucide="message-square" class="w-4 h-4 opacity-70"></i>
+                    <span>App Logo Ideas</span>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-[var(--glass-border)]">
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors"
+                    onclick="openSettings()">
+                    <div class="flex items-center gap-3">
+                        <div id="user-profile-section" class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-white text-xs font-bold shadow-md border-2 border-white/20">
+                                D
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-[var(--text-primary)] whitespace-nowrap">Demo User
+                                </div>
+                                <div class="text-[10px] text-[var(--text-secondary)] font-medium">Prototype Mode</div>
+                            </div>
+                        </div>
+                    </div>
+                    <i data-lucide="settings" class="w-4 h-4 text-[var(--text-secondary)]"></i>
+                </div>
+            </div>
+        </aside>
+
+        <section class="main-chat">
+            <header
+                class="h-16 flex items-center justify-between px-4 md:px-6 border-b border-[var(--glass-border)] bg-[var(--glass-bg)]/50 backdrop-blur-sm z-10 shrink-0">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 text-[var(--text-secondary)]"><i
+                            data-lucide="menu" class="w-6 h-6"></i></button>
+                    <div
+                        class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--glass-bg)] border border-[var(--glass-border)] text-sm font-semibold shadow-sm">
+                        <span class="relative flex h-2 w-2">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                        </span>
+                        TornadoAI
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleTheme()"
+                        class="p-2 rounded-lg hover:bg-[var(--glass-border)] text-[var(--text-secondary)]">
+                        <i data-lucide="sun" class="w-5 h-5 hidden dark-icon"></i>
+                        <i data-lucide="moon" class="w-5 h-5 light-icon"></i>
+                    </button>
+                    <button id="canvas-toggle-btn" onclick="toggleCanvas()"
+                        class="p-2 rounded-lg hover:bg-[var(--glass-border)] text-[var(--text-secondary)] hidden">
+                        <i data-lucide="panel-right-open" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div id="chat-box" class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+                <div id="welcome"
+                    class="h-full flex flex-col items-center justify-center text-center p-6 opacity-100 transition-opacity">
+                    <div
+                        class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 flex items-center justify-center mb-6 border border-white/20 shadow-xl backdrop-blur-md">
+                        <svg width="400" height="400" viewBox="0 0 400 400" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="tornado-gradient" x1="100" y1="300" x2="300" y2="50"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#0052D4" />
+                                    <stop offset="50%" stop-color="#4364F7" />
+                                    <stop offset="100%" stop-color="#6FB1FC" />
+                                </linearGradient>
+                                <linearGradient id="circuit-gradient" x1="150" y1="280" x2="250" y2="100"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#6FB1FC" />
+                                    <stop offset="100%" stop-color="#00C9FF" />
+                                </linearGradient>
+                            </defs>
+
+                            <g transform="translate(50, 50)">
+                                <path
+                                    d="M200,300 C160,290 130,250 130,200 C130,140 160,100 200,80 C240,60 280,90 280,150 C280,210 240,260 200,300 Z M200,270 C230,240 250,190 250,150 C250,110 230,90 200,100 C170,110 150,160 150,200 C150,240 170,260 200,270 Z"
+                                    fill="url(#tornado-gradient)" opacity="0.9" />
+
+                                <g stroke="url(#circuit-gradient)" stroke-width="2" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M165,245 L180,230 L175,210 L195,190 L190,160 L210,140 L205,110" />
+                                    <path d="M180,230 L200,235" />
+                                    <path d="M195,190 L220,185" />
+                                    <path d="M210,140 L230,130" />
+                                </g>
+
+                                <g fill="#00C9FF">
+                                    <circle cx="165" cy="245" r="3" />
+                                    <circle cx="180" cy="230" r="2.5" />
+                                    <circle cx="195" cy="190" r="2.5" />
+                                    <circle cx="210" cy="140" r="3" />
+                                    <circle cx="205" cy="110" r="2.5" />
+                                    <circle cx="200" cy="235" r="2" />
+                                    <circle cx="220" cy="185" r="2" />
+                                    <circle cx="230" cy="130" r="2" />
+                                    <circle cx="200" cy="180" r="5" fill="#FFFFFF" stroke="#00C9FF" stroke-width="2" />
+                                </g>
+
+                                <text x="200" y="350" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700"
+                                    font-size="36" text-anchor="middle" fill="#0f172a">
+                                    Tornado<tspan fill="#4364F7">AI</tspan>
+                                </text>
+                                <text x="200" y="375" font-family="'Plus Jakarta Sans', sans-serif" font-weight="500"
+                                    font-size="14" text-anchor="middle" fill="#64748b" letter-spacing="1">
+                                    INTELLIGENT MOMENTUM
+                                </text>
+                            </g>
+                        </svg>
+                    </div>
+                    <h2
+                        class="text-3xl md:text-4xl font-extrabold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)]">
+                        How can I help you today?</h2>
+                    <p class="text-[var(--text-secondary)] mb-8 max-w-md">Hello, World! I am TornadoAI.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl">
+                        <button onclick="setInput('Write a React component for a Navbar')"
+                            class="p-4 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:border-[var(--accent-primary)] hover:shadow-md transition-all text-left">
+                            <div class="font-bold text-sm mb-1">Simulate Code Generation</div>
+                            <div class="text-xs text-[var(--text-secondary)]">React Navbar Component</div>
+                        </button>
+                        <button onclick="setInput('How are you today?')"
+                            class="p-4 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:border-[var(--accent-primary)] hover:shadow-md transition-all text-left">
+                            <div class="font-bold text-sm mb-1">Simulate Conversation</div>
+                            <div class="text-xs text-[var(--text-secondary)]">Simple text response</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area shrink-0">
+                <div class="max-w-4xl mx-auto relative">
+                    <div id="img-preview-container"
+                        class="hidden absolute bottom-full left-0 mb-3 ml-2 p-2 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl shadow-lg backdrop-blur-md">
+                        <img id="img-preview" src="" class="h-20 rounded-lg object-cover">
+                        <button onclick="clearImage()"
+                            class="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full shadow-md hover:scale-110 transition-transform"><i
+                                data-lucide="x" class="w-3 h-3"></i></button>
+                    </div>
+
+                    <div class="input-box">
+                        <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFile(event)">
+                        <button onclick="triggerUpload()"
+                            class="p-3 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] hover:bg-[var(--glass-border)] rounded-xl transition-colors shrink-0"
+                            title="Upload Image (Demo)">
+                            <i data-lucide="paperclip" class="w-5 h-5"></i>
+                        </button>
+                        <textarea id="prompt-input" rows="1"
+                            class="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)] px-3 py-3 max-h-32 resize-none placeholder:text-[var(--text-secondary)]/70"
+                            placeholder="Type a message..."></textarea>
+                        <button onclick="sendMsg()" id="send-btn"
+                            class="p-3 bg-[var(--accent-primary)] text-white rounded-xl shadow-md hover:shadow-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0">
+                            <i data-lucide="arrow-up" class="w-5 h-5 font-bold"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="text-center mt-2 text-[10px] text-[var(--text-secondary)] opacity-60">Prototype Mode.
+                    Responses are simulated.</div>
+            </div>
+
+            <div id="mobile-tabs" class="mobile-tabs justify-around items-center md:hidden shrink-0">
+                <button onclick="showTab('chat')"
+                    class="flex-1 py-2 text-sm font-bold text-[var(--accent-primary)] border-t-2 border-[var(--accent-primary)]">Chat</button>
+                <button onclick="showTab('canvas')"
+                    class="flex-1 py-2 text-sm font-bold text-[var(--text-secondary)]">Canvas</button>
+            </div>
+        </section>
+
+        <section id="canvas-panel" class="canvas-panel">
+            <div class="canvas-header">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="code" class="w-5 h-5 text-[var(--accent-primary)]"></i>
+                    <span class="font-bold text-sm text-[var(--text-primary)]">Artifact Preview</span>
+                </div>
+                <div class="flex gap-1 bg-[var(--glass-border)] p-1 rounded-lg">
+                    <button onclick="setCanvasMode('preview')" id="btn-preview"
+                        class="px-3 py-1 rounded-md text-xs font-bold bg-white shadow-sm text-[var(--text-primary)]">Preview</button>
+                    <button onclick="setCanvasMode('code')" id="btn-code"
+                        class="px-3 py-1 rounded-md text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)]">Code</button>
+                </div>
+                <button onclick="closeCanvas()" class="md:hidden p-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="canvas-content bg-[var(--bg-color)]">
+                <iframe id="artifact-frame" class="preview-frame hidden"></iframe>
+                <div id="artifact-code" class="hidden h-full overflow-auto p-4">
+                    <pre><code id="code-content" class="language-html"></code></pre>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div id="settings-modal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md p-6 rounded-3xl shadow-2xl relative transform scale-95 opacity-0 transition-all duration-200"
+            id="settings-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">Settings (Prototype)</h2>
+                <button onclick="closeSettings()" class="text-[var(--text-secondary)]"><i data-lucide="x"
+                        class="w-5 h-5"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <p class="text-sm text-[var(--text-secondary)]">API configuration and Cloud features are disabled in
+                    this prototype build.</p>
+
+                <div class="pt-5 border-t border-[var(--glass-border)]">
+                    <button onclick="clearAllData()"
+                        class="w-full py-3 px-4 rounded-xl border border-red-500/30 text-red-500 hover:bg-red-500/10 text-sm font-bold transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Reset Simulation
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeSettings()"
+                    class="bg-[var(--accent-primary)] text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:opacity-90">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- PROTOTYPE STATE ---
+        let isGenerating = false;
+        let currentImg = null;
+        let currentArtifact = { code: "", lang: "" };
+
+        const els = {
+            chatBox: document.getElementById('chat-box'),
+            input: document.getElementById('prompt-input'),
+            sendBtn: document.getElementById('send-btn'),
+            welcome: document.getElementById('welcome'),
+            imgPreview: document.getElementById('img-preview-container'),
+            imgElement: document.getElementById('img-preview'),
+            sidebar: document.getElementById('sidebar'),
+            canvas: document.getElementById('canvas-panel'),
+            canvasToggle: document.getElementById('canvas-toggle-btn'),
+            iframe: document.getElementById('artifact-frame'),
+            codeBlock: document.getElementById('artifact-code'),
+            codeContent: document.getElementById('code-content'),
+            settings: document.getElementById('settings-modal'),
+            settingsContent: document.getElementById('settings-content')
+        };
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // Check theme preference
+            if (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches) toggleTheme();
+            else if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+
+            // Auto-resize input
+            els.input.addEventListener('input', function () {
+                this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';
+            });
+            els.input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+            });
+
+            // Markdown Setup
+            const renderer = new marked.Renderer();
+            renderer.code = function (code, language) {
+                const validLang = highlight.getLanguage(language) ? language : 'plaintext';
+                const highlighted = highlight.highlight(code, { language: validLang }).value;
+                return `<div class="code-wrapper"><div class="code-header"><span class="code-lang">${validLang}</span><button class="copy-btn">Mock Copy</button></div><pre class="!m-0 !p-4 overflow-x-auto text-sm"><code class="hljs ${validLang}">${highlighted}</code></pre></div>`;
+            };
+            marked.setOptions({ renderer: renderer, gfm: true, breaks: true });
+        });
+
+        // --- CORE UI LOGIC ---
+
+        function sendMsg() {
+            const text = els.input.value.trim();
+            if ((!text && !currentImg) || isGenerating) return;
+
+            // UI Updates
+            els.welcome.style.display = 'none';
+            els.input.value = '';
+            els.input.style.height = 'auto';
+            isGenerating = true;
+            els.sendBtn.disabled = true;
+
+            // 1. Show User Message
+            appendMsg('user', text, currentImg);
+
+            // Clear inputs
+            currentImg = null;
+            document.getElementById('img-preview-container').classList.add('hidden');
+
+            // 2. Show Loading
+            const loadId = showLoading();
+
+            // 3. SIMULATE AI DELAY AND RESPONSE
+            setTimeout(() => {
+                document.getElementById(loadId).remove();
+
+                // Determine simulated response based on keywords
+                let mockResponse = "";
+                const lowerText = text.toLowerCase();
+
+                if (lowerText.includes("code") || lowerText.includes("html") || lowerText.includes("react")) {
+                    mockResponse = "Sure! Here is a sample code artifact for that request:\n\n```html\n<h1>Hello World</h1>\n<p>This is a generated artifact in the UI Prototype.</p>\n<button>Click Me</button>\n```\n\nI have opened the canvas panel to the right to show the preview.";
+                    detectAndRenderArtifact(mockResponse);
+                } else if (lowerText.includes("image") || lowerText.includes("picture")) {
+                    mockResponse = "I can see the image you uploaded. In this prototype, I don't actually process it, but the UI handles the attachment display correctly.";
+                } else {
+                    mockResponse = "This is a **simulated response**. \n\nThe UI is fully functional (sidebar, themes, markdown rendering), but the API connection has been removed.";
+                }
+
+                appendMsg('model', mockResponse);
+                isGenerating = false;
+                els.sendBtn.disabled = false;
+                els.input.focus();
+
+            }, 1500); // 1.5s simulated delay
+        }
+
+        function appendMsg(role, text, img = null) {
+            const div = document.createElement('div');
+            div.className = `msg ${role === 'user' ? 'msg-user' : 'msg-ai'}`;
+            let html = '';
+            if (img) html += `<img src="${img}" class="max-w-xs rounded-lg mb-2 border border-white/20">`;
+            html += role === 'model' ? marked.parse(text) : `<div class="whitespace-pre-wrap">${text}</div>`;
+            div.innerHTML = html;
+            els.chatBox.appendChild(div);
+            els.chatBox.scrollTop = els.chatBox.scrollHeight;
+            lucide.createIcons();
+        }
+
+        function showLoading() {
+            const id = 'load-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'msg msg-ai w-16 flex items-center justify-center gap-1';
+            div.innerHTML = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>`;
+            els.chatBox.appendChild(div);
+            els.chatBox.scrollTop = els.chatBox.scrollHeight;
+            return id;
+        }
+
+        // --- ARTIFACT / CANVAS MOCK LOGIC ---
+        function detectAndRenderArtifact(text) {
+            const match = text.match(/```(\w+)?\n([\s\S]*?)```/);
+            if (match) {
+                currentArtifact = { code: match[2], lang: match[1] || 'plaintext' };
+                els.canvasToggle.classList.remove('hidden');
+                updateCanvasContent();
+            }
+        }
+
+        function updateCanvasContent() {
+            els.canvas.classList.add('open');
+            if (['html', 'javascript', 'js'].includes(currentArtifact.lang)) {
+                const blob = new Blob([currentArtifact.code], { type: 'text/html' });
+                els.iframe.src = URL.createObjectURL(blob);
+                els.iframe.classList.remove('hidden'); els.codeBlock.classList.add('hidden');
+            } else {
+                els.codeContent.textContent = currentArtifact.code;
+                els.iframe.classList.add('hidden'); els.codeBlock.classList.remove('hidden');
+            }
+        }
+
+        // --- HELPER FUNCTIONS ---
+        window.toggleTheme = () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        };
+
+        window.toggleSidebar = () => {
+            if (window.innerWidth < 768) {
+                els.sidebar.classList.toggle('-translate-x-full');
+            } else {
+                // simple desktop toggle logic for prototype
+                els.sidebar.style.display = els.sidebar.style.display === 'none' ? 'flex' : 'none';
+            }
+        };
+
+        window.openSettings = () => {
+            els.settings.classList.remove('hidden');
+            setTimeout(() => { els.settingsContent.classList.remove('scale-95', 'opacity-0'); els.settingsContent.classList.add('scale-100', 'opacity-100'); }, 10);
+        };
+
+        window.closeSettings = () => {
+            els.settingsContent.classList.remove('scale-100', 'opacity-100'); els.settingsContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => els.settings.classList.add('hidden'), 200);
+        };
+
+        window.startNewChat = () => {
+            if (confirm("Start new simulation?")) location.reload();
+        };
+
+        window.setInput = (txt) => { els.input.value = txt; els.input.focus(); };
+        window.triggerUpload = () => document.getElementById('file-input').click();
+
+        window.handleFile = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImg = e.target.result; // Base64
+                els.imgElement.src = currentImg;
+                els.imgPreview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.clearImage = () => {
+            currentImg = null;
+            els.imgPreview.classList.add('hidden');
+            document.getElementById('file-input').value = '';
+        };
+
+        window.toggleCanvas = () => { els.canvas.classList.toggle('open'); };
+        window.closeCanvas = () => { els.canvas.classList.remove('open'); };
+        window.setCanvasMode = (mode) => {
+            if (mode === 'preview') { els.iframe.classList.remove('hidden'); els.codeBlock.classList.add('hidden'); }
+            else { els.iframe.classList.add('hidden'); els.codeBlock.classList.remove('hidden'); }
+        };
+
+        window.clearAllData = () => { location.reload(); };
+
+    </script>
+</body>
+
+</html>

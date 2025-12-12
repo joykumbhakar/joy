@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#050505">
+    <title>Liquid Glass Calculator</title>
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --accent-primary: #6366f1;
+            /* Indigo */
+            --accent-secondary: #ec4899;
+            /* Pink */
+
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.5);
+
+            /* Glass Material */
+            --glass-bg: rgba(20, 20, 20, 0.7);
+            --glass-blur: 40px;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --glass-shadow:
+                0px 4px 24px -1px rgba(0, 0, 0, 0.2),
+                inset 0px 1px 0px rgba(255, 255, 255, 0.1);
+
+            /* Button Styling */
+            --btn-bg: rgba(255, 255, 255, 0.03);
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --btn-active: rgba(255, 255, 255, 0.15);
+            --btn-radius: 1.5rem;
+
+            /* Nav Colors */
+            --nav-bg-desktop: rgba(255, 255, 255, 0.03);
+            --nav-border-desktop: 1px solid rgba(255, 255, 255, 0.05);
+            --nav-bg-mobile: rgba(10, 10, 10, 0.95);
+        }
+
+        body.light-mode {
+            --bg-color: #eef2ff;
+            --text-main: #1e1b4b;
+            --text-muted: #6366f1;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.8);
+            --glass-shadow:
+                0px 8px 32px -4px rgba(99, 102, 241, 0.15),
+                inset 0px 1px 0px rgba(255, 255, 255, 1);
+
+            --btn-bg: rgba(255, 255, 255, 0.5);
+            --btn-hover: rgba(255, 255, 255, 0.9);
+            --nav-bg-desktop: rgba(255, 255, 255, 0.4);
+            --nav-border-desktop: 1px solid rgba(255, 255, 255, 0.6);
+            --nav-bg-mobile: rgba(240, 245, 255, 0.95);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        /* --- MAIN CARD --- */
+        .app-shell {
+            width: 100%;
+            max-width: 440px;
+            height: 90vh;
+            max-height: 900px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 2.5rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            padding: 1.25rem 2rem 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+            padding-top: max(1.25rem, env(safe-area-inset-top));
+            flex-shrink: 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .icon-btn {
+            color: var(--text-muted);
+            transition: color 0.2s;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .icon-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- PROFESSIONAL NAVIGATION --- */
+        .nav-bar {
+            /* Desktop: Segmented Control Style */
+            position: relative;
+            margin: 0.5rem 1.5rem 1rem 1.5rem;
+            background: var(--nav-bg-desktop);
+            border: var(--nav-border-desktop);
+            padding: 4px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 2px;
+            z-index: 100;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 0;
+            border-radius: 8px;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-btn i {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 2px;
+            transition: transform 0.2s;
+        }
+
+        .nav-label {
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            opacity: 0.8;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-btn.active {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+        }
+
+        .nav-btn.active i {
+            color: var(--accent-primary);
+        }
+
+        /* --- DISPLAY AREA --- */
+        .display-area {
+            flex-grow: 1;
+            padding: 0 2rem 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            text-align: right;
+            min-height: 120px;
+            cursor: pointer;
+        }
+
+        .display-area:active {
+            opacity: 0.7;
+        }
+
+        .calc-expression {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            min-height: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .calc-current {
+            font-size: 4rem;
+            font-weight: 600;
+            line-height: 1;
+            background: linear-gradient(to bottom, var(--text-main) 20%, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            word-break: break-all;
+            letter-spacing: -2px;
+        }
+
+        .copy-tooltip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--accent-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .copy-tooltip.show {
+            opacity: 1;
+            transform: translate(-50%, -60%);
+        }
+
+        /* --- KEYPAD --- */
+        .keypad {
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 2rem;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button.key {
+            height: 64px;
+            border-radius: 1.2rem;
+            border: var(--glass-border);
+            background: var(--btn-bg);
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button.key:active {
+            transform: scale(0.92);
+            background: var(--btn-active);
+        }
+
+        button.key:hover {
+            background: var(--btn-hover);
+        }
+
+        .key.accent {
+            color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .key.secondary {
+            color: var(--accent-secondary);
+            font-size: 1.2rem;
+            background: rgba(236, 72, 153, 0.1);
+        }
+
+        .key.submit {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 8px 20px -4px rgba(99, 102, 241, 0.5);
+            border: none;
+        }
+
+        /* Advanced Panel */
+        .advanced-ops {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .sci-row {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+            animation: slideDown 0.2s ease;
+        }
+
+        .sci-row.show {
+            display: grid;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mini-btn {
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .mini-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .mini-btn.active {
+            color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        /* --- FORMS --- */
+        .tool-layout {
+            padding: 1.5rem 2rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            padding-bottom: 2rem;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            line-height: 1.2;
+            word-break: break-all;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .glass-input-group {
+            position: relative;
+        }
+
+        .glass-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 1rem;
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        .light-mode .glass-input {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .input-label {
+            position: absolute;
+            top: -0.6rem;
+            left: 1rem;
+            font-size: 0.75rem;
+            background: var(--bg-color);
+            padding: 0 6px;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        /* --- MOBILE OPTIMIZATION (BOTTOM NAV) --- */
+        @media (max-width: 640px) {
+            .app-shell {
+                width: 100%;
+                height: 100%;
+                max-width: none;
+                max-height: none;
+                border-radius: 0;
+            }
+
+            .glass-panel {
+                border-radius: 0;
+                border: none;
+                box-shadow: none;
+            }
+
+            /* Professional Bottom Nav */
+            .nav-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                margin: 0;
+                border-radius: 0;
+                background: var(--nav-bg-mobile);
+                backdrop-filter: blur(30px);
+                border: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                display: flex;
+                justify-content: space-around;
+                padding: 10px 0 calc(10px + env(safe-area-inset-bottom)) 0;
+                gap: 0;
+            }
+
+            .nav-btn {
+                padding: 4px 0;
+                flex: 1;
+                border-radius: 0;
+                background: transparent !important;
+                box-shadow: none !important;
+                opacity: 0.6;
+            }
+
+            .nav-btn.active {
+                opacity: 1;
+                background: transparent;
+            }
+
+            .nav-btn.active i {
+                transform: translateY(-2px);
+                color: var(--accent-primary);
+            }
+
+            /* Adjust content padding for bottom nav */
+            .keypad,
+            .tool-layout {
+                padding-bottom: 6rem;
+            }
+
+            button.key {
+                font-size: 1.4rem;
+                height: 60px;
+            }
+        }
+
+        /* --- UTILS --- */
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Calendar Styles */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 1rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-header {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .day-cell:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .day-cell.today {
+            border: 2px solid var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .day-cell.selected {
+            background: var(--accent-primary);
+            color: white;
+            font-weight: 700;
+        }
+
+        .day-cell.has-note::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent-secondary);
+        }
+
+        /* History Sheet */
+        .history-sheet {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: 320px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(50px);
+            z-index: 50;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-sheet.open {
+            transform: translateX(0);
+        }
+
+        .sheet-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .hist-item {
+            padding: 1rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-shell">
+        <div class="glass-panel">
+
+            <!-- Header -->
+            <div class="header">
+                <div class="flex">
+                    <button class="icon-btn" onclick="toggleHistory()"><i data-lucide="history" size="20"></i></button>
+                    <button class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun-moon" size="20"></i></button>
+                </div>
+            </div>
+
+            <!-- Professional Navigation (Segmented on Desktop / Bottom Bar on Mobile) -->
+            <div class="nav-bar" id="main-nav">
+                <button class="nav-btn active" onclick="switchView('calc', this)">
+                    <i data-lucide="calculator"></i>
+                    <span class="nav-label">Calc</span>
+                </button>
+                <button class="nav-btn" onclick="switchView('percent', this)">
+                    <i data-lucide="percent"></i>
+                    <span class="nav-label">Perc</span>
+                </button>
+                <button class="nav-btn" onclick="switchView('emi', this)">
+                    <i data-lucide="dollar-sign"></i>
+                    <span class="nav-label">Finance</span>
+                </button>
+                <button class="nav-btn" onclick="switchView('unit', this)">
+                    <i data-lucide="arrow-left-right"></i>
+                    <span class="nav-label">Convert</span>
+                </button>
+                <button class="nav-btn" onclick="switchView('age', this)">
+                    <i data-lucide="user-square"></i>
+                    <span class="nav-label">Age</span>
+                </button>
+                <button class="nav-btn" onclick="switchView('calendar', this)">
+                    <i data-lucide="calendar"></i>
+                    <span class="nav-label">Plan</span>
+                </button>
+            </div>
+
+            <!-- VIEW 1: CALCULATOR -->
+            <div id="view-calc" class="flex flex-col h-full fade-in">
+                <div class="display-area" onclick="copyResult()">
+                    <div class="calc-expression" id="calc-preview"></div>
+                    <div class="calc-current" id="calc-display">0</div>
+                    <div class="copy-tooltip" id="copy-tooltip">Copied!</div>
+                </div>
+
+                <div class="keypad">
+                    <div class="advanced-ops">
+                        <button class="mini-btn" onclick="toggleScientific()" id="sci-toggle">Sci</button>
+                        <button class="mini-btn" onclick="insert('(')">(</button>
+                        <button class="mini-btn" onclick="insert(')')">)</button>
+                        <button class="mini-btn" onclick="backspace()">⌫</button>
+                    </div>
+
+                    <div class="sci-row" id="sci-row">
+                        <button class="key secondary" style="height: 50px; font-size: 1rem"
+                            onclick="insert('sin(')">sin</button>
+                        <button class="key secondary" style="height: 50px; font-size: 1rem"
+                            onclick="insert('cos(')">cos</button>
+                        <button class="key secondary" style="height: 50px; font-size: 1rem"
+                            onclick="insert('tan(')">tan</button>
+                        <button class="key secondary" style="height: 50px; font-size: 1rem"
+                            onclick="insert('√(')">√</button>
+                        <button class="key secondary" style="height: 50px; font-size: 1rem"
+                            onclick="insert('ln(')">ln</button>
+                        <button class="key secondary" style="height: 50px; font-size: 1rem"
+                            onclick="insert('π')">π</button>
+                        <button class="key secondary" style="height: 50px; font-size: 1rem"
+                            onclick="insert('^')">^</button>
+                        <button class="key secondary" style="height: 50px; font-size: 1rem"
+                            onclick="insert('e')">e</button>
+                    </div>
+
+                    <div class="grid-layout">
+                        <button class="key secondary" onclick="clearAll()">AC</button>
+                        <button class="key accent" onclick="insert('/')">÷</button>
+                        <button class="key accent" onclick="insert('*')">×</button>
+                        <button class="key accent" onclick="insert('-')">−</button>
+
+                        <button class="key" onclick="insert('7')">7</button>
+                        <button class="key" onclick="insert('8')">8</button>
+                        <button class="key" onclick="insert('9')">9</button>
+                        <button class="key accent" style="grid-row: span 2; height: 100%; border-radius: 1.5rem;"
+                            onclick="insert('+')">+</button>
+
+                        <button class="key" onclick="insert('4')">4</button>
+                        <button class="key" onclick="insert('5')">5</button>
+                        <button class="key" onclick="insert('6')">6</button>
+
+                        <button class="key" onclick="insert('1')">1</button>
+                        <button class="key" onclick="insert('2')">2</button>
+                        <button class="key" onclick="insert('3')">3</button>
+                        <button class="key submit" style="grid-row: span 2; height: 100%; border-radius: 1.5rem;"
+                            onclick="calculate()">=</button>
+
+                        <button class="key" style="grid-column: span 2; width: 100%;" onclick="insert('0')">0</button>
+                        <button class="key" onclick="insert('.')">.</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: PERCENTAGE -->
+            <div id="view-percent" class="hidden tool-layout fade-in">
+                <div class="result-card">
+                    <div class="result-label">Calculated Percentage</div>
+                    <div class="result-value" id="res-percent">0%</div>
+                </div>
+
+                <div class="glass-input-group">
+                    <span class="input-label">Part Value</span>
+                    <input type="number" id="inp-p-val" class="glass-input" placeholder="e.g. 25"
+                        oninput="runPercent()">
+                </div>
+
+                <div class="glass-input-group">
+                    <span class="input-label">Total Value</span>
+                    <input type="number" id="inp-p-tot" class="glass-input" placeholder="e.g. 100"
+                        oninput="runPercent()">
+                </div>
+            </div>
+
+            <!-- VIEW 3: EMI -->
+            <div id="view-emi" class="hidden tool-layout fade-in">
+                <div class="result-card">
+                    <div class="result-label">Monthly Payment</div>
+                    <div class="result-value" id="res-emi">$0.00</div>
+                </div>
+
+                <div class="input-grid">
+                    <div class="glass-input-group full-width">
+                        <span class="input-label">Loan Amount</span>
+                        <input type="number" id="inp-e-princ" class="glass-input" placeholder="50000"
+                            oninput="runEMI()">
+                    </div>
+
+                    <div class="glass-input-group">
+                        <span class="input-label">Interest (%)</span>
+                        <input type="number" id="inp-e-rate" class="glass-input" placeholder="5.5" oninput="runEMI()">
+                    </div>
+
+                    <div class="glass-input-group">
+                        <span class="input-label">Years</span>
+                        <input type="number" id="inp-e-time" class="glass-input" placeholder="10" oninput="runEMI()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 4: UNIT CONVERTER -->
+            <div id="view-unit" class="hidden tool-layout fade-in">
+                <div class="input-grid">
+                    <div class="glass-input-group full-width">
+                        <span class="input-label">Category</span>
+                        <select id="unit-cat" class="glass-input" onchange="updateUnits()">
+                            <option value="length">Length</option>
+                            <option value="weight">Weight</option>
+                            <option value="temp">Temperature</option>
+                            <option value="data">Data</option>
+                        </select>
+                    </div>
+
+                    <div class="glass-input-group">
+                        <input type="number" id="u-val-1" class="glass-input" placeholder="0" oninput="runUnit(1)">
+                    </div>
+                    <div class="glass-input-group">
+                        <select id="u-unit-1" class="glass-input" onchange="runUnit(1)"></select>
+                    </div>
+
+                    <div class="glass-input-group">
+                        <input type="number" id="u-val-2" class="glass-input" placeholder="0" oninput="runUnit(2)">
+                    </div>
+                    <div class="glass-input-group">
+                        <select id="u-unit-2" class="glass-input" onchange="runUnit(2)"></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 5: AGE CALCULATOR -->
+            <div id="view-age" class="hidden tool-layout fade-in">
+                <div class="result-card">
+                    <div class="result-label">Your Age</div>
+                    <div class="result-value" id="res-age-y" style="font-size: 2rem;">0 Years</div>
+                    <div class="text-sm text-white/50 mt-1" id="res-age-d">0 Months, 0 Days</div>
+                </div>
+
+                <div class="glass-input-group">
+                    <span class="input-label">Date of Birth</span>
+                    <input type="date" id="inp-dob" class="glass-input" onchange="runAge()">
+                </div>
+
+                <div class="glass-panel p-4 mt-4 bg-white/5 rounded-xl border border-white/10">
+                    <div class="text-xs uppercase tracking-widest text-white/50 mb-2">Next Birthday</div>
+                    <div class="text-xl font-bold text-pink-400" id="res-next-bday">---</div>
+                </div>
+            </div>
+
+            <!-- VIEW 6: CALENDAR/NOTES -->
+            <div id="view-calendar" class="hidden tool-layout fade-in">
+                <div class="calendar-header">
+                    <button class="icon-btn" onclick="changeMonth(-1)"><i data-lucide="chevron-left"
+                            size="20"></i></button>
+                    <h3 id="current-month-year"></h3>
+                    <button class="icon-btn" onclick="changeMonth(1)"><i data-lucide="chevron-right"
+                            size="20"></i></button>
+                </div>
+
+                <div class="calendar-grid" id="calendar-grid"></div>
+
+                <div class="glass-input-group mt-6">
+                    <span class="input-label" id="note-date-display">Select a date for a note</span>
+                    <textarea id="note-input" class="glass-input" style="min-height: 150px;"
+                        oninput="saveNote()"></textarea>
+                </div>
+            </div>
+
+            <!-- History Sheet -->
+            <div id="history-sheet" class="history-sheet">
+                <div class="sheet-header">
+                    <h2 class="text-lg font-bold">History</h2>
+                    <div class="flex gap-2">
+                        <button onclick="clearHistory()" class="icon-btn" title="Clear History"><i data-lucide="trash-2"
+                                size="18"></i></button>
+                        <button onclick="toggleHistory()" class="icon-btn"><i data-lucide="x" size="20"></i></button>
+                    </div>
+                </div>
+                <div class="history-list" id="history-list">
+                    <div class="text-center text-white/30 mt-8 text-sm">No recent calculations</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        /* --- LOGIC STATE --- */
+        let expression = '';
+        let history = [];
+        let scientificMode = false;
+        let currentCalendarDate = new Date();
+        let selectedNoteDate = formatDate(new Date());
+
+        /* --- DOCK & NAVIGATION LOGIC --- */
+        const mainNav = document.getElementById('main-nav');
+        const glassPanel = document.querySelector('.glass-panel');
+        const header = document.querySelector('.header');
+
+        function adjustDockPosition() {
+            if (window.innerWidth <= 640) {
+                // Mobile: Move nav to body for fixed positioning
+                if (mainNav.parentElement === glassPanel) {
+                    document.body.appendChild(mainNav);
+                }
+            } else {
+                // Desktop: Move nav back to glass panel
+                if (mainNav.parentElement === document.body) {
+                    glassPanel.insertBefore(mainNav, header.nextElementSibling);
+                }
+            }
+        }
+
+        window.addEventListener('resize', adjustDockPosition);
+        document.addEventListener('DOMContentLoaded', () => {
+            adjustDockPosition();
+            loadSettings(); // Load persisted theme & history
+        });
+
+        function switchView(viewName, btn) {
+            ['view-calc', 'view-percent', 'view-emi', 'view-unit', 'view-age', 'view-calendar'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            if (viewName === 'unit') updateUnits();
+            if (viewName === 'calendar') renderCalendar(currentCalendarDate);
+        }
+
+        /* --- UTILS --- */
+        function formatDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        /* --- KEYBOARD SUPPORT --- */
+        document.addEventListener('keydown', (e) => {
+            const key = e.key;
+            if (document.getElementById('view-calc').classList.contains('hidden')) return;
+
+            if (/[0-9.]/.test(key)) insert(key);
+            if (['+', '-', '*', '/'].includes(key)) insert(key);
+            if (key === 'Enter') calculate();
+            if (key === 'Backspace') backspace();
+            if (key === 'Escape') clearAll();
+            if (key === '(' || key === ')') insert(key);
+        });
+
+        /* --- THEME & HISTORY PERSISTENCE --- */
+        function loadSettings() {
+            // Theme
+            const isDark = localStorage.getItem('theme') !== 'light';
+            if (!isDark) document.body.classList.add('light-mode');
+
+            // History
+            const storedHist = localStorage.getItem('calcHistory');
+            if (storedHist) {
+                history = JSON.parse(storedHist);
+                renderHistory();
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        function toggleHistory() { document.getElementById('history-sheet').classList.toggle('open'); }
+
+        function addToHistory(expr, res) {
+            history.unshift({ expr, res });
+            if (history.length > 50) history.pop(); // Limit history
+            localStorage.setItem('calcHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function clearHistory() {
+            history = [];
+            localStorage.removeItem('calcHistory');
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            if (history.length === 0) {
+                list.innerHTML = '<div class="text-center text-white/30 mt-8 text-sm">No recent calculations</div>';
+                return;
+            }
+            list.innerHTML = history.map(item => `
+                <div class="hist-item" onclick="loadHist('${item.res}')">
+                    <div class="text-white/50 text-xs mb-1">${item.expr}</div>
+                    <div class="text-white font-bold text-lg">${item.res}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadHist(val) {
+            expression = val.toString();
+            updateDisplay();
+            toggleHistory();
+            // Switch to calc view logic
+            // Need to find the calc button to pass as 'btn'
+            const calcBtn = document.querySelector('.nav-btn[onclick*="calc"]');
+            switchView('calc', calcBtn);
+        }
+
+        /* --- CALCULATOR ENGINE --- */
+        function insert(char) {
+            if (expression === '0' && !isNaN(char)) expression = '';
+            if (char === '.' && expression.slice(-1) === '.') return;
+            expression += char;
+            updateDisplay();
+        }
+
+        function backspace() {
+            expression = expression.toString().slice(0, -1);
+            if (expression === '') expression = '0';
+            updateDisplay();
+        }
+
+        function clearAll() {
+            expression = '0';
+            updateDisplay();
+            document.getElementById('calc-preview').textContent = '';
+        }
+
+        function toggleScientific() {
+            scientificMode = !scientificMode;
+            const row = document.getElementById('sci-row');
+            const btn = document.getElementById('sci-toggle');
+            if (scientificMode) {
+                row.classList.add('show');
+                btn.classList.add('active');
+            } else {
+                row.classList.remove('show');
+                btn.classList.remove('active');
+            }
+        }
+
+        function calculate() {
+            try {
+                // Pre-process display string to valid JS math
+                let evalExpr = expression
+                    .replace(/\^/g, '**')
+                    .replace(/sin\(/g, 'Math.sin(')
+                    .replace(/cos\(/g, 'Math.cos(')
+                    .replace(/tan\(/g, 'Math.tan(')
+                    .replace(/√\(/g, 'Math.sqrt(')
+                    .replace(/ln\(/g, 'Math.log(')
+                    .replace(/π/g, 'Math.PI')
+                    .replace(/e/g, 'Math.E');
+
+                let res = eval(evalExpr);
+                if (!Number.isInteger(res)) res = parseFloat(res.toFixed(8));
+
+                document.getElementById('calc-preview').textContent = expression + ' =';
+                addToHistory(expression, res);
+                expression = res.toString();
+                updateDisplay();
+            } catch (e) {
+                expression = 'Error';
+                updateDisplay();
+                setTimeout(() => { expression = '0'; updateDisplay(); }, 1500);
+            }
+        }
+
+        function updateDisplay() {
+            const display = document.getElementById('calc-display');
+            if (expression.length > 9) display.style.fontSize = '2.5rem';
+            else if (expression.length > 6) display.style.fontSize = '3rem';
+            else display.style.fontSize = '4rem';
+            display.textContent = expression;
+        }
+
+        function copyResult() {
+            const text = document.getElementById('calc-display').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const tooltip = document.getElementById('copy-tooltip');
+                tooltip.classList.add('show');
+                setTimeout(() => tooltip.classList.remove('show'), 1500);
+            });
+        }
+
+        /* --- FORM ENGINES --- */
+        function runPercent() {
+            const p = parseFloat(document.getElementById('inp-p-val').value);
+            const t = parseFloat(document.getElementById('inp-p-tot').value);
+            if (p && t) document.getElementById('res-percent').textContent = ((p / t) * 100).toFixed(2) + '%';
+        }
+
+        function runEMI() {
+            const P = parseFloat(document.getElementById('inp-e-princ').value);
+            const R = parseFloat(document.getElementById('inp-e-rate').value) / 12 / 100;
+            const N = parseFloat(document.getElementById('inp-e-time').value) * 12;
+            if (P && R && N) {
+                const emi = P * R * Math.pow(1 + R, N) / (Math.pow(1 + R, N) - 1);
+                document.getElementById('res-emi').textContent = '$' + emi.toFixed(2);
+            }
+        }
+
+        /* --- UNIT CONVERTER --- */
+        const units = {
+            length: { m: 1, km: 0.001, cm: 100, mm: 1000, ft: 3.28084, in: 39.3701 },
+            weight: { kg: 1, g: 1000, lb: 2.20462, oz: 35.274 },
+            temp: { c: 'C', f: 'F', k: 'K' },
+            data: { B: 1, KB: 1024, MB: 1048576, GB: 1073741824, TB: 1099511627776 }
+        };
+
+        function updateUnits() {
+            const cat = document.getElementById('unit-cat').value;
+            const s1 = document.getElementById('u-unit-1');
+            const s2 = document.getElementById('u-unit-2');
+            s1.innerHTML = ''; s2.innerHTML = '';
+
+            Object.keys(units[cat]).forEach(u => {
+                s1.add(new Option(u, u));
+                s2.add(new Option(u, u));
+            });
+
+            // Set defaults
+            if (cat === 'length') { s1.value = 'm'; s2.value = 'ft'; }
+            if (cat === 'weight') { s1.value = 'kg'; s2.value = 'lb'; }
+            if (cat === 'temp') { s1.value = 'c'; s2.value = 'f'; }
+            if (cat === 'data') { s1.value = 'MB'; s2.value = 'GB'; }
+
+            runUnit(1);
+        }
+
+        function runUnit(origin) {
+            const cat = document.getElementById('unit-cat').value;
+            const v1 = parseFloat(document.getElementById('u-val-1').value);
+            const v2 = parseFloat(document.getElementById('u-val-2').value);
+            const u1 = document.getElementById('u-unit-1').value;
+            const u2 = document.getElementById('u-unit-2').value;
+
+            // Temperature is special due to offsets
+            if (cat === 'temp') {
+                let val = origin === 1 ? v1 : v2;
+                let from = origin === 1 ? u1 : u2;
+                let to = origin === 1 ? u2 : u1;
+                let res;
+
+                if (from === to) res = val;
+                else if (from === 'c' && to === 'f') res = (val * 9 / 5) + 32;
+                else if (from === 'c' && to === 'k') res = val + 273.15;
+                else if (from === 'f' && to === 'c') res = (val - 32) * 5 / 9;
+                else if (from === 'f' && to === 'k') res = (val - 32) * 5 / 9 + 273.15;
+                else if (from === 'k' && to === 'c') res = val - 273.15;
+                else if (from === 'k' && to === 'f') res = (val - 273.15) * 9 / 5 + 32;
+
+                if (origin === 1) document.getElementById('u-val-2').value = res.toFixed(2);
+                else document.getElementById('u-val-1').value = res.toFixed(2);
+                return;
+            }
+
+            const factor = units[cat];
+            if (origin === 1) {
+                if (!isNaN(v1)) {
+                    if (cat === 'data') {
+                        // Multiplier logic
+                        const baseBytes = v1 * factor[u1];
+                        document.getElementById('u-val-2').value = (baseBytes / factor[u2]).toFixed(6);
+                    } else {
+                        // Inverse logic (existing)
+                        const base = v1 / factor[u1];
+                        document.getElementById('u-val-2').value = (base * factor[u2]).toFixed(4);
+                    }
+                }
+            } else {
+                if (!isNaN(v2)) {
+                    if (cat === 'data') {
+                        const baseBytes = v2 * factor[u2];
+                        document.getElementById('u-val-1').value = (baseBytes / factor[u1]).toFixed(6);
+                    } else {
+                        const base = v2 / factor[u2];
+                        document.getElementById('u-val-1').value = (base * factor[u1]).toFixed(4);
+                    }
+                }
+            }
+        }
+
+        /* --- AGE CALCULATOR --- */
+        function runAge() {
+            const dobInput = document.getElementById('inp-dob').value;
+            if (!dobInput) return;
+
+            const dob = new Date(dobInput);
+            const today = new Date();
+
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
+
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            document.getElementById('res-age-y').textContent = `${years} Years`;
+            document.getElementById('res-age-d').textContent = `${months} Months, ${days} Days`;
+
+            const nextBday = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+            if (today > nextBday) nextBday.setFullYear(today.getFullYear() + 1);
+
+            const oneDay = 24 * 60 * 60 * 1000;
+            const daysLeft = Math.round(Math.abs((nextBday - today) / oneDay));
+            document.getElementById('res-next-bday').textContent = `${daysLeft} Days left`;
+        }
+
+        /* --- CALENDAR/NOTES --- */
+        function renderCalendar(date) {
+            const grid = document.getElementById('calendar-grid');
+            const title = document.getElementById('current-month-year');
+            const noteData = JSON.parse(localStorage.getItem('calendarNotes') || '{}');
+
+            // Re-create Headers
+            grid.innerHTML = `
+                <div class="day-header">Sun</div><div class="day-header">Mon</div>
+                <div class="day-header">Tue</div><div class="day-header">Wed</div>
+                <div class="day-header">Thu</div><div class="day-header">Fri</div>
+                <div class="day-header">Sat</div>
+            `;
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            title.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+            const today = new Date();
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+            const startingDay = firstDay.getDay();
+
+            for (let i = 0; i < startingDay; i++) {
+                grid.insertAdjacentHTML('beforeend', '<div class="day-cell other-month"></div>');
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const currentDay = new Date(date.getFullYear(), date.getMonth(), i);
+                const dateStr = formatDate(currentDay);
+                let classes = 'day-cell';
+
+                if (date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && i === today.getDate()) {
+                    classes += ' today';
+                }
+                if (dateStr === selectedNoteDate) {
+                    classes += ' selected';
+                }
+                if (noteData[dateStr] && noteData[dateStr].trim() !== '') {
+                    classes += ' has-note';
+                }
+
+                const dayElement = document.createElement('div');
+                dayElement.className = classes;
+                dayElement.textContent = i;
+                dayElement.dataset.date = dateStr;
+                dayElement.onclick = () => selectDate(dateStr, dayElement);
+                grid.appendChild(dayElement);
+            }
+        }
+
+        function changeMonth(delta) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+            renderCalendar(currentCalendarDate);
+        }
+
+        function selectDate(dateStr, element) {
+            document.querySelectorAll('.day-cell.selected').forEach(el => el.classList.remove('selected'));
+            if (element) element.classList.add('selected');
+
+            selectedNoteDate = dateStr;
+            document.getElementById('note-date-display').textContent = `Note for ${dateStr}`;
+
+            const noteData = JSON.parse(localStorage.getItem('calendarNotes') || '{}');
+            document.getElementById('note-input').value = noteData[selectedNoteDate] || '';
+        }
+
+        function saveNote() {
+            const note = document.getElementById('note-input').value;
+            let noteData = JSON.parse(localStorage.getItem('calendarNotes') || '{}');
+
+            if (note.trim() === '') delete noteData[selectedNoteDate];
+            else noteData[selectedNoteDate] = note;
+
+            localStorage.setItem('calendarNotes', JSON.stringify(noteData));
+            renderCalendar(currentCalendarDate);
+        }
+    </script>
+</body>
+
+</html>
