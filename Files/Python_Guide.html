@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python সম্পূর্ণ গাইড - শূন্য থেকে মাস্টার</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Global Styles - Python Theme */
+        :root {
+            --primary-color: #306998; /* Python Blue */
+            --primary-dark: #2b5b84;
+            --accent-color: #FFD43B; /* Python Yellow */
+            --secondary-color: #646464;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --bg-color: #f8fafc;
+            --code-bg: #1e1e1e; /* VS Code Dark */
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* A4 Paper Layout */
+        .book-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 40px auto;
+            background: white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 25mm;
+            position: relative;
+            background: white;
+            overflow: hidden;
+            page-break-after: always;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Cover Page Design */
+        .cover-page {
+            background: linear-gradient(135deg, #1e1e1e 0%, #306998 100%);
+            padding: 0;
+            color: white;
+            position: relative;
+            z-index: 1;
+            height: 297mm;
+        }
+
+        .cover-pattern {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(#ffffff05 1px, transparent 1px), linear-gradient(90deg, #ffffff05 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+
+        .python-logo-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.1;
+            font-size: 400px;
+            color: white;
+            z-index: 0;
+        }
+
+        .cover-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30mm;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cover-badge {
+            background: var(--accent-color);
+            color: #333;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            align-self: flex-start;
+            text-transform: uppercase;
+            font-size: 10pt;
+        }
+
+        .cover-title-group h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 80pt;
+            line-height: 0.9;
+            color: white;
+            margin: 20px 0 10px 0;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        .cover-title-group p {
+            font-size: 24pt;
+            font-weight: 300;
+            color: var(--accent-color);
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .cover-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-box h3 {
+            color: var(--accent-color);
+            font-size: 14pt;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-box p {
+            color: #e2e8f0;
+            font-size: 10pt;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .cover-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 { color: var(--primary-color); line-height: 1.2; }
+        h1 { font-size: 28pt; font-weight: 700; margin-bottom: 20px; }
+        
+        h2 { 
+            font-size: 18pt; 
+            margin-top: 30px; 
+            margin-bottom: 15px; 
+            padding-bottom: 8px; 
+            border-bottom: 3px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h3 { font-size: 14pt; margin-top: 20px; margin-bottom: 10px; color: var(--primary-dark); font-weight: 600; }
+        p { margin-bottom: 15px; text-align: justify; color: var(--text-color); font-size: 11pt; }
+
+        /* Modern Code Editor Block (VS Code Style) */
+        .code-container {
+            margin: 25px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+            background: var(--code-bg);
+            break-inside: avoid;
+        }
+
+        .code-header {
+            background: #252526;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #333;
+        }
+
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+        .code-title { color: #ccc; font-size: 9pt; margin-left: 10px; font-family: 'Fira Code', monospace; }
+
+        .code-block {
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 10pt;
+            white-space: pre-wrap;
+            color: #d4d4d4;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        /* Python Syntax Highlighting Colors */
+        .kw { color: #569cd6; font-weight: bold; } /* Keyword */
+        .func { color: #dcdcaa; } /* Function */
+        .str { color: #ce9178; } /* String */
+        .num { color: #b5cea8; } /* Number */
+        .comment { color: #6a9955; font-style: italic; } /* Comment */
+        .cls { color: #4ec9b0; } /* Class */
+
+        /* Output Preview Box */
+        .output-box {
+            background: #f1f5f9;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 0 4px 4px 0;
+            margin-top: -15px;
+            margin-bottom: 25px;
+            font-family: 'Fira Code', monospace;
+            font-size: 10pt;
+            color: #333;
+            position: relative;
+        }
+        .output-label {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            font-size: 8pt;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Feature Boxes */
+        .box {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            break-inside: avoid;
+        }
+        
+        .box-note { background: #e0f2fe; border-color: var(--primary-color); }
+        .box-tip { background: #fffbeb; border-color: var(--accent-color); }
+        .box-warning { background: #fef2f2; border-color: var(--danger-color); }
+
+        .box h4 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
+
+        /* Chapter Headers */
+        .chapter-hero {
+            background: linear-gradient(135deg, var(--primary-color), #1e1e1e);
+            color: white;
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .chapter-info h1 { margin: 0; font-size: 24pt; color: white; }
+        .chapter-number { 
+            color: var(--accent-color); 
+            font-family: 'Oswald', sans-serif; 
+            font-weight: 700; 
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 10pt;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .qr-wrapper {
+            background: white;
+            padding: 6px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 90px;
+        }
+        .qr-wrapper img { width: 100%; border-radius: 6px; }
+        .qr-wrapper span { font-size: 8pt; color: #333; font-weight: bold; display: block; margin-top: 2px; }
+
+        /* Index Page */
+        .toc-grid { display: grid; gap: 12px; margin-top: 30px; }
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: all 0.2s;
+        }
+        .toc-item:hover {
+            border-color: var(--primary-color);
+            background: #f0f9ff;
+            transform: translateX(5px);
+        }
+        .toc-num {
+            background: var(--primary-color);
+            color: white;
+            width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            font-size: 10pt;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        /* Test Paper Styles */
+        .test-wrapper {
+            border: 4px double var(--primary-color);
+            padding: 20px;
+            height: 100%;
+            background: #fff;
+            position: relative;
+        }
+        .question-group h3 {
+            background: #e0f2fe;
+            padding: 8px 15px;
+            border-left: 5px solid var(--primary-color);
+            font-size: 12pt;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        .mcq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 10pt; }
+        .answer-space { border-bottom: 1px dotted #ccc; height: 20px; width: 100%; display: block; margin-top: 5px; }
+
+        /* Footer */
+        .page-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            font-size: 9pt;
+            color: var(--text-light);
+        }
+
+        /* Floating Button */
+        .pdf-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s;
+        }
+        .pdf-btn:hover { transform: translateY(-3px); background: #2b5b84; }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 800px) {
+            .book-container { width: 100%; margin: 0; box-shadow: none; border-radius: 0; }
+            .page { width: 100%; min-height: auto; padding: 20px; border-bottom: 8px solid #f1f5f9; }
+            .cover-page { height: auto; min-height: 100vh; }
+            .cover-title-group h1 { font-size: 48pt; }
+            .cover-features { grid-template-columns: 1fr; }
+            .chapter-hero { flex-direction: column; text-align: center; gap: 15px; }
+            .mcq-grid { grid-template-columns: 1fr; }
+            table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+
+        @media print {
+            body { background: white; }
+            .book-container { margin: 0; box-shadow: none; width: 100%; }
+            .page { border: none; height: auto; min-height: 297mm; display: block; margin: 0; padding: 20mm; page-break-after: always; }
+            .no-print { display: none; }
+            .code-container { border: 1px solid #ccc; }
+            .chapter-hero { background: #eee !important; color: black !important; }
+            .chapter-info h1 { color: black !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="pdf-btn no-print" onclick="window.print()">
+        <i data-lucide="printer"></i>
+        Save as PDF
+    </button>
+
+    <div class="book-container">
+
+        <!-- COVER PAGE -->
+        <div class="page cover-page">
+            <div class="cover-pattern"></div>
+            <div class="python-logo-bg">
+                <!-- Abstract Python Logo Shape -->
+                <svg viewBox="0 0 24 24" fill="currentColor" width="400" height="400"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            </div>
+            
+            <div class="cover-content">
+                <div>
+                    <span class="cover-badge">সংস্করণ ২০২৫</span>
+                    <div class="cover-title-group">
+                        <h1>PYTHON</h1>
+                        <p>প্রোগ্রামিং শেখার সম্পূর্ণ গাইড</p>
+                    </div>
+                </div>
+
+                <div class="cover-features">
+                    <div class="feature-box">
+                        <h3><i data-lucide="terminal"></i> বেসিক থেকে অ্যাডভান্সড</h3>
+                        <p>সিনট্যাক্স, লুপ, ফাংশন থেকে OOP পর্যন্ত সবকিছু।</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3><i data-lucide="monitor"></i> রিয়েল প্রজেক্ট</h3>
+                        <p>গেম তৈরি এবং ম্যানেজমেন্ট সিস্টেম প্রজেক্ট।</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3><i data-lucide="file-code"></i> প্রচুর উদাহরণ</h3>
+                        <p>৫০+ কোড স্নিপেট এবং আউটপুট বিশ্লেষণ।</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3><i data-lucide="clipboard-check"></i> টেস্ট পেপার</h3>
+                        <p>১০০ নম্বরের মডেল টেস্ট নিজের দক্ষতা যাচাইয়ের জন্য।</p>
+                    </div>
+                </div>
+
+                <div class="cover-footer">
+                    <div>
+                        <h2 style="color:white; font-size:24pt; margin:0; border:none; padding:0;">জয় কুম্ভকার</h2>
+                        <span style="color:var(--accent-color); font-family:'Oswald'; letter-spacing:1px;">SOFTWARE ENGINEER & MENTOR</span>
+                        <p style="color: #cbd5e1; font-size: 10pt; margin-top: 5px;">joykumbhakar.netlify.app</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://joykumbhakar.netlify.app" alt="Website" style="border-radius: 8px; border: 4px solid white;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INDEX PAGE -->
+        <div class="page">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1><i data-lucide="list" style="display:inline-block; vertical-align:middle; margin-right:10px;"></i> সূচিপত্র</h1>
+                <p>পাইথন প্রোগ্রামিং শেখার রোডম্যাপ</p>
+            </div>
+
+            <div class="toc-grid">
+                <a href="#ch1" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">১</div><span>পাইথন পরিচিতি ও সেটআপ</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৩</span></a>
+                <a href="#ch2" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">২</div><span>ভেরিয়েবল ও ডেটা টাইপ</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৫</span></a>
+                <a href="#ch3" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">৩</div><span>অপারেটর ও ইনপুট</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৭</span></a>
+                <a href="#ch4" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">৪</div><span>শর্তসাপেক্ষ বিবৃতি (If/Else)</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৯</span></a>
+                <a href="#ch5" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">৫</div><span>লুপ (Loop)</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১১</span></a>
+                <a href="#ch6" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">৬</div><span>ডেটা স্ট্রাকচার (List, Dict)</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১৩</span></a>
+                <a href="#ch7" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">৭</div><span>ফাংশন ও মডিউল</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১৫</span></a>
+                <a href="#ch8" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">৮</div><span>অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিং (OOP)</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১৭</span></a>
+                <a href="#ch9" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">৯</div><span>ফাইল হ্যান্ডলিং ও এরর</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১৯</span></a>
+                <a href="#ch10" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">১০</div><span>রিয়েল লাইফ প্রজেক্ট</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ২১</span></a>
+                <a href="#test" class="toc-item"><div style="display:flex; align-items:center;"><div class="toc-num">১১</div><span>মডেল টেস্ট পেপার</span></div><span style="color:#64748b; font-weight:600;">পৃষ্ঠা ২২</span></a>
+            </div>
+
+            <div class="box box-tip" style="margin-top: auto;">
+                <h4><i data-lucide="lightbulb"></i> টিপস:</h4>
+                <p>বইটির প্রতিটি অধ্যায়ে QR কোড আছে। স্ক্যান করে ভিডিও টিউটোরিয়াল দেখে শিখতে পারবেন।</p>
+            </div>
+
+            <div class="page-footer">
+                <span>joykumbhakar.netlify.app</span>
+                <span>০২</span>
+            </div>
+        </div>
+
+        <!-- CHAPTER 1: Intro -->
+        <div class="page" id="ch1">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 01</span>
+                    <h1>পাইথন পরিচিতি ও সেটআপ</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=Python+Introduction+Bangla" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+
+            <h2><i data-lucide="terminal"></i> পাইথন কি?</h2>
+            <p><strong>Python</strong> একটি শক্তিশালী, হাই-লেভেল প্রোগ্রামিং ভাষা। এটি শেখা খুব সহজ কারণ এর সিনট্যাক্স ইংরেজির মতো। এটি ১৯৯১ সালে <strong>Guido van Rossum</strong> তৈরি করেন।</p>
+
+            <div class="box box-note">
+                <h4><i data-lucide="info"></i> কেন পাইথন শিখবেন?</h4>
+                <ul style="margin-left: 20px;">
+                    <li>খুব সহজ সিনট্যাক্স।</li>
+                    <li>ওয়েব ডেভেলপমেন্ট, ডাটা সায়েন্স, AI, হ্যাকিং সব ক্ষেত্রে ব্যবহৃত হয়।</li>
+                    <li>বিশাল কমিউনিটি সাপোর্ট।</li>
+                </ul>
+            </div>
+
+            <h2><i data-lucide="settings"></i> পরিবেশ সেটআপ (Setup)</h2>
+            <p>পাইথন কোড রান করার জন্য আপনার কম্পিউটারে পাইথন ইনস্টল থাকতে হবে।</p>
+            
+            <div class="box box-tip">
+                <h4><i data-lucide="download"></i> ডাউনলোড লিংক:</h4>
+                <p>অফিসিয়াল ওয়েবসাইট: <a href="https://www.python.org/downloads/" target="_blank">python.org/downloads</a></p>
+                <p>কোড এডিটর: <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code (VS Code)</a></p>
+            </div>
+
+            <h2><i data-lucide="code"></i> আপনার প্রথম কোড</h2>
+            <p>যেকোনো প্রোগ্রামিং ভাষা শেখার শুরুটা হয় "Hello World" প্রিন্ট করে।</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    <span class="code-title">hello.py</span>
+                </div>
+                <div class="code-block">
+<span class="func">print</span>(<span class="str">"Hello, World!"</span>)
+<span class="func">print</span>(<span class="str">"আমি পাইথন শিখছি।"</span>)
+                </div>
+            </div>
+
+            <div class="output-box">
+                <span class="output-label">Terminal</span>
+                Hello, World!<br>
+                আমি পাইথন শিখছি।
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৩</span></div>
+        </div>
+
+        <!-- CHAPTER 2: Variables -->
+        <div class="page" id="ch2">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 02</span>
+                    <h1>ভেরিয়েবল ও ডেটা টাইপ</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=Python+Variables+Bangla" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+
+            <h2><i data-lucide="box"></i> ভেরিয়েবল কি?</h2>
+            <p>ভেরিয়েবল হলো একটি কন্টেইনার বা পাত্র যেখানে আমরা ডেটা জমা রাখি। পাইথনে ভেরিয়েবল ডিক্লেয়ার করার জন্য টাইপ বলে দিতে হয় না।</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    <span class="code-title">variables.py</span>
+                </div>
+                <div class="code-block">
+name = <span class="str">"Joy"</span>       <span class="comment"># String</span>
+age = <span class="num">25</span>            <span class="comment"># Integer</span>
+price = <span class="num">10.50</span>       <span class="comment"># Float</span>
+is_student = <span class="kw">True</span>   <span class="comment"># Boolean</span>
+
+<span class="func">print</span>(name)
+<span class="func">print</span>(age)
+                </div>
+            </div>
+
+            <h2><i data-lucide="database"></i> ডেটা টাইপ</h2>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <tr style="background: #e2e8f0;"><th style="padding:10px; border:1px solid #ccc;">নাম</th><th style="padding:10px; border:1px solid #ccc;">ধরন</th><th style="padding:10px; border:1px solid #ccc;">উদাহরণ</th></tr>
+                <tr><td style="padding:10px; border:1px solid #ccc;">Text Type</td><td style="padding:10px; border:1px solid #ccc;">str</td><td style="padding:10px; border:1px solid #ccc;">"Hello"</td></tr>
+                <tr><td style="padding:10px; border:1px solid #ccc;">Numeric Type</td><td style="padding:10px; border:1px solid #ccc;">int, float</td><td style="padding:10px; border:1px solid #ccc;">20, 20.5</td></tr>
+                <tr><td style="padding:10px; border:1px solid #ccc;">Sequence Type</td><td style="padding:10px; border:1px solid #ccc;">list, tuple</td><td style="padding:10px; border:1px solid #ccc;">[1, 2], (1, 2)</td></tr>
+                <tr><td style="padding:10px; border:1px solid #ccc;">Boolean Type</td><td style="padding:10px; border:1px solid #ccc;">bool</td><td style="padding:10px; border:1px solid #ccc;">True, False</td></tr>
+            </table>
+
+            <div class="practice-area">
+                <span class="practice-badge">অনুশীলনী</span>
+                <p>১. আপনার নাম, বয়স এবং শহরের নাম তিনটি ভেরিয়েবলে রাখুন এবং প্রিন্ট করুন।</p>
+                <p>২. <code>type()</code> ফাংশন ব্যবহার করে ভেরিয়েবলের টাইপ চেক করুন।</p>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৫</span></div>
+        </div>
+
+        <!-- CHAPTER 3: Operators & Input -->
+        <div class="page" id="ch3">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 03</span>
+                    <h1>অপারেটর ও ইনপুট</h1>
+                </div>
+            </div>
+
+            <h2><i data-lucide="keyboard"></i> ইউজার ইনপুট</h2>
+            <p>ব্যবহারকারীর থেকে ইনপুট নিতে <code>input()</code> ফাংশন ব্যবহার করা হয়। ইনপুট সবসময় স্ট্রিং (str) হিসেবে আসে।</p>
+
+            <div class="code-container">
+                <div class="code-block">
+name = <span class="func">input</span>(<span class="str">"আপনার নাম কি? "</span>)
+<span class="func">print</span>(<span class="str">"স্বাগতম,"</span> + name)
+
+<span class="comment"># সংখ্যা ইনপুট নিতে টাইপ কাস্টিং করতে হয়</span>
+age = <span class="func">int</span>(<span class="func">input</span>(<span class="str">"আপনার বয়স: "</span>))
+<span class="func">print</span>(<span class="str">"আগামী বছর আপনার বয়স হবে:"</span>, age + <span class="num">1</span>)
+                </div>
+            </div>
+
+            <h2><i data-lucide="calculator"></i> অপারেটরসমূহ</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="box box-note">
+                    <h4>Arithmetic</h4>
+                    <p><code>+</code> (যোগ), <code>-</code> (বিয়োগ), <code>*</code> (গুণ), <code>/</code> (ভাগ), <code>%</code> (ভাগশেষ), <code>**</code> (পাওয়ার)</p>
+                </div>
+                <div class="box box-note">
+                    <h4>Comparison</h4>
+                    <p><code>==</code> (সমান), <code>!=</code> (সমান নয়), <code>&gt;</code> (বড়), <code>&lt;</code> (ছোট)</p>
+                </div>
+            </div>
+
+            <div class="output-box">
+                <span class="output-label">Example</span>
+                x = 10, y = 3<br>
+                print(x % y)  -> 1<br>
+                print(x ** y) -> 1000
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৭</span></div>
+        </div>
+
+        <!-- CHAPTER 4: Control Flow -->
+        <div class="page" id="ch4">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 04</span>
+                    <h1>শর্তসাপেক্ষ বিবৃতি (Control Flow)</h1>
+                </div>
+            </div>
+
+            <h2><i data-lucide="git-branch"></i> If, Elif, Else</h2>
+            <p>প্রোগ্রামে সিদ্ধান্ত নেওয়ার জন্য আমরা শর্ত ব্যবহার করি। পাইথনে ইনডেন্টেশন (Indentation) বা স্পেস খুব গুরুত্বপূর্ণ।</p>
+
+            <div class="code-container">
+                <div class="code-block">
+marks = <span class="num">85</span>
+
+<span class="kw">if</span> marks >= <span class="num">80</span>:
+    <span class="func">print</span>(<span class="str">"A+"</span>)
+<span class="kw">elif</span> marks >= <span class="num">70</span>:
+    <span class="func">print</span>(<span class="str">"A"</span>)
+<span class="kw">else</span>:
+    <span class="func">print</span>(<span class="str">"Pass"</span>)
+                </div>
+            </div>
+
+            <div class="box box-warning">
+                <h4><i data-lucide="alert-triangle"></i> ইনডেন্টেশন সতর্কতা:</h4>
+                <p>অন্যান্য ভাষায় <code>{}</code> ব্যবহার করা হয়, কিন্তু পাইথনে ৪টি স্পেস বা ১টি ট্যাব দিয়ে ব্লকের শুরু বোঝানো হয়। ভুল স্পেস দিলে <code>IndentationError</code> আসবে।</p>
+            </div>
+
+            <div class="practice-area">
+                <span class="practice-badge">প্রজেক্ট</span>
+                <p>একটি প্রোগ্রাম লিখুন যা ব্যবহারকারীর দেওয়া সংখ্যাটি <strong>জোড় (Even)</strong> নাকি <strong>বিজোড় (Odd)</strong> তা বলে দেবে।</p>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৯</span></div>
+        </div>
+
+        <!-- CHAPTER 5: Loops -->
+        <div class="page" id="ch5">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 05</span>
+                    <h1>লুপ (Loops)</h1>
+                </div>
+            </div>
+
+            <h2><i data-lucide="repeat"></i> For Loop</h2>
+            <p>নির্দিষ্ট সংখ্যক বার কোনো কাজ করার জন্য For loop ব্যবহার হয়।</p>
+            <div class="code-container">
+                <div class="code-block">
+<span class="comment"># 0 থেকে 4 পর্যন্ত প্রিন্ট করবে</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="func">range</span>(<span class="num">5</span>):
+    <span class="func">print</span>(i)
+
+<span class="comment"># লিস্ট লুপ করা</span>
+fruits = [<span class="str">"Apple"</span>, <span class="str">"Banana"</span>, <span class="str">"Mango"</span>]
+<span class="kw">for</span> fruit <span class="kw">in</span> fruits:
+    <span class="func">print</span>(fruit)
+                </div>
+            </div>
+
+            <h2><i data-lucide="refresh-cw"></i> While Loop</h2>
+            <p>যতক্ষণ শর্ত সত্য থাকবে, ততক্ষণ চলবে।</p>
+            <div class="code-container">
+                <div class="code-block">
+count = <span class="num">1</span>
+<span class="kw">while</span> count <= <span class="num">5</span>:
+    <span class="func">print</span>(<span class="str">"Count:"</span>, count)
+    count += <span class="num">1</span>
+                </div>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১১</span></div>
+        </div>
+
+        <!-- CHAPTER 6: Data Structures -->
+        <div class="page" id="ch6">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 06</span>
+                    <h1>ডেটা স্ট্রাকচার (List & Dict)</h1>
+                </div>
+            </div>
+
+            <h2><i data-lucide="list"></i> List (লিস্ট)</h2>
+            <p>লিস্ট হলো একটি পরিবর্তনযোগ্য (Mutable) কালেকশন।</p>
+            <div class="code-container">
+                <div class="code-block">
+my_list = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>]
+my_list.<span class="func">append</span>(<span class="num">40</span>)  <span class="comment"># শেষে যোগ করা</span>
+<span class="func">print</span>(my_list[<span class="num">0</span>])   <span class="comment"># প্রথম উপাদান (10)</span>
+                </div>
+            </div>
+
+            <h2><i data-lucide="book-open"></i> Dictionary (ডিকশনারি)</h2>
+            <p>কী-ভ্যালু পেয়ার (Key-Value Pair) হিসেবে ডেটা রাখে।</p>
+            <div class="code-container">
+                <div class="code-block">
+student = {
+    <span class="str">"name"</span>: <span class="str">"Rahim"</span>,
+    <span class="str">"age"</span>: <span class="num">22</span>,
+    <span class="str">"city"</span>: <span class="str">"Dhaka"</span>
+}
+<span class="func">print</span>(student[<span class="str">"name"</span>])
+                </div>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১৩</span></div>
+        </div>
+
+        <!-- CHAPTER 7: Functions -->
+        <div class="page" id="ch7">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 07</span>
+                    <h1>ফাংশন ও মডিউল</h1>
+                </div>
+            </div>
+
+            <h2><i data-lucide="function-square"></i> ফাংশন তৈরি</h2>
+            <p>কোড পুনরায় ব্যবহার করার জন্য ফাংশন ব্যবহৃত হয়। <code>def</code> কিওয়ার্ড দিয়ে ফাংশন তৈরি করতে হয়।</p>
+            <div class="code-container">
+                <div class="code-block">
+<span class="kw">def</span> <span class="func">greet</span>(name):
+    <span class="kw">return</span> <span class="str">"Hello, "</span> + name
+
+msg = <span class="func">greet</span>(<span class="str">"Joy"</span>)
+<span class="func">print</span>(msg)
+                </div>
+            </div>
+
+            <h2><i data-lucide="package"></i> মডিউল (Module)</h2>
+            <p>পাইথনের বিল্ট-ইন লাইব্রেরি বা অন্য ফাইলের কোড ব্যবহার করা।</p>
+            <div class="code-container">
+                <div class="code-block">
+<span class="kw">import</span> math
+
+<span class="func">print</span>(math.sqrt(<span class="num">16</span>))  <span class="comment"># Output: 4.0</span>
+<span class="func">print</span>(math.pi)        <span class="comment"># Output: 3.14159...</span>
+                </div>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১৫</span></div>
+        </div>
+
+        <!-- CHAPTER 8: OOP -->
+        <div class="page" id="ch8">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 08</span>
+                    <h1>অবজেক্ট ওরিয়েন্টেড প্রোগ্রামিং (OOP)</h1>
+                </div>
+            </div>
+
+            <h2><i data-lucide="boxes"></i> Class এবং Object</h2>
+            <p>পাইথন একটি OOP ভাষা। এখানে সবকিছুই অবজেক্ট।</p>
+            <div class="code-container">
+                <div class="code-block">
+<span class="kw">class</span> <span class="cls">Car</span>:
+    <span class="kw">def</span> <span class="func">__init__</span>(<span class="kw">self</span>, brand, model):
+        <span class="kw">self</span>.brand = brand
+        <span class="kw">self</span>.model = model
+
+    <span class="kw">def</span> <span class="func">show_info</span>(<span class="kw">self</span>):
+        <span class="func">print</span>(f<span class="str">"Car: {self.brand} {self.model}"</span>)
+
+my_car = <span class="cls">Car</span>(<span class="str">"Toyota"</span>, <span class="str">"Corolla"</span>)
+my_car.<span class="func">show_info</span>()
+                </div>
+            </div>
+
+            <div class="box box-note">
+                <h4><i data-lucide="info"></i> __init__ মেথড:</h4>
+                <p>এটি কনস্ট্রাক্টর (Constructor)। যখনই ক্লাসের নতুন অবজেক্ট তৈরি হয়, এটি স্বয়ংক্রিয়ভাবে কল হয়।</p>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১৭</span></div>
+        </div>
+
+        <!-- CHAPTER 9: File & Error -->
+        <div class="page" id="ch9">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 09</span>
+                    <h1>ফাইল হ্যান্ডলিং ও এরর</h1>
+                </div>
+            </div>
+
+            <h2><i data-lucide="file-text"></i> ফাইল রিড/রাইট</h2>
+            <div class="code-container">
+                <div class="code-block">
+<span class="comment"># ফাইল লেখা (Write)</span>
+<span class="kw">with</span> <span class="func">open</span>(<span class="str">"demo.txt"</span>, <span class="str">"w"</span>) <span class="kw">as</span> f:
+    f.write(<span class="str">"Hello Python!"</span>)
+
+<span class="comment"># ফাইল পড়া (Read)</span>
+<span class="kw">with</span> <span class="func">open</span>(<span class="str">"demo.txt"</span>, <span class="str">"r"</span>) <span class="kw">as</span> f:
+    content = f.read()
+    <span class="func">print</span>(content)
+                </div>
+            </div>
+
+            <h2><i data-lucide="alert-octagon"></i> এরর হ্যান্ডলিং (Try-Except)</h2>
+            <div class="code-container">
+                <div class="code-block">
+<span class="kw">try</span>:
+    <span class="func">print</span>(x)
+<span class="kw">except</span> <span class="cls">NameError</span>:
+    <span class="func">print</span>(<span class="str">"x ভেরিয়েবল ডিফাইন করা নেই!"</span>)
+<span class="kw">finally</span>:
+    <span class="func">print</span>(<span class="str">"কাজ শেষ।"</span>)
+                </div>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১৯</span></div>
+        </div>
+
+        <!-- CHAPTER 10: Project -->
+        <div class="page" id="ch10">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 10</span>
+                    <h1>রিয়েল লাইফ প্রজেক্ট: ATM</h1>
+                </div>
+            </div>
+
+            <p>আমরা একটি সিম্পল ATM সিস্টেম তৈরি করব যা ব্যালেন্স চেক, টাকা জমা এবং উত্তোলন করতে পারবে।</p>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-title">atm.py</span>
+                </div>
+                <div class="code-block">
+balance = <span class="num">1000</span>
+
+<span class="kw">while True</span>:
+    <span class="func">print</span>(<span class="str">"\n1. Check Balance\n2. Deposit\n3. Withdraw\n4. Exit"</span>)
+    choice = <span class="func">input</span>(<span class="str">"Enter choice: "</span>)
+
+    <span class="kw">if</span> choice == <span class="str">'1'</span>:
+        <span class="func">print</span>(f<span class="str">"Your Balance: {balance} Tk"</span>)
+    
+    <span class="kw">elif</span> choice == <span class="str">'2'</span>:
+        amount = <span class="func">int</span>(<span class="func">input</span>(<span class="str">"Deposit Amount: "</span>))
+        balance += amount
+        <span class="func">print</span>(<span class="str">"Deposited Successfully!"</span>)
+
+    <span class="kw">elif</span> choice == <span class="str">'3'</span>:
+        amount = <span class="func">int</span>(<span class="func">input</span>(<span class="str">"Withdraw Amount: "</span>))
+        <span class="kw">if</span> amount <= balance:
+            balance -= amount
+            <span class="func">print</span>(<span class="str">"Withdrawn Successfully!"</span>)
+        <span class="kw">else</span>:
+            <span class="func">print</span>(<span class="str">"Insufficient Balance!"</span>)
+
+    <span class="kw">elif</span> choice == <span class="str">'4'</span>:
+        <span class="func">print</span>(<span class="str">"Thank you!"</span>)
+        <span class="kw">break</span>
+                </div>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>২১</span></div>
+        </div>
+
+        <!-- TEST PAPER -->
+        <div class="page" id="test">
+            <div class="test-wrapper">
+                <table class="test-header-table">
+                    <tr>
+                        <td style="width: 70%;">
+                            <h2 style="margin:0; font-size:24pt; color:var(--primary-color);">মডেল টেস্ট পেপার</h2>
+                            <p style="margin:0;">বিষয়: পাইথন প্রোগ্রামিং</p>
+                        </td>
+                        <td style="text-align: right;">
+                            <p style="margin:0; font-weight:bold;">পূর্ণমান: ১০০</p>
+                            <p style="margin:0;">সময়: ২ ঘণ্টা ৩০ মিনিট</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-top: 15px;">
+                            নাম: <span class="input-line"></span> রোল: <span class="input-line" style="width: 100px;"></span>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="question-group">
+                    <h3>ক বিভাগ: বহু নির্বাচনী প্রশ্ন (MCQ) [১০ x ২ = ২০]</h3>
+                    <div class="mcq-grid">
+                        <div class="mcq-item">
+                            1. পাইথনের এক্সটেনশন কী?
+                            <div class="mcq-options">
+                                <span class="mcq-opt"><span class="circle-box"></span> .py</span>
+                                <span class="mcq-opt"><span class="circle-box"></span> .pt</span>
+                            </div>
+                        </div>
+                        <div class="mcq-item">
+                            2. আউটপুট দেখানোর ফাংশন?
+                            <div class="mcq-options">
+                                <span class="mcq-opt"><span class="circle-box"></span> echo()</span>
+                                <span class="mcq-opt"><span class="circle-box"></span> print()</span>
+                            </div>
+                        </div>
+                        <div class="mcq-item">
+                            3. পূর্ণসংখ্যার ডেটা টাইপ?
+                            <div class="mcq-options">
+                                <span class="mcq-opt"><span class="circle-box"></span> int</span>
+                                <span class="mcq-opt"><span class="circle-box"></span> float</span>
+                            </div>
+                        </div>
+                        <div class="mcq-item">
+                            4. লিস্ট ডিফাইন করতে কী লাগে?
+                            <div class="mcq-options">
+                                <span class="mcq-opt"><span class="circle-box"></span> {}</span>
+                                <span class="mcq-opt"><span class="circle-box"></span> []</span>
+                            </div>
+                        </div>
+                        <div class="mcq-item">
+                            5. লুপ থামাতে কী ব্যবহার হয়?
+                            <div class="mcq-options">
+                                <span class="mcq-opt"><span class="circle-box"></span> stop</span>
+                                <span class="mcq-opt"><span class="circle-box"></span> break</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <h3>খ বিভাগ: ব্যবহারিক কোডিং (যেকোনো ২টি) [২ x ৪০ = ৮০]</h3>
+                    <div class="coding-task-box">
+                        <strong>প্রশ্ন ১:</strong> একটি প্রোগ্রাম লিখুন যা ব্যবহারকারীর থেকে একটি সংখ্যা নেবে এবং নামতা (Multiplication Table) প্রিন্ট করবে।
+                    </div>
+                    <div class="coding-task-box">
+                        <strong>প্রশ্ন ২:</strong> একটি ক্যালকুলেটর তৈরি করুন যা যোগ, বিয়োগ, গুণ এবং ভাগ করতে পারে।
+                    </div>
+                    <div class="coding-task-box">
+                        <strong>প্রশ্ন ৩:</strong> একটি লিস্টে ৫টি সংখ্যা নিন এবং তাদের যোগফল বের করার প্রোগ্রাম লিখুন।
+                    </div>
+                </div>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>২২</span></div>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
