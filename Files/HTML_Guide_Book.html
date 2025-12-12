@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML সম্পূর্ণ গাইড - শূন্য থেকে মাস্টার</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #002244; /* Navy Blue */
+            --primary-light: #003366;
+            --accent-color: #ffc107; /* Gold */
+            --secondary-color: #00bcd4; /* Cyan */
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --bg-color: #f8fafc;
+            --code-bg: #0f172a;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            
+            /* Dark mode variables - default light */
+            --dm-bg-color: #0f172a;
+            --dm-text-color: #e2e8f0;
+            --dm-primary-color: #60a5fa;
+            --dm-border-color: #334155;
+            --dm-code-bg: #1e293b;
+            --dm-box-bg: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Dark Mode Class */
+        body.dark-mode {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .book-container {
+            background: #1e293b;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        body.dark-mode .page {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4 {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode p {
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .box-note {
+            background: #1e293b;
+            border-color: #3b82f6;
+        }
+
+        body.dark-mode .box-tip {
+            background: #1e293b;
+            border-color: #10b981;
+        }
+
+        body.dark-mode .box-warning {
+            background: #1e293b;
+            border-color: #f59e0b;
+        }
+
+        body.dark-mode table {
+            border-color: #334155;
+        }
+
+        body.dark-mode th {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode td {
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .output-box {
+            background: #0f172a;
+            border-color: #475569;
+        }
+
+        body.dark-mode .output-label {
+            background: #0f172a;
+            color: #cbd5e1;
+            border-color: #475569;
+        }
+
+        body.dark-mode .practice-area {
+            background: #1e293b;
+            border-color: #f59e0b;
+        }
+
+        body.dark-mode .toc-item {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .toc-item:hover {
+            border-color: var(--accent-color);
+            background: #334155;
+        }
+
+        body.dark-mode .page-footer {
+            border-top-color: #334155;
+            color: #94a3b8;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        .theme-toggle .sun-icon,
+        .theme-toggle .moon-icon {
+            position: absolute;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .theme-toggle .sun-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .theme-toggle .moon-icon {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        body.dark-mode .theme-toggle .sun-icon {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        body.dark-mode .theme-toggle .moon-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Share Button */
+        .share-btn {
+            position: fixed;
+            top: 90px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        body.dark-mode .share-btn {
+            background: #1e293b;
+            border: 1px solid #475569;
+        }
+
+        body.dark-mode .share-btn:hover {
+            background: #334155;
+        }
+
+        /* Share Dropdown Menu */
+        .share-dropdown {
+            position: fixed;
+            top: 150px;
+            right: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 1002;
+            width: 250px;
+            padding: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+        }
+
+        .share-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        body.dark-mode .share-dropdown {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+
+        .share-dropdown h4 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.dark-mode .share-dropdown h4 {
+            color: #e2e8f0;
+        }
+
+        .share-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .share-option {
+            flex: 1;
+            min-width: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .share-option:hover {
+            background-color: #f1f5f9;
+        }
+
+        body.dark-mode .share-option:hover {
+            background-color: #334155;
+        }
+
+        .share-option i {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+
+        .share-option span {
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .share-whatsapp { color: #25D366; }
+        .share-facebook { color: #1877F2; }
+        .share-twitter { color: #1DA1F2; }
+        .share-linkedin { color: #0A66C2; }
+        .share-telegram { color: #0088cc; }
+        .share-email { color: #EA4335; }
+
+        .share-url {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .share-url input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            background: #f8fafc;
+            color: var(--text-color);
+        }
+
+        body.dark-mode .share-url input {
+            background: #0f172a;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        .copy-btn {
+            padding: 8px 15px;
+            background: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #ffd54f;
+        }
+
+        .copy-btn.copied {
+            background: var(--success-color);
+            color: white;
+        }
+
+        /* A4 Paper Layout */
+        .book-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 40px auto;
+            background: white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 25mm;
+            position: relative;
+            background: white;
+            overflow: hidden;
+            page-break-after: always;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Cover Page Design - No dark mode */
+        .cover-page {
+            background: linear-gradient(135deg, #001a33 0%, #003366 100%);
+            padding: 0;
+            color: white;
+            position: relative;
+            z-index: 1;
+            height: 297mm;
+        }
+
+        /* Abstract Patterns on Cover */
+        .cover-pattern {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+        }
+
+        .cover-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30mm;
+        }
+
+        .cover-badge {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            align-self: flex-start;
+            text-transform: uppercase;
+            font-size: 10pt;
+        }
+
+        .cover-title-group h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 90pt;
+            line-height: 0.9;
+            color: white;
+            margin: 20px 0 10px 0;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        .cover-title-group p {
+            font-size: 24pt;
+            font-weight: 300;
+            color: #fbbf24;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .cover-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-box h3 {
+            color: var(--accent-color);
+            font-size: 14pt;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-box p {
+            color: #cbd5e1;
+            font-size: 10pt;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .cover-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 { color: var(--primary-color); line-height: 1.2; transition: color 0.3s; }
+        h1 { font-size: 28pt; font-weight: 700; margin-bottom: 20px; }
+        
+        h2 { 
+            font-size: 18pt; 
+            margin-top: 30px; 
+            margin-bottom: 15px; 
+            padding-bottom: 8px; 
+            border-bottom: 3px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h3 { font-size: 14pt; margin-top: 20px; margin-bottom: 10px; color: var(--primary-light); font-weight: 600; }
+        p { margin-bottom: 15px; text-align: justify; color: var(--text-color); font-size: 11pt; transition: color 0.3s; }
+
+        /* Modern Code Editor Block */
+        .code-container {
+            margin: 25px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+            background: var(--code-bg);
+            break-inside: avoid;
+        }
+
+        .code-header {
+            background: #0f172a;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot.red { background: #ef4444; }
+        .dot.yellow { background: #f59e0b; }
+        .dot.green { background: #10b981; }
+        .code-title { color: #94a3b8; font-size: 9pt; margin-left: 10px; font-family: 'Fira Code', monospace; }
+
+        .code-block {
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 10pt;
+            white-space: pre-wrap;
+            color: #e2e8f0;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        /* Syntax Highlighting */
+        .tag { color: #f472b6; }
+        .attr { color: #60a5fa; }
+        .val { color: #a3e635; }
+        .comment { color: #64748b; font-style: italic; }
+
+        /* Output Preview Box */
+        .output-box {
+            border: 2px dashed #cbd5e1;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: -15px;
+            margin-bottom: 25px;
+            position: relative;
+            break-inside: avoid;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .output-label {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            font-size: 9pt;
+            color: #64748b;
+            font-weight: bold;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        /* Feature Boxes */
+        .box {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            break-inside: avoid;
+            transition: background-color 0.3s;
+        }
+        
+        .box-note { background: #eff6ff; border-color: var(--primary-color); }
+        .box-note h4 { color: var(--primary-color); display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+
+        .box-tip { background: #f0fdf4; border-color: var(--success-color); }
+        .box-tip h4 { color: var(--success-color); display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+
+        .box-warning { background: #fffbeb; border-color: var(--warning-color); }
+        .box-warning h4 { color: var(--warning-color); display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+
+        /* Tables */
+        table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0; 
+            margin: 20px 0; 
+            font-size: 10.5pt; 
+            break-inside: avoid; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); 
+            overflow: hidden; 
+            transition: border-color 0.3s;
+        }
+        th, td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); text-align: left; transition: border-color 0.3s; }
+        th { background-color: #f1f5f9; font-weight: 600; color: var(--primary-color); transition: background-color 0.3s, color 0.3s; }
+        tr:last-child td { border-bottom: none; }
+        
+        /* Practice Section */
+        .practice-area {
+            margin-top: auto;
+            background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
+            border: 2px dashed var(--accent-color);
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            break-inside: avoid;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .practice-badge {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--accent-color);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 10pt;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Chapter Headers */
+        .chapter-hero {
+            background: linear-gradient(135deg, var(--primary-color), #004080);
+            color: white;
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px -5px rgba(0, 34, 68, 0.3);
+        }
+
+        .chapter-info h1 { margin: 0; font-size: 24pt; color: white; }
+        .chapter-number { 
+            color: var(--accent-color); 
+            font-family: 'Oswald', sans-serif; 
+            font-weight: 700; 
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 10pt;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .qr-wrapper {
+            background: white;
+            padding: 6px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 90px;
+        }
+        .qr-wrapper img { width: 100%; border-radius: 6px; }
+        .qr-wrapper span { font-size: 8pt; color: var(--primary-color); font-weight: bold; display: block; margin-top: 2px; }
+
+        /* Index Page */
+        .toc-grid { display: grid; gap: 12px; margin-top: 30px; }
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .toc-item:hover {
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .toc-num {
+            background: var(--primary-color);
+            color: white;
+            width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            font-size: 10pt;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        /* Footer */
+        .page-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            font-size: 9pt;
+            color: var(--text-light);
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+        /* Ad Section */
+        .ad-page {
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 10px solid var(--accent-color);
+        }
+        .ad-logo {
+            font-size: 40pt;
+            font-weight: bold;
+            color: var(--accent-color);
+            font-family: 'Oswald', sans-serif;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .ad-tagline {
+            font-size: 18pt;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        .ad-feature {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin: 10px;
+            font-size: 12pt;
+            display: inline-block;
+        }
+        .ad-link-box {
+            margin-top: 50px;
+            padding: 20px;
+            border: 2px dashed var(--accent-color);
+            border-radius: 10px;
+        }
+        .ad-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 16pt;
+            font-weight: bold;
+        }
+
+        /* Floating Buttons */
+        .pdf-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        .pdf-btn:hover { transform: translateY(-3px); background: #003366; }
+
+        body.dark-mode .pdf-btn {
+            background: #1e293b;
+            border: 1px solid #475569;
+        }
+
+        body.dark-mode .pdf-btn:hover {
+            background: #334155;
+        }
+
+        /* --- MOBILE RESPONSIVE STYLES --- */
+        @media screen and (max-width: 800px) {
+            .book-container {
+                width: 100%;
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .page {
+                width: 100%;
+                min-height: auto;
+                padding: 20px;
+                border-bottom: 8px solid #f1f5f9;
+            }
+
+            body.dark-mode .page {
+                border-bottom-color: #334155;
+            }
+
+            /* Cover Page Mobile */
+            .cover-page {
+                height: auto;
+                min-height: 100vh;
+                padding: 0;
+            }
+            
+            .cover-content {
+                padding: 40px 20px;
+            }
+
+            .cover-title-group h1 {
+                font-size: 48pt; /* Smaller title */
+            }
+            .cover-title-group p {
+                font-size: 16pt;
+            }
+            
+            .cover-features {
+                grid-template-columns: 1fr; /* Stack features */
+                gap: 15px;
+            }
+
+            .cover-footer {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 20px;
+            }
+            .cover-footer div {
+                text-align: center !important;
+            }
+
+            /* Content Mobile Adjustments */
+            h1 { font-size: 20pt; }
+            h2 { font-size: 16pt; }
+            
+            .chapter-hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .chapter-info h1 {
+                font-size: 20pt;
+            }
+
+            /* Table Responsiveness */
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                font-size: 9pt;
+            }
+
+            /* Ad Page Mobile */
+            .ad-logo { font-size: 28pt; }
+            .ad-tagline { font-size: 14pt; }
+            .ad-feature { display: block; width: 100%; box-sizing: border-box; }
+            .ad-link { font-size: 12pt; word-break: break-all; }
+
+            .pdf-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            .theme-toggle {
+                top: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .share-btn {
+                top: 75px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .share-dropdown {
+                top: 130px;
+                right: 20px;
+                width: 220px;
+            }
+        }
+
+        /* PRINT STYLES (Retain A4 Layout) */
+        @media print {
+            body { background: white; }
+            .book-container { margin: 0; box-shadow: none; width: 100%; }
+            .page { border: none; height: auto; min-height: 297mm; display: block; margin: 0; padding: 20mm; page-break-after: always; width: 100%; }
+            .no-print { display: none; }
+            .code-container { border: 1px solid #ccc; box-shadow: none; }
+            .chapter-hero { background: #eee !important; color: black !important; border: 1px solid #ccc; }
+            .chapter-info h1 { color: black !important; }
+            .ad-page { background: white !important; color: black !important; border: 5px solid black !important; }
+            .ad-logo, .ad-link { color: black !important; }
+            .ad-feature { background: #eee !important; color: black !important; }
+            
+            /* Print Specific Overrides */
+            h1 { font-size: 24pt; }
+            table { display: table; width: 100%; white-space: normal; }
+            .cover-title-group h1 { font-size: 70pt; color: black; }
+            
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle no-print" id="themeToggle" aria-label="Toggle dark mode">
+        <i data-lucide="sun" class="sun-icon"></i>
+        <i data-lucide="moon" class="moon-icon"></i>
+    </button>
+
+    <!-- Share Button -->
+    <button class="share-btn no-print" id="shareBtn" aria-label="Share this guide">
+        <i data-lucide="share-2"></i>
+    </button>
+
+    <!-- Share Dropdown Menu -->
+    <div class="share-dropdown no-print" id="shareDropdown">
+        <h4><i data-lucide="share"></i> শেয়ার করুন</h4>
+        <div class="share-options">
+            <a href="#" class="share-option share-whatsapp" data-platform="whatsapp">
+                <i data-lucide="message-circle"></i>
+                <span>WhatsApp</span>
+            </a>
+            <a href="#" class="share-option share-facebook" data-platform="facebook">
+                <i data-lucide="facebook"></i>
+                <span>Facebook</span>
+            </a>
+            <a href="#" class="share-option share-twitter" data-platform="twitter">
+                <i data-lucide="twitter"></i>
+                <span>Twitter</span>
+            </a>
+            <a href="#" class="share-option share-linkedin" data-platform="linkedin">
+                <i data-lucide="linkedin"></i>
+                <span>LinkedIn</span>
+            </a>
+            <a href="#" class="share-option share-telegram" data-platform="telegram">
+                <i data-lucide="send"></i>
+                <span>Telegram</span>
+            </a>
+            <a href="#" class="share-option share-email" data-platform="email">
+                <i data-lucide="mail"></i>
+                <span>Email</span>
+            </a>
+        </div>
+        <div class="share-url">
+            <input type="text" id="shareUrl" value="https://joykumbhakar.netlify.app/html-guide" readonly>
+            <button class="copy-btn" id="copyBtn">Copy</button>
+        </div>
+    </div>
+
+    <!-- PDF Button -->
+    <button class="pdf-btn no-print" onclick="window.print()">
+        <i data-lucide="printer"></i>
+        Save as PDF
+    </button>
+
+    <div class="book-container">
+
+        <!-- COVER PAGE -->
+        <div class="page cover-page">
+            <div class="cover-pattern"></div>
+            <div class="cover-content">
+                <div>
+                    <span class="cover-badge">এডিশন ২০২৫</span>
+                    <div class="cover-title-group">
+                        <h1>HTML</h1>
+                        <p>সম্পূর্ণ গাইড: শূন্য থেকে মাস্টার</p>
+                    </div>
+                </div>
+
+                <div class="cover-features">
+                    <div class="feature-box">
+                        <h3><i data-lucide="code-2"></i> প্র্যাকটিক্যাল কোড</h3>
+                        <p>৫০+ উদাহরণ এবং রিয়েল লাইফ প্রজেক্ট সহ।</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3><i data-lucide="video"></i> ভিডিও গাইড</h3>
+                        <p>প্রতিটি অধ্যায়ের সাথে ডেডিকেটেড ভিডিও টিউটোরিয়াল।</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3><i data-lucide="layout"></i> মডার্ন ডিজাইন</h3>
+                        <p>HTML5, সেমান্টিক ট্যাগ এবং আধুনিক স্ট্রাকচার।</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3><i data-lucide="check-circle"></i> চেকলিস্ট</h3>
+                        <p>অধ্যায় শেষে কুইজ এবং অনুশীলনী।</p>
+                    </div>
+                </div>
+
+                <div class="cover-footer">
+                    <div>
+                        <h2 style="color:white; font-size:24pt; margin:0; border:none; padding:0;">জয় কুম্ভকার</h2>
+                        <span style="color:var(--accent-color); font-family:'Oswald'; letter-spacing:1px;">WEB DEVELOPER & INSTRUCTOR</span>
+                        <p style="color: #cbd5e1; font-size: 10pt; margin-top: 5px;">joykumbhakar.netlify.app</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://joykumbhakar.netlify.app" alt="Website" style="border-radius: 8px; border: 4px solid white;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INDEX PAGE -->
+        <div class="page">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1><i data-lucide="list" style="display:inline-block; vertical-align:middle; margin-right:10px;"></i> সূচিপত্র</h1>
+                <p>ওয়েব ডেভেলপমেন্ট শেখার পূর্ণাঙ্গ রোডম্যাপ</p>
+            </div>
+
+            <div class="toc-grid">
+                <a href="#ch1" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">১</div>
+                        <span style="font-weight:600; font-size:11pt;">HTML পরিচিতি ও সেটআপ</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৩</span>
+                </a>
+                <a href="#ch2" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">২</div>
+                        <span style="font-weight:600; font-size:11pt;">টেক্সট ফরম্যাটিং</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৫</span>
+                </a>
+                <a href="#ch3" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">৩</div>
+                        <span style="font-weight:600; font-size:11pt;">লিস্ট এবং লিংক</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৬</span>
+                </a>
+                <a href="#ch4" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">৪</div>
+                        <span style="font-weight:600; font-size:11pt;">ছবি এবং মাল্টিমিডিয়া</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৭</span>
+                </a>
+                <a href="#ch5" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">৫</div>
+                        <span style="font-weight:600; font-size:11pt;">টেবিল তৈরি</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৮</span>
+                </a>
+                <a href="#ch6" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">৬</div>
+                        <span style="font-weight:600; font-size:11pt;">ফর্ম ডিজাইন</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ০৯</span>
+                </a>
+                <a href="#ch7" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">৭</div>
+                        <span style="font-weight:600; font-size:11pt;">ব্লক ও ইনলাইন এলিমেন্ট</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১০</span>
+                </a>
+                <a href="#ch8" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">৮</div>
+                        <span style="font-weight:600; font-size:11pt;">HTML5 সেমান্টিক ট্যাগ</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১১</span>
+                </a>
+                <a href="#ch9" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">৯</div>
+                        <span style="font-weight:600; font-size:11pt;">মেটা ট্যাগ ও SEO</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১২</span>
+                </a>
+                <a href="#ch10" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">১০</div>
+                        <span style="font-weight:600; font-size:11pt;">গুরুত্বপূর্ণ ট্যাগের বিস্তারিত</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১৩</span>
+                </a>
+                <a href="#appx" class="toc-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toc-num">১১</div>
+                        <span style="font-weight:600; font-size:11pt;">পরিশিষ্ট: ট্যাগ রেফারেন্স</span>
+                    </div>
+                    <span style="color:#64748b; font-weight:600;">পৃষ্ঠা ১৬</span>
+                </a>
+            </div>
+
+            <div class="box box-tip" style="margin-top: auto;">
+                <h4><i data-lucide="lightbulb"></i> টিপস:</h4>
+                <p>এই বইটি ইন্টারেক্টিভ। যেখানেই QR কোড দেখবেন, মোবাইল দিয়ে স্ক্যান করে ভিডিও টিউটোরিয়ালটি দেখে নিন।</p>
+            </div>
+
+            <div class="page-footer">
+                <span>joykumbhakar.netlify.app</span>
+                <span>০২</span>
+            </div>
+        </div>
+
+        <!-- CHAPTER 1 -->
+        <div class="page" id="ch1">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 01</span>
+                    <h1>HTML পরিচিতি</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML+Introduction+Bangla" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="globe"></i> HTML কি?</h2>
+            <p><strong>HTML (HyperText Markup Language)</strong> হল ওয়েবের মেরুদণ্ড। এটি কোনো প্রোগ্রামিং ভাষা নয়, বরং একটি মার্কআপ ভাষা যা ওয়েব ব্রাউজারকে নির্দেশ দেয় ওয়েব পেজের কাঠামো কেমন হবে।</p>
+            <div class="box box-note">
+                <h4><i data-lucide="history"></i> ইতিহাস</h4>
+                <p>১৯৯১ সালে <strong>Tim Berners-Lee</strong> এটি আবিষ্কার করেন। বর্তমানে আমরা HTML5 ব্যবহার করি যা অনেক বেশি শক্তিশালী এবং আধুনিক।</p>
+            </div>
+            <h2><i data-lucide="laptop-2"></i> কোড এডিটর সেটআপ</h2>
+            <p>কোডিং করার জন্য ভালো এডিটর খুব জরুরি। নিচে সেরা কিছু অপশন দেওয়া হলো:</p>
+            <table>
+                <tr>
+                    <th>OS</th>
+                    <th>সেরা এডিটর</th>
+                    <th>ইনস্টলেশন পদ্ধতি</th>
+                </tr>
+                <tr>
+                    <td><strong>Windows</strong></td>
+                    <td>VS Code</td>
+                    <td>code.visualstudio.com থেকে ডাউনলোড করে ইনস্টল করুন।</td>
+                </tr>
+                <tr>
+                    <td><strong>macOS</strong></td>
+                    <td>VS Code / Sublime</td>
+                    <td>DMG ফাইল ডাউনলোড করে Applications ফোল্ডারে নিন।</td>
+                </tr>
+                <tr>
+                    <td><strong>Linux</strong></td>
+                    <td>VS Code / Vim</td>
+                    <td>Terminal এ <code>sudo snap install code</code> কমান্ড দিন।</td>
+                </tr>
+            </table>
+            <h2><i data-lucide="file-code"></i> আপনার প্রথম কোড</h2>
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    <span class="code-title">index.html</span>
+                </div>
+                <div class="code-block">
+<span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="val">"bn"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="val">"UTF-8"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;title&gt;</span>আমার প্রথম পেজ<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>হ্যালো বিশ্ব!<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span>আমি HTML শিখছি।<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span>
+                </div>
+            </div>
+            <div class="practice-area">
+                <span class="practice-badge">অনুশীলনী - ১</span>
+                <p><strong>১. VS Code ওপেন করে একটি নতুন ফাইল তৈরি করুন <code>my-bio.html</code> নামে।</strong></p>
+                <p><strong>২. তাতে নিজের নাম, ঠিকানা এবং শখ সম্পর্কে ৩টি প্যারাগ্রাফ লিখুন।</strong></p>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৩</span></div>
+        </div>
+
+        <!-- CHAPTER 2 -->
+        <div class="page" id="ch2">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 02</span>
+                    <h1>টেক্সট ফরম্যাটিং</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML+Text+Formatting" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="type"></i> হেডিং ট্যাগসমূহ</h2>
+            <p>HTML এ মোট ৬টি হেডিং ট্যাগ আছে। h1 সবচেয়ে বড় এবং h6 সবচেয়ে ছোট।</p>
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    <span class="code-title">heading.html</span>
+                </div>
+                <div class="code-block">
+<span class="tag">&lt;h1&gt;</span>প্রধান শিরোনাম (h1)<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;h2&gt;</span>দ্বিতীয় স্তর (h2)<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;h3&gt;</span>তৃতীয় স্তর (h3)<span class="tag">&lt;/h3&gt;</span>
+                </div>
+            </div>
+            <h2><i data-lucide="pen-tool"></i> স্টাইলিং ট্যাগ</h2>
+            <p>লেখাকে বোল্ড, ইটালিক বা হাইলাইট করতে নিচের ট্যাগগুলো ব্যবহৃত হয়:</p>
+            <table>
+                <tr>
+                    <th style="width: 25%">ট্যাগ</th>
+                    <th style="width: 35%">বিবরণ</th>
+                    <th style="width: 40%">ফলাফল</th>
+                </tr>
+                <tr>
+                    <td><code>&lt;strong&gt;</code></td>
+                    <td>গুরুত্বপূর্ণ (Bold)</td>
+                    <td><strong>গুরুত্বপূর্ণ</strong></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;em&gt;</code></td>
+                    <td>জোর দেওয়া (Italic)</td>
+                    <td><em>জোর দেওয়া</em></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;mark&gt;</code></td>
+                    <td>হাইলাইট করা</td>
+                    <td><mark>হাইলাইট</mark></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;del&gt;</code></td>
+                    <td>কেটে দেওয়া</td>
+                    <td><del>পুরানো দাম</del></td>
+                </tr>
+            </table>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">formatting.html</span></div>
+                <div class="code-block">
+<span class="tag">&lt;p&gt;</span>
+  এটি <span class="tag">&lt;strong&gt;</span>গুরুত্বপূর্ণ<span class="tag">&lt;/strong&gt;</span> টেক্সট।<br>
+  এটি <span class="tag">&lt;mark&gt;</span>হাইলাইট<span class="tag">&lt;/mark&gt;</span> করা হয়েছে।<br>
+  পানির সংকেত: H<span class="tag">&lt;sub&gt;</span>2<span class="tag">&lt;/sub&gt;</span>O
+<span class="tag">&lt;/p&gt;</span>
+                </div>
+            </div>
+            <div class="practice-area">
+                <span class="practice-badge">অনুশীলনী - ২</span>
+                <p><strong>পানির রাসায়নিক সংকেত (H₂O) এবং আইনস্টাইনের সূত্র (E=mc²) লেখার জন্য কোন ট্যাগ ব্যবহার করবেন?</strong></p>
+                <div style="margin-top: 15px; border-bottom: 2px dotted #ccc; padding-bottom: 5px;">উত্তর: ............................................</div>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৫</span></div>
+        </div>
+
+        <!-- CHAPTER 3 -->
+        <div class="page" id="ch3">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 03</span>
+                    <h1>লিস্ট এবং লিংক</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML+Lists+Links" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="list"></i> লিস্টের প্রকারভেদ</h2>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <h3>অর্ডারড লিস্ট (1, 2, 3)</h3>
+                    <div class="code-container" style="margin: 10px 0;">
+                        <div class="code-block" style="padding: 15px;">
+<span class="tag">&lt;ol&gt;</span>
+  <span class="tag">&lt;li&gt;</span>প্রথম ধাপ<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>দ্বিতীয় ধাপ<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ol&gt;</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="flex: 1;">
+                    <h3>আন-অর্ডারড লিস্ট (Bullet)</h3>
+                    <div class="code-container" style="margin: 10px 0;">
+                        <div class="code-block" style="padding: 15px;">
+<span class="tag">&lt;ul&gt;</span>
+  <span class="tag">&lt;li&gt;</span>আপেল<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>কমলা<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2><i data-lucide="link"></i> হাইপারলিংক</h2>
+            <p>এক পেজ থেকে অন্য পেজে যাওয়ার জন্য <code>&lt;a&gt;</code> ট্যাগ ব্যবহার করা হয়।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">links.html</span></div>
+                <div class="code-block">
+<span class="comment">&lt;!-- সাধারণ লিংক --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"https://google.com"</span><span class="tag">&gt;</span>গুগল ভিজিট করুন<span class="tag">&lt;/a&gt;</span>
+
+<span class="comment">&lt;!-- নতুন ট্যাবে ওপেন করতে --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"about.html"</span> <span class="attr">target</span>=<span class="val">"_blank"</span><span class="tag">&gt;</span>আমাদের সম্পর্কে<span class="tag">&lt;/a&gt;</span>
+                </div>
+            </div>
+            <div class="box box-tip">
+                <h4><i data-lucide="check-circle-2"></i> টিপস:</h4>
+                <p>এক্সটার্নাল লিংকের ক্ষেত্রে <code>target="_blank"</code> এর সাথে <code>rel="noopener noreferrer"</code> ব্যবহার করা ভালো, এটি নিরাপত্তা বাড়ায়।</p>
+            </div>
+            <div class="practice-area">
+                <span class="practice-badge">অনুশীলনী - ৩</span>
+                <p><strong>আপনার প্রিয় ৩টি ওয়েবসাইটের নামের একটি লিস্ট তৈরি করুন এবং সেগুলোকে লিংক করুন।</strong></p>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৬</span></div>
+        </div>
+
+        <!-- CHAPTER 4 -->
+        <div class="page" id="ch4">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 04</span>
+                    <h1>ছবি এবং মাল্টিমিডিয়া</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML+Images+Tags" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="image"></i> ইমেজ ট্যাগ</h2>
+            <p>ওয়েব পেজে ছবি দেখানোর জন্য <code>&lt;img&gt;</code> ট্যাগ ব্যবহার করা হয়। এটি একটি সেলফ-ক্লোজিং ট্যাগ।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">media.html</span></div>
+                <div class="code-block">
+<span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">"images/cat.jpg"</span> 
+     <span class="attr">alt</span>=<span class="val">"একটি বিড়ালের ছবি"</span> 
+     <span class="attr">width</span>=<span class="val">"300"</span><span class="tag">&gt;</span>
+                </div>
+            </div>
+            <h2><i data-lucide="video"></i> ভিডিও যুক্ত করা</h2>
+            <div class="code-container">
+                <div class="code-block">
+<span class="tag">&lt;video</span> <span class="attr">controls</span> <span class="attr">width</span>=<span class="val">"400"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;source</span> <span class="attr">src</span>=<span class="val">"movie.mp4"</span> <span class="attr">type</span>=<span class="val">"video/mp4"</span><span class="tag">&gt;</span>
+  আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
+<span class="tag">&lt;/video&gt;</span>
+                </div>
+            </div>
+            <div class="box box-note">
+                <h4><i data-lucide="info"></i> Alt Text এর গুরুত্ব:</h4>
+                <p>ছবি লোড না হলে অথবা দৃষ্টিপ্রতিবন্ধী ব্যবহারকারীরা যখন স্ক্রিন রিডার ব্যবহার করেন, তখন <code>alt</code> টেক্সটটি পড়া হয়। এটি এসইও (SEO) এর জন্যও খুব জরুরি।</p>
+            </div>
+            <div class="practice-area">
+                <span class="practice-badge">অনুশীলনী - ৪</span>
+                <p><strong>YouTube এর একটি ভিডিও আপনার পেজে এম্বেড (Embed) করার জন্য কোন ট্যাগ ব্যবহার করবেন?</strong></p>
+                <div style="margin-top: 10px;">[ ] &lt;video&gt; &nbsp;&nbsp;&nbsp; [ ] &lt;iframe&gt; &nbsp;&nbsp;&nbsp; [ ] &lt;embed&gt;</div>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৭</span></div>
+        </div>
+
+        <!-- CHAPTER 5 -->
+        <div class="page" id="ch5">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 05</span>
+                    <h1>টেবিল তৈরি</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML+Tables+Bangla" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="table"></i> টেবিল স্ট্রাকচার</h2>
+            <p>টেবিল তৈরি করতে প্রধানত ৩টি ট্যাগ লাগে: <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> (Row), এবং <code>&lt;td&gt;</code> (Data)। হেডারের জন্য <code>&lt;th&gt;</code> ব্যবহার হয়।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">table.html</span></div>
+                <div class="code-block">
+<span class="tag">&lt;table</span> <span class="attr">border</span>=<span class="val">"1"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;tr&gt;</span>
+    <span class="tag">&lt;th&gt;</span>নাম<span class="tag">&lt;/th&gt;</span>
+    <span class="tag">&lt;th&gt;</span>বয়স<span class="tag">&lt;/th&gt;</span>
+  <span class="tag">&lt;/tr&gt;</span>
+  <span class="tag">&lt;tr&gt;</span>
+    <span class="tag">&lt;td&gt;</span>রাহিম<span class="tag">&lt;/td&gt;</span>
+    <span class="tag">&lt;td&gt;</span>২৫<span class="tag">&lt;/td&gt;</span>
+  <span class="tag">&lt;/tr&gt;</span>
+<span class="tag">&lt;/table&gt;</span>
+                </div>
+            </div>
+            <h3>ফলাফল প্রিভিউ:</h3>
+            <table style="width: 70%; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <tr><th>নাম</th><th>বয়স</th></tr>
+                <tr><td>রাহিম</td><td>২৫</td></tr>
+                <tr><td>করিম</td><td>২৮</td></tr>
+            </table>
+            <div class="practice-area">
+                <span class="practice-badge">অনুশীলনী - ৫</span>
+                <p><strong>একটি রেজাল্ট শিট টেবিল তৈরি করুন যেখানে রোল নম্বর, নাম এবং জিপিএ থাকবে।</strong></p>
+                <textarea style="width: 100%; height: 80px; margin-top: 15px; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px;" placeholder="এখানে কোড লিখুন..."></textarea>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৮</span></div>
+        </div>
+
+        <!-- CHAPTER 6 -->
+        <div class="page" id="ch6">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 06</span>
+                    <h1>ফর্ম ডিজাইন</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML+Form+Design" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="layout-template"></i> ফর্ম এলিমেন্ট</h2>
+            <p>ইউজার থেকে ইনপুট নিতে ফর্ম ব্যবহার করা হয়। এটি ওয়েবসাইটের অন্যতম গুরুত্বপূর্ণ অংশ।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">login.html</span></div>
+                <div class="code-block">
+<span class="tag">&lt;form&gt;</span>
+  <span class="tag">&lt;label&gt;</span>ইমেইল:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"email"</span> <span class="attr">required</span><span class="tag">&gt;</span>
+  <br><br>
+  <span class="tag">&lt;label&gt;</span>পাসওয়ার্ড:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"password"</span><span class="tag">&gt;</span>
+  <br><br>
+  <span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="val">"submit"</span><span class="tag">&gt;</span>লগইন<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span>
+                </div>
+            </div>
+            <h3>ইনপুট টাইপসমূহ:</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="box box-note" style="margin: 0;">
+                    <h4>Text & Password</h4>
+                    <p><code>type="text"</code> - সাধারণ লেখা<br><code>type="password"</code> - গোপন লেখা</p>
+                </div>
+                <div class="box box-note" style="margin: 0;">
+                    <h4>Selection</h4>
+                    <p><code>type="radio"</code> - একটি পছন্দ<br><code>type="checkbox"</code> - একাধিক পছন্দ</p>
+                </div>
+            </div>
+            <div class="practice-area" style="margin-top: 20px;">
+                <span class="practice-badge">ফাইনাল প্রজেক্ট</span>
+                <p><strong>একটি "Contact Us" ফর্ম তৈরি করুন যাতে নাম, ইমেইল এবং মেসেজ লেখার বক্স এবং একটি সেন্ড বাটন থাকবে।</strong></p>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>০৯</span></div>
+        </div>
+
+        <!-- CHAPTER 7 -->
+        <div class="page" id="ch7">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 07</span>
+                    <h1>ব্লক ও ইনলাইন এলিমেন্ট</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML+Block+Inline+Elements" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="layers"></i> ব্লক লেভেল এলিমেন্ট (Block Level)</h2>
+            <p>ব্লক এলিমেন্টগুলো সবসময় নতুন লাইন থেকে শুরু হয় এবং পুরো প্রস্থ (Width) দখল করে নেয়।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">block.html</span></div>
+                <div class="code-block">
+<span class="tag">&lt;div&gt;</span>আমি একটি ব্লক এলিমেন্ট<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;p&gt;</span>আমিও একটি ব্লক এলিমেন্ট<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;h1&gt;</span>হেডিংও ব্লক এলিমেন্ট<span class="tag">&lt;/h1&gt;</span>
+                </div>
+            </div>
+            <h2><i data-lucide="align-horizontal-distribute-start"></i> ইনলাইন এলিমেন্ট (Inline)</h2>
+            <p>ইনলাইন এলিমেন্টগুলো নতুন লাইন থেকে শুরু হয় না এবং যতটুকু কনটেন্ট ততটুকু জায়গা নেয়।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">inline.html</span></div>
+                <div class="code-block">
+<span class="tag">&lt;span&gt;</span>আমি একটি ইনলাইন এলিমেন্ট<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"#"</span><span class="tag">&gt;</span>লিংক একটি ইনলাইন এলিমেন্ট<span class="tag">&lt;/a&gt;</span>
+<span class="tag">&lt;b&gt;</span>বোল্ড টেক্সট<span class="tag">&lt;/b&gt;</span>
+                </div>
+            </div>
+            <div class="box box-warning">
+                <h4><i data-lucide="alert-triangle"></i> পার্থক্য:</h4>
+                <p><code>&lt;div&gt;</code> ব্যবহার করা হয় বড় সেকশন বা লেআউট তৈরির জন্য।<br><code>&lt;span&gt;</code> ব্যবহার করা হয় লেখার ছোট কোনো অংশের স্টাইল পরিবর্তনের জন্য।</p>
+            </div>
+            <div class="practice-area">
+                <span class="practice-badge">অনুশীলনী - ৬</span>
+                <p><strong>একটি প্যারাগ্রাফের মধ্যে নির্দিষ্ট কিছু শব্দকে লাল রঙ করার জন্য কোন ট্যাগ ব্যবহার করবেন? (div না span?)</strong></p>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১০</span></div>
+        </div>
+
+        <!-- CHAPTER 8 -->
+        <div class="page" id="ch8">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 08</span>
+                    <h1>HTML5 সেমান্টিক ট্যাগ</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML5+Semantic+Tags" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="layout"></i> সেমান্টিক ট্যাগ কি?</h2>
+            <p>সেমান্টিক ট্যাগগুলো কোডকে অর্থবহ করে তোলে। আগে আমরা সবকিছুর জন্য <code>&lt;div&gt;</code> ব্যবহার করতাম, কিন্তু HTML5 এ নির্দিষ্ট কাজের জন্য নির্দিষ্ট ট্যাগ আছে।</p>
+            <table style="font-size: 10pt;">
+                <tr><th>ট্যাগ</th><th>বর্ণনা</th></tr>
+                <tr><td><code>&lt;header&gt;</code></td><td>ওয়েবসাইট বা সেকশনের উপরের অংশ।</td></tr>
+                <tr><td><code>&lt;nav&gt;</code></td><td>ন্যাভিগেশন বা মেনুবারের জন্য।</td></tr>
+                <tr><td><code>&lt;main&gt;</code></td><td>মূল কনটেন্ট বা প্রধান অংশ।</td></tr>
+                <tr><td><code>&lt;section&gt;</code></td><td>নির্দিষ্ট কোনো সেকশন বা বিভাগ।</td></tr>
+                <tr><td><code>&lt;article&gt;</code></td><td>ব্লগ পোস্ট বা আর্টিকেল।</td></tr>
+                <tr><td><code>&lt;aside&gt;</code></td><td>সাইডবার বা অতিরিক্ত তথ্য।</td></tr>
+                <tr><td><code>&lt;footer&gt;</code></td><td>নিচের অংশ বা ফুটার।</td></tr>
+            </table>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">layout.html</span></div>
+                <div class="code-block">
+<span class="tag">&lt;header&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>আমার লোগো<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;nav&gt;</span>...মেনু...<span class="tag">&lt;/nav&gt;</span>
+<span class="tag">&lt;/header&gt;</span>
+
+<span class="tag">&lt;main&gt;</span>
+  <span class="tag">&lt;article&gt;</span>
+    <span class="tag">&lt;h2&gt;</span>ব্লগ পোস্ট<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;p&gt;</span>বিস্তারিত লেখা...<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/article&gt;</span>
+<span class="tag">&lt;/main&gt;</span>
+
+<span class="tag">&lt;footer&gt;</span>কপিরাইট ২০২৫<span class="tag">&lt;/footer&gt;</span>
+                </div>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১১</span></div>
+        </div>
+
+        <!-- CHAPTER 9 -->
+        <div class="page" id="ch9">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 09</span>
+                    <h1>মেটা ট্যাগ ও SEO</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.youtube.com/results?search_query=HTML+Meta+Tags+SEO" alt="QR">
+                    <span>ভিডিও দেখুন</span>
+                </div>
+            </div>
+            <h2><i data-lucide="search"></i> মেটা ট্যাগ কি?</h2>
+            <p>মেটা ট্যাগ ব্রাউজার এবং সার্চ ইঞ্জিনকে পেজ সম্পর্কে তথ্য দেয়। এগুলো <code>&lt;head&gt;</code> এর ভেতরে থাকে এবং পেজে সরাসরি দেখা যায় না।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div><span class="code-title">meta.html</span></div>
+                <div class="code-block">
+<span class="comment">&lt;!-- বাংলা ফন্ট সাপোর্টের জন্য --&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="val">"UTF-8"</span><span class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- মোবাইল রেসপন্সিভ এর জন্য --&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name</span>=<span class="val">"viewport"</span> <span class="attr">content</span>=<span class="val">"width=device-width, initial-scale=1.0"</span><span class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- এসইও (SEO) এর জন্য --&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name</span>=<span class="val">"description"</span> <span class="attr">content</span>=<span class="val">"ফ্রি HTML টিউটোরিয়াল শিখুন"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name</span>=<span class="val">"keywords"</span> <span class="attr">content</span>=<span class="val">"HTML, Bangla, Tutorial"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;meta</span> <span class="attr">name</span>=<span class="val">"author"</span> <span class="attr">content</span>=<span class="val">"Joy Kumhakar"</span><span class="tag">&gt;</span>
+                </div>
+            </div>
+            <div class="box box-tip">
+                <h4><i data-lucide="check-check"></i> মনে রাখবেন:</h4>
+                <p>ভালো র‍্যাঙ্কিং এর জন্য প্রতিটি পেজে সঠিক <code>description</code> মেটা ট্যাগ ব্যবহার করা অত্যন্ত জরুরি।</p>
+            </div>
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১২</span></div>
+        </div>
+
+        <!-- NEW CHAPTER 10: Detailed Tag Reference - Page 1 -->
+        <div class="page" id="ch10">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Chapter 10</span>
+                    <h1>গুরুত্বপূর্ণ ট্যাগের বিস্তারিত</h1>
+                </div>
+                <div class="qr-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://developer.mozilla.org/en-US/docs/Web/HTML/Element" alt="QR">
+                    <span>MDN রেফারেন্স</span>
+                </div>
+            </div>
+
+            <p>এই অধ্যায়ে বহুল ব্যবহৃত ট্যাগগুলোর বিস্তারিত বিবরণ, অ্যাট্রিবিউট এবং লাইভ উদাহরণের মতো আউটপুট দেখানো হলো।</p>
+
+            <!-- 1. Structure & Text Tags -->
+            <h2 style="border-bottom: 2px solid var(--accent-color); margin-top: 10px;">১. স্ট্রাকচার ও টেক্সট ট্যাগ</h2>
+
+            <h3><code>&lt;div&gt;</code> এবং <code>&lt;span&gt;</code></h3>
+            <p><strong>&lt;div&gt;:</strong> ব্লক লেভেল কন্টেইনার। এটি পুরো প্রস্থ দখল করে।<br><strong>&lt;span&gt;:</strong> ইনলাইন কন্টেইনার। এটি শুধু লেখার যতটুকু অংশ ততটুকু দখল করে।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="code-block">
+<span class="tag">&lt;div</span> <span class="attr">style</span>=<span class="val">"background:#eee; padding:5px;"</span><span class="tag">&gt;</span>আমি একটি ডিভ (Div)<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;p&gt;</span>আমি একটি <span class="tag">&lt;span</span> <span class="attr">style</span>=<span class="val">"color:red;"</span><span class="tag">&gt;</span>স্প্যান (Span)<span class="tag">&lt;/span&gt;</span> টেক্সট।<span class="tag">&lt;/p&gt;</span>
+                </div>
+            </div>
+            <div class="output-box">
+                <span class="output-label">Output</span>
+                <div style="background:#eee; padding:5px; margin-bottom: 5px;">আমি একটি ডিভ (Div)</div>
+                <p style="margin:0;">আমি একটি <span style="color:red;">স্প্যান (Span)</span> টেক্সট।</p>
+            </div>
+
+            <h3><code>&lt;hr&gt;</code> এবং <code>&lt;br&gt;</code></h3>
+            <p><strong>&lt;hr&gt;:</strong> অনুভূমিক রেখা টানে। <strong>&lt;br&gt;:</strong> নতুন লাইন তৈরি করে।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="code-block">লাইন ১<span class="tag">&lt;br&gt;</span>লাইন ২<span class="tag">&lt;hr&gt;</span>সেকশন শেষ।</div>
+            </div>
+            <div class="output-box">
+                <span class="output-label">Output</span>
+                লাইন ১<br>লাইন ২<hr style="margin: 5px 0;">সেকশন শেষ।
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১৩</span></div>
+        </div>
+
+        <!-- NEW CHAPTER 10: Detailed Tag Reference - Page 2 -->
+        <div class="page">
+            <h2 style="border-bottom: 2px solid var(--accent-color); margin-top: 10px;">২. মিডিয়া ও লিংক ট্যাগ</h2>
+
+            <h3><code>&lt;a&gt;</code> (Anchor Tag)</h3>
+            <p>হাইপারলিংক তৈরি করতে ব্যবহৃত হয়।</p>
+            <ul>
+                <li><code>href</code>: গন্তব্যের URL (আবশ্যক)।</li>
+                <li><code>target</code>: <code>_blank</code> দিলে নতুন ট্যাবে খুলবে।</li>
+            </ul>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="code-block"><span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"https://google.com"</span> <span class="attr">target</span>=<span class="val">"_blank"</span><span class="tag">&gt;</span>গুগল ভিজিট করুন<span class="tag">&lt;/a&gt;</span></div>
+            </div>
+            <div class="output-box">
+                <span class="output-label">Output</span>
+                <a href="#" style="color: blue; text-decoration: underline;">গুগল ভিজিট করুন</a>
+            </div>
+
+            <h3><code>&lt;img&gt;</code> (Image Tag)</h3>
+            <p>ছবি প্রদর্শনের জন্য। এটি একটি এম্পটি ট্যাগ।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="code-block"><span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="val">"logo.png"</span> <span class="attr">alt</span>=<span class="val">"Logo"</span> <span class="attr">width</span>=<span class="val">"50"</span><span class="tag">&gt;</span></div>
+            </div>
+            <div class="output-box">
+                <span class="output-label">Output</span>
+                <div style="width: 50px; height: 50px; background: #ddd; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 10px; color: #555;">Logo</div>
+            </div>
+
+            <h3><code>&lt;iframe&gt;</code> (Inline Frame)</h3>
+            <p>অন্য একটি ওয়েবপেজ বা ভিডিও বর্তমান পেজে দেখানোর জন্য।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="code-block"><span class="tag">&lt;iframe</span> <span class="attr">src</span>=<span class="val">"https://example.com"</span> <span class="attr">height</span>=<span class="val">"100"</span><span class="tag">&gt;&lt;/iframe&gt;</span></div>
+            </div>
+            <div class="output-box">
+                <span class="output-label">Output</span>
+                <div style="width: 100%; height: 100px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; background: #f9f9f9; color: #888;">[Iframe Content]</div>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১৪</span></div>
+        </div>
+
+        <!-- NEW CHAPTER 10: Detailed Tag Reference - Page 3 -->
+        <div class="page">
+            <h2 style="border-bottom: 2px solid var(--accent-color); margin-top: 10px;">৩. ফর্ম ও ইনপুট ট্যাগ</h2>
+
+            <h3><code>&lt;input&gt;</code> (বিভিন্ন টাইপ)</h3>
+            <p>ব্যবহারকারীর থেকে ডেটা নেওয়ার প্রধান মাধ্যম।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="code-block">
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"text"</span> <span class="attr">placeholder</span>=<span class="val">"নাম"</span><span class="tag">&gt;</span><br>
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"radio"</span> <span class="attr">name</span>=<span class="val">"g"</span><span class="tag">&gt;</span> পুরুষ 
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"radio"</span> <span class="attr">name</span>=<span class="val">"g"</span><span class="tag">&gt;</span> মহিলা<br>
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"color"</span><span class="tag">&gt;</span> রঙ বাছুন
+                </div>
+            </div>
+            <div class="output-box">
+                <span class="output-label">Output</span>
+                <input type="text" placeholder="নাম" style="padding: 5px; margin-bottom: 5px;"><br>
+                <input type="radio" name="g"> পুরুষ <input type="radio" name="g"> মহিলা<br>
+                <input type="color"> রঙ বাছুন
+            </div>
+
+            <h3><code>&lt;select&gt;</code> এবং <code>&lt;option&gt;</code></h3>
+            <p>ড্রপডাউন লিস্ট তৈরি করার জন্য।</p>
+            <div class="code-container">
+                <div class="code-header"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                <div class="code-block">
+<span class="tag">&lt;select&gt;</span>
+  <span class="tag">&lt;option&gt;</span>ঢাকা<span class="tag">&lt;/option&gt;</span>
+  <span class="tag">&lt;option&gt;</span>চট্টগ্রাম<span class="tag">&lt;/option&gt;</span>
+<span class="tag">&lt;/select&gt;</span>
+                </div>
+            </div>
+            <div class="output-box">
+                <span class="output-label">Output</span>
+                <select style="padding: 5px;"><option>ঢাকা</option><option>চট্টগ্রাম</option></select>
+            </div>
+
+            <h3><code>&lt;button&gt;</code></h3>
+            <p>ক্লিকযোগ্য বাটন।</p>
+            <div class="code-container">
+                <div class="code-block" style="padding: 10px;"><span class="tag">&lt;button&gt;</span>সাবমিট<span class="tag">&lt;/button&gt;</span></div>
+            </div>
+            <div class="output-box" style="margin-bottom: 0;">
+                <span class="output-label">Output</span>
+                <button style="padding: 5px 15px; cursor: pointer; background: #ddd; border: 1px solid #999;">সাবমিট</button>
+            </div>
+
+            <div class="page-footer"><span>joykumbhakar.netlify.app</span><span>১৫</span></div>
+        </div>
+
+        <!-- APPENDIX -->
+        <div class="page" id="appx">
+            <div class="chapter-hero">
+                <div class="chapter-info">
+                    <span class="chapter-number">Appendix</span>
+                    <h1>ট্যাগ রেফারেন্স তালিকা</h1>
+                </div>
+            </div>
+
+            <p>দ্রুত রিভিশন দেওয়ার জন্য একটি সংক্ষিপ্ত তালিকা:</p>
+
+            <table>
+                <tr>
+                    <th width="20%">ট্যাগ</th>
+                    <th width="40%">কাজ</th>
+                    <th width="40%">উদাহরণ</th>
+                </tr>
+                <tr>
+                    <td><code>&lt;br&gt;</code></td>
+                    <td>লাইন ব্রেক (Line Break)</td>
+                    <td><code>Line 1 &lt;br&gt; Line 2</code></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;hr&gt;</code></td>
+                    <td>অনুভূমিক রেখা (Horizontal Rule)</td>
+                    <td><code>&lt;hr&gt;</code></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;blockquote&gt;</code></td>
+                    <td>উদ্ধৃতি (Quote) দেখানোর জন্য</td>
+                    <td><code>&lt;blockquote&gt;Quote&lt;/blockquote&gt;</code></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;code&gt;</code></td>
+                    <td>কম্পিউটার কোড দেখানোর জন্য</td>
+                    <td><code>&lt;code&gt;print()&lt;/code&gt;</code></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;sup&gt;</code></td>
+                    <td>সুপারস্ক্রিপ্ট (Power)</td>
+                    <td><code>x&lt;sup&gt;2&lt;/sup&gt;</code> (x²)</td>
+                </tr>
+                <tr>
+                    <td><code>&lt;sub&gt;</code></td>
+                    <td>সাবস্ক্রিপ্ট (Base)</td>
+                    <td><code>H&lt;sub&gt;2&lt;/sub&gt;O</code> (H₂O)</td>
+                </tr>
+                <tr>
+                    <td><code>&lt;iframe&gt;</code></td>
+                    <td>অন্য ওয়েবসাইট এম্বেড করতে</td>
+                    <td><code>&lt;iframe src="..."&gt;&lt;/iframe&gt;</code></td>
+                </tr>
+            </table>
+
+            <div class="box box-tip">
+                <h4><i data-lucide="graduation-cap"></i> পরবর্তী ধাপ:</h4>
+                <p>অভিনন্দন! আপনি HTML এর মূল বিষয়গুলো শিখেছেন। এখন CSS শেখা শুরু করুন এবং আপনার ওয়েবসাইটকে সুন্দর করে সাজান।</p>
+            </div>
+
+            <div style="text-align: center; margin-top: auto; padding: 20px; color: var(--text-light);">
+                <p style="font-size: 14pt; font-weight: bold; color: var(--primary-color);">শুভেচ্ছান্তে</p>
+                <p>জয় কুম্ভকার</p>
+                <p style="font-size: 9pt;">joykumbhakar.netlify.app</p>
+            </div>
+
+            <div class="page-footer">
+                <span>সমাপ্ত</span>
+                <span>১৬</span>
+            </div>
+        </div>
+
+        <!-- ADVERTISEMENT PAGE -->
+        <div class="page ad-page">
+            <div class="ad-logo">
+                <i data-lucide="shield-check" style="width: 60px; height: 60px; display: block; margin: 0 auto 10px;"></i>
+                SECURE THING
+            </div>
+            
+            <p class="ad-tagline">আপনার ডিজিটাল জীবনের নিরাপত্তা আমাদের দায়িত্ব</p>
+            
+            <div style="margin: 30px 0;">
+                <div class="ad-feature">Military-Grade Encryption</div>
+                <div class="ad-feature">Secure Photo Vault</div>
+                <div class="ad-feature">Android Compatible</div>
+                <div class="ad-feature">100% Privacy</div>
+            </div>
+
+            <p style="max-width: 60%; margin: 20px auto; color: #cbd5e1;">
+                আপনার ব্যক্তিগত ছবি, ভিডিও এবং ফাইলগুলো সুরক্ষিত রাখুন বিশ্বের সবচেয়ে শক্তিশালী এনক্রিপশন প্রযুক্তির মাধ্যমে। আজই ডাউনলোড করুন।
+            </p>
+
+            <div class="ad-link-box">
+                <p style="color:white; margin-bottom: 10px;">ভিজিট করুন:</p>
+                <a href="https://securethings.netlify.app" class="ad-link" target="_blank">securethings.netlify.app</a>
+                <div style="margin-top: 20px;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://securethings.netlify.app" alt="SecureThing QR" style="border: 5px solid white; border-radius: 10px;">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Dark Mode Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Check for saved theme preference or prefer-color-scheme
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        const savedTheme = localStorage.getItem('theme');
+
+        if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+            body.classList.add('dark-mode');
+        }
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            // Save preference to localStorage
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+            
+            // Update icons
+            lucide.createIcons();
+        });
+
+        // Listen for system theme changes
+        prefersDarkScheme.addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                if (e.matches) {
+                    body.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                }
+                lucide.createIcons();
+            }
+        });
+
+        // Share Button Functionality
+        const shareBtn = document.getElementById('shareBtn');
+        const shareDropdown = document.getElementById('shareDropdown');
+        const copyBtn = document.getElementById('copyBtn');
+        const shareUrlInput = document.getElementById('shareUrl');
+        const shareOptions = document.querySelectorAll('.share-option');
+
+        // Current URL for sharing
+        const currentUrl = window.location.href;
+        const shareTitle = 'HTML সম্পূর্ণ গাইড - শূন্য থেকে মাস্টার';
+        const shareText = 'এই চমৎকার HTML টিউটোরিয়ালটি দেখুন - বাংলায় সম্পূর্ণ গাইড!';
+        
+        // Update share URL input
+        shareUrlInput.value = currentUrl;
+
+        // Toggle share dropdown
+        shareBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            shareDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!shareDropdown.contains(e.target) && !shareBtn.contains(e.target)) {
+                shareDropdown.classList.remove('active');
+            }
+        });
+
+        // Copy URL functionality
+        copyBtn.addEventListener('click', () => {
+            shareUrlInput.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            copyBtn.classList.add('copied');
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        });
+
+        // Share via different platforms
+        shareOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const platform = option.dataset.platform;
+                let shareUrl = '';
+
+                switch(platform) {
+                    case 'whatsapp':
+                        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + currentUrl)}`;
+                        break;
+                    case 'facebook':
+                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+                        break;
+                    case 'twitter':
+                        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(currentUrl)}`;
+                        break;
+                    case 'linkedin':
+                        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`;
+                        break;
+                    case 'telegram':
+                        shareUrl = `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(shareText)}`;
+                        break;
+                    case 'email':
+                        shareUrl = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText + '\n\n' + currentUrl)}`;
+                        break;
+                }
+
+                // Open share window
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+                
+                // Close dropdown
+                shareDropdown.classList.remove('active');
+            });
+        });
+
+        // Close dropdown with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                shareDropdown.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

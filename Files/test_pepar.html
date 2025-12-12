@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML 100 Marks Test Paper - জয় কুম্ভকার</title>
+    <!-- Firebase & Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Alarm Sound -->
+    <audio id="alarmSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #002244; /* Navy Blue */
+            --primary-light: #003366;
+            --accent-color: #ffc107; /* Gold */
+            --secondary-color: #00bcd4; /* Cyan */
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --bg-color: #f8fafc;
+            --code-bg: #0f172a;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --exam-bg: #f0f7ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--exam-bg);
+            color: var(--text-color);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Login Modal */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .login-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-light);
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            margin: 10px 0;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        /* Timer */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1001;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .timer-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 1px;
+        }
+
+        .timer-warning {
+            background: var(--warning-color) !important;
+            animation: pulse 1s infinite;
+        }
+
+        .timer-danger {
+            background: var(--danger-color) !important;
+            animation: danger-pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes danger-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Start Test Button */
+        .start-test-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s;
+            display: none;
+        }
+
+        .start-test-btn:hover {
+            transform: translateX(-50%) translateY(-3px);
+            background: #0da271;
+        }
+
+        /* Main Container */
+        .exam-container {
+            max-width: 210mm;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none; /* Hidden until login */
+        }
+
+        /* Header Section */
+        .exam-header {
+            background: linear-gradient(135deg, var(--primary-color), #004080);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            border-bottom: 8px solid var(--accent-color);
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .student-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .exam-badge {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .exam-header h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            margin: 10px 0;
+            color: white;
+        }
+
+        .exam-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Instructions */
+        .instructions {
+            background: #fff8e1;
+            padding: 20px 30px;
+            border-left: 5px solid var(--warning-color);
+            margin: 20px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .instructions h3 {
+            color: var(--warning-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        /* Question Paper */
+        .question-paper {
+            padding: 0 30px 30px;
+            pointer-events: none; /* Disabled until test starts */
+            opacity: 0.7;
+        }
+
+        .question-paper.active {
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .section {
+            margin: 30px 0;
+            break-inside: avoid;
+        }
+
+        .section-header {
+            background: #f1f5f9;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-marks {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Question Styles */
+        .question {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 15px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .question-marks {
+            float: right;
+            background: var(--accent-color);
+            color: var(--primary-color);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        /* MCQ Options */
+        .mcq-options {
+            margin: 15px 0 0 20px;
+        }
+
+        .option {
+            margin: 10px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .option-label {
+            background: #f1f5f9;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid #cbd5e1;
+        }
+
+        .option-text {
+            flex: 1;
+            padding-top: 3px;
+        }
+
+        /* Answer Box - Disabled State */
+        .answer-box {
+            margin: 15px 0 0 20px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8fafc;
+            min-height: 100px;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .answer-box:empty::before {
+            content: "পরীক্ষা শুরু হলে এখানে উত্তর লিখতে পারবেন";
+        }
+
+        .answer-box.short {
+            min-height: 50px;
+        }
+
+        .answer-box.code {
+            font-family: 'Fira Code', monospace;
+            background: #0f172a;
+            color: #64748b;
+            border: none;
+        }
+
+        .answer-box.code:empty::before {
+            content: "// পরীক্ষা শুরু হলে এখানে কোড লিখতে পারবেন";
+            color: #64748b;
+        }
+
+        /* Active Answer Box */
+        .answer-box.active {
+            background: white;
+            color: var(--text-color);
+            font-style: normal;
+            border: 2px solid var(--accent-color);
+        }
+
+        .answer-box.active:empty::before {
+            content: "";
+        }
+
+        .answer-box.active.code {
+            color: #e2e8f0;
+        }
+
+        .answer-box.active.code:empty::before {
+            content: "";
+        }
+
+        /* True/False Options */
+        .true-false {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .tf-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tf-option:hover {
+            border-color: var(--primary-color);
+            background: #f0f7ff;
+        }
+
+        .tf-option.active {
+            border-color: var(--primary-color);
+            background: #f0f7ff;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s;
+            display: none;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            background: #0da271;
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s;
+            display: none;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-3px);
+            background: #003366;
+        }
+
+        /* Footer */
+        .exam-footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .signature-box {
+            text-align: center;
+            padding: 20px;
+            border-top: 2px solid var(--accent-color);
+            width: 200px;
+        }
+
+        /* Result Modal */
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .result-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .result-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .grade {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .grade-a { color: #10b981; }
+        .grade-b { color: #f59e0b; }
+        .grade-c { color: #ef4444; }
+        .grade-f { color: #dc2626; }
+
+        /* Alert Modal */
+        .alert-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .alert-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .alert-box h2 {
+            color: var(--warning-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .exam-container {
+                margin: 10px;
+                border-radius: 0;
+            }
+            
+            .exam-header {
+                padding: 15px 20px;
+            }
+            
+            .question-paper {
+                padding: 0 20px 20px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .timer-container {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 16px;
+            }
+            
+            .start-test-btn {
+                bottom: 20px;
+                padding: 12px 30px;
+                font-size: 14px;
+            }
+            
+            .submit-btn, .print-btn {
+                bottom: 20px;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+            
+            .submit-btn {
+                right: 20px;
+            }
+            
+            .print-btn {
+                right: 20px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .exam-container {
+                margin: 0;
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            .submit-btn, .print-btn, .start-test-btn, .timer-container {
+                display: none !important;
+            }
+            
+            .answer-box {
+                min-height: 80px !important;
+                page-break-inside: avoid;
+            }
+            
+            .question {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-box">
+            <h2><i data-lucide="lock"></i> পরীক্ষায় প্রবেশ করুন</h2>
+            <p style="margin-bottom: 20px; color: var(--text-light);">পরীক্ষা শুরু করতে আপনার তথ্য দিন</p>
+            
+            <input type="text" id="studentName" class="login-input" placeholder="আপনার পূর্ণ নাম" required>
+            <input type="email" id="studentEmail" class="login-input" placeholder="ইমেইল ঠিকানা" required>
+            <input type="text" id="studentRoll" class="login-input" placeholder="রোল নম্বর/আইডি" required>
+            
+            <div class="error-message" id="loginError"></div>
+            
+            <button class="login-btn" onclick="loginStudent()">
+                <i data-lucide="log-in"></i> প্রবেশ করুন
+            </button>
+        </div>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer-container" id="timerContainer">
+        <div class="timer-label">সময় বাকি</div>
+        <div id="timerDisplay">০৩:০০:০০</div>
+    </div>
+
+    <!-- Start Test Button -->
+    <button class="start-test-btn" id="startTestBtn" onclick="startTest()">
+        <i data-lucide="play"></i> পরীক্ষা শুরু করুন
+    </button>
+
+    <!-- Submit Button -->
+    <button class="submit-btn" id="submitBtn" onclick="submitExam()">
+        <i data-lucide="send"></i> উত্তরপত্র জমা দিন
+    </button>
+
+    <!-- Print Button -->
+    <button class="print-btn" id="printBtn" onclick="window.print()">
+        <i data-lucide="printer"></i> প্রিন্ট করুন
+    </button>
+
+    <!-- Result Modal -->
+    <div class="result-modal" id="resultModal">
+        <div class="result-box">
+            <h2><i data-lucide="award"></i> আপনার ফলাফল</h2>
+            
+            <div id="resultContent">
+                <!-- Results will be displayed here -->
+            </div>
+            
+            <button class="login-btn" onclick="closeResult()" style="margin-top: 20px;">
+                <i data-lucide="check"></i> ঠিক আছে
+            </button>
+        </div>
+    </div>
+
+    <!-- Time's Up Alert -->
+    <div class="alert-modal" id="timeUpAlert">
+        <div class="alert-box">
+            <h2><i data-lucide="alert-triangle"></i> সময় শেষ!</h2>
+            <p style="margin-bottom: 20px;">আপনার পরীক্ষার সময় শেষ হয়েছে। আপনার উত্তরপত্র স্বয়ংক্রিয়ভাবে জমা দেওয়া হয়েছে।</p>
+            <button class="login-btn" onclick="closeTimeUpAlert()">
+                <i data-lucide="check"></i> ফলাফল দেখুন
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Exam Container -->
+    <div class="exam-container" id="examContainer">
+
+        <!-- Header -->
+        <div class="exam-header">
+            <div class="exam-badge">পূর্ণমান: ১০০</div>
+            <h1>HTML সম্পূর্ণ গাইড - মূল্যায়ন পরীক্ষা</h1>
+            <div class="exam-meta">
+                <div class="meta-item">
+                    <i data-lucide="clock"></i>
+                    <span>সময়: ৩ ঘন্টা</span>
+                </div>
+                <div class="meta-item">
+                    <i data-lucide="book"></i>
+                    <span>অধ্যায়: ১-১০</span>
+                </div>
+                <div class="meta-item">
+                    <i data-lucide="user"></i>
+                    <span>প্রস্তুতকারী: জয় কুম্ভকার</span>
+                </div>
+            </div>
+            
+            <div class="student-info">
+                <span><i data-lucide="user"></i> নাম: <strong id="displayName">-</strong></span>
+                <span><i data-lucide="mail"></i> ইমেইল: <strong id="displayEmail">-</strong></span>
+                <span><i data-lucide="hash"></i> রোল: <strong id="displayRoll">-</strong></span>
+                <span><i data-lucide="calendar"></i> তারিখ: <strong id="displayDate">-</strong></span>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3><i data-lucide="alert-circle"></i> নির্দেশাবলী</h3>
+            <ul>
+                <li>সমস্ত প্রশ্নের উত্তর দিতে হবে।</li>
+                <li>প্রতিটি প্রশ্নের পূর্ণমান প্রশ্নের পাশে উল্লেখ আছে।</li>
+                <li>MCQ প্রশ্নের ক্ষেত্রে সঠিক উত্তর Circle করুন।</li>
+                <li>খসড়া করার জন্য অতিরিক্ত কাগজ ব্যবহার করতে পারেন।</li>
+                <li>প্রত্যেক বিভাগের শুরুতে নির্দেশনা ভালোভাবে পড়ুন।</li>
+                <li>পরীক্ষার সময় ৩ ঘন্টা।</li>
+                <li><strong>"পরীক্ষা শুরু করুন" বাটনে ক্লিক করার পর থেকে সময় গণনা শুরু হবে।</strong></li>
+                <li><strong>সময় শেষ হলে উত্তরপত্র স্বয়ংক্রিয়ভাবে জমা হয়ে যাবে।</strong></li>
+            </ul>
+        </div>
+
+        <!-- Question Paper -->
+        <div class="question-paper" id="questionPaper">
+
+            <!-- Section A: MCQ -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i data-lucide="check-circle"></i>
+                        বিভাগ ক: বহুনির্বাচনী প্রশ্ন
+                    </div>
+                    <div class="section-marks">মান: ২০</div>
+                </div>
+
+                <!-- Question 1 -->
+                <div class="question">
+                    <span class="question-number">১</span>
+                    <span class="question-marks">১ নম্বর</span>
+                    <div class="question-text">HTML এর পূর্ণরূপ কী?</div>
+                    <div class="mcq-options">
+                        <div class="option">
+                            <div class="option-label">ক</div>
+                            <div class="option-text">Hyper Text Markup Language</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">খ</div>
+                            <div class="option-text">High Tech Modern Language</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">গ</div>
+                            <div class="option-text">Hyper Transfer Markup Language</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">ঘ</div>
+                            <div class="option-text">Home Tool Markup Language</div>
+                        </div>
+                    </div>
+                    <div class="answer-box short" contenteditable="false">
+                        <!-- Student will write answer here -->
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question">
+                    <span class="question-number">২</span>
+                    <span class="question-marks">১ নম্বর</span>
+                    <div class="question-text">HTML এ কয়টি হেডিং ট্যাগ আছে?</div>
+                    <div class="mcq-options">
+                        <div class="option">
+                            <div class="option-label">ক</div>
+                            <div class="option-text">৪টি</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">খ</div>
+                            <div class="option-text">৫টি</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">গ</div>
+                            <div class="option-text">৬টি</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">ঘ</div>
+                            <div class="option-text">৭টি</div>
+                        </div>
+                    </div>
+                    <div class="answer-box short" contenteditable="false"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question">
+                    <span class="question-number">৩</span>
+                    <span class="question-marks">১ নম্বর</span>
+                    <div class="question-text">নিচের কোনটি সঠিক HTML5 সেমান্টিক ট্যাগ?</div>
+                    <div class="mcq-options">
+                        <div class="option">
+                            <div class="option-label">ক</div>
+                            <div class="option-text">&lt;div&gt;</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">খ</div>
+                            <div class="option-text">&lt;span&gt;</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">গ</div>
+                            <div class="option-text">&lt;header&gt;</div>
+                        </div>
+                        <div class="option">
+                            <div class="option-label">ঘ</div>
+                            <div class="option-text">&lt;font&gt;</div>
+                        </div>
+                    </div>
+                    <div class="answer-box short" contenteditable="false"></div>
+                </div>
+
+                <!-- Add more questions as needed -->
+
+            </div>
+
+            <!-- Section B: Short Questions -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i data-lucide="edit"></i>
+                        বিভাগ খ: সংক্ষিপ্ত প্রশ্ন
+                    </div>
+                    <div class="section-marks">মান: ৩০</div>
+                </div>
+
+                <!-- Question 21 -->
+                <div class="question">
+                    <span class="question-number">২১</span>
+                    <span class="question-marks">২ নম্বর</span>
+                    <div class="question-text">HTML এর দুটি ব্লক লেভেল এলিমেন্ট ও দুটি ইনলাইন এলিমেন্টের নাম লিখুন।</div>
+                    <div class="answer-box" contenteditable="false">
+                        <!-- Student will write answer here -->
+                    </div>
+                </div>
+
+                <!-- Question 22 -->
+                <div class="question">
+                    <span class="question-number">২২</span>
+                    <span class="question-marks">৩ নম্বর</span>
+                    <div class="question-text">নিচের ট্যাগগুলোর কাজ কী?</div>
+                    <div class="code-block">
+1. &lt;meta charset="UTF-8"&gt;
+2. &lt;title&gt;
+3. &lt;br&gt;
+                    </div>
+                    <div class="answer-box" contenteditable="false">
+                        <!-- Student will write answer here -->
+                    </div>
+                </div>
+
+                <!-- Add more questions as needed -->
+
+            </div>
+
+            <!-- Section C: True/False -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i data-lucide="help-circle"></i>
+                        বিভাগ গ: সত্য/মিথ্যা
+                    </div>
+                    <div class="section-marks">মান: ১০</div>
+                </div>
+
+                <!-- Question 31 -->
+                <div class="question">
+                    <span class="question-number">৩১</span>
+                    <span class="question-marks">১ নম্বর</span>
+                    <div class="question-text">HTML একটি প্রোগ্রামিং ভাষা।</div>
+                    <div class="true-false">
+                        <div class="tf-option" onclick="selectTrueFalse(this, 31, 'true')">
+                            <i data-lucide="check"></i>
+                            <span>সত্য</span>
+                        </div>
+                        <div class="tf-option" onclick="selectTrueFalse(this, 31, 'false')">
+                            <i data-lucide="x"></i>
+                            <span>মিথ্যা</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 32 -->
+                <div class="question">
+                    <span class="question-number">৩২</span>
+                    <span class="question-marks">১ নম্বর</span>
+                    <div class="question-text">&lt;br&gt; ট্যাগটি একটি সেলফ-ক্লোজিং ট্যাগ।</div>
+                    <div class="true-false">
+                        <div class="tf-option" onclick="selectTrueFalse(this, 32, 'true')">
+                            <i data-lucide="check"></i>
+                            <span>সত্য</span>
+                        </div>
+                        <div class="tf-option" onclick="selectTrueFalse(this, 32, 'false')">
+                            <i data-lucide="x"></i>
+                            <span>মিথ্যা</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add more questions as needed -->
+
+            </div>
+
+            <!-- Section D: Practical/Coding -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i data-lucide="code"></i>
+                        বিভাগ ঘ: ব্যবহারিক/কোডিং
+                    </div>
+                    <div class="section-marks">মান: ৪০</div>
+                </div>
+
+                <!-- Question 41 -->
+                <div class="question">
+                    <span class="question-number">৪১</span>
+                    <span class="question-marks">১০ নম্বর</span>
+                    <div class="question-text">নিচের বৈশিষ্ট্যগুলো সমৃদ্ধ একটি ব্যক্তিগত তথ্য পেজ তৈরি করুন:</div>
+                    <ul style="margin: 15px 0 15px 20px;">
+                        <li>আপনার নাম সহ একটি হেডিং</li>
+                        <li>আপনার সম্পর্কে দুটি প্যারাগ্রাফ</li>
+                        <li>আপনার শিক্ষাগত যোগ্যতার একটি লিস্ট</li>
+                        <li>আপনার শখের একটি লিস্ট</li>
+                        <li>একটি প্রোফাইল ছবি (কল্পনা করুন)</li>
+                        <li>আপনার ইমেইল ঠিকানার লিংক</li>
+                    </ul>
+                    <div class="answer-box code" style="min-height: 200px;" contenteditable="false">
+                        <!-- Student will write code here -->
+                    </div>
+                </div>
+
+                <!-- Add more questions as needed -->
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="exam-footer">
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: var(--accent-color); margin-bottom: 10px;">শুভকামনা!</h3>
+                <p>এই পরীক্ষার মাধ্যমে আপনি HTML সম্পর্কে আপনার জ্ঞান যাচাই করতে পারবেন।</p>
+            </div>
+            
+            <div class="signature-area">
+                <div class="signature-box">
+                    <p>পরীক্ষার্থীর স্বাক্ষর</p>
+                    <div style="height: 2px; background: white; margin: 10px 0;"></div>
+                    <p>নাম: ________________</p>
+                </div>
+                
+                <div class="signature-box">
+                    <p>পরীক্ষকের স্বাক্ষর</p>
+                    <div style="height: 2px; background: white; margin: 10px 0;"></div>
+                    <p>নাম: ________________</p>
+                </div>
+                
+                <div class="signature-box">
+                    <p>তারিখ</p>
+                    <div style="height: 2px; background: white; margin: 10px 0;"></div>
+                    <p>__/__/____</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+                <p style="font-size: 12px; color: rgba(255,255,255,0.8);">
+                    প্রস্তুতকারী: জয় কুম্ভকার | joykumbhakar.netlify.app | © ২০২৫
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsp-xvRknmdBFuS39V0IsljDIq3bOLGOA",
+            authDomain: "portfolio-app-b908d.firebaseapp.com",
+            projectId: "portfolio-app-b908d",
+            storageBucket: "portfolio-app-b908d.firebasestorage.app",
+            messagingSenderId: "1036721930214",
+            appId: "1:1036721930214:web:3cd553be7488a6a7ec2027",
+            measurementId: "G-MWFJTKSHY7"
+        };
+
+        // Initialize Firebase
+        let db;
+        let currentUser = null;
+        let examTimer = null;
+        let timeRemaining = 3 * 60 * 60; // 3 hours in seconds
+        let examStarted = false;
+
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Student login
+        function loginStudent() {
+            const name = document.getElementById('studentName').value.trim();
+            const email = document.getElementById('studentEmail').value.trim();
+            const roll = document.getElementById('studentRoll').value.trim();
+            const errorDiv = document.getElementById('loginError');
+
+            // Validation
+            if (!name || !email || !roll) {
+                errorDiv.textContent = 'সমস্ত তথ্য পূরণ করুন';
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                errorDiv.textContent = 'সঠিক ইমেইল দিন';
+                return;
+            }
+
+            // Set current user
+            currentUser = {
+                name: name,
+                email: email,
+                roll: roll,
+                startTime: null,
+                submitted: false
+            };
+
+            // Display student info
+            document.getElementById('displayName').textContent = name;
+            document.getElementById('displayEmail').textContent = email;
+            document.getElementById('displayRoll').textContent = roll;
+            document.getElementById('displayDate').textContent = new Date().toLocaleDateString('bn-BD');
+
+            // Hide login modal, show exam container and start button
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('examContainer').style.display = 'block';
+            document.getElementById('startTestBtn').style.display = 'flex';
+
+            // Show print button
+            document.getElementById('printBtn').style.display = 'flex';
+
+            // Play success sound
+            playSound('success');
+        }
+
+        // Start the test
+        function startTest() {
+            if (!currentUser) return;
+
+            examStarted = true;
+            currentUser.startTime = new Date().toISOString();
+
+            // Hide start button
+            document.getElementById('startTestBtn').style.display = 'none';
+
+            // Show timer
+            document.getElementById('timerContainer').style.display = 'flex';
+
+            // Enable question paper
+            document.getElementById('questionPaper').classList.add('active');
+
+            // Enable all answer boxes
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                box.contentEditable = true;
+                box.classList.add('active');
+                box.style.cursor = 'text';
+            });
+
+            // Enable true/false options
+            const tfOptions = document.querySelectorAll('.tf-option');
+            tfOptions.forEach(option => {
+                option.style.cursor = 'pointer';
+            });
+
+            // Show submit button
+            document.getElementById('submitBtn').style.display = 'flex';
+
+            // Start timer
+            startTimer();
+
+            // Play start sound
+            playSound('start');
+
+            // Show alert
+            alert('পরীক্ষা শুরু হয়েছে! আপনার সময় এখন ৩ ঘন্টা।');
+        }
+
+        // Timer functions
+        function startTimer() {
+            examTimer = setInterval(() => {
+                timeRemaining--;
+
+                // Update timer display
+                updateTimerDisplay();
+
+                // Check for warnings
+                if (timeRemaining === 30 * 60) { // 30 minutes left
+                    document.getElementById('timerContainer').classList.add('timer-warning');
+                    alert('মাত্র ৩০ মিনিট বাকি!');
+                    playSound('warning');
+                } else if (timeRemaining === 10 * 60) { // 10 minutes left
+                    document.getElementById('timerContainer').classList.remove('timer-warning');
+                    document.getElementById('timerContainer').classList.add('timer-danger');
+                    alert('মাত্র ১০ মিনিট বাকি! দ্রুত উত্তর লিখুন।');
+                    playSound('warning');
+                } else if (timeRemaining === 5 * 60) { // 5 minutes left
+                    alert('শেষ ৫ মিনিট! উত্তরপত্র জমা দেওয়ার জন্য প্রস্তুত হোন।');
+                    playSound('warning');
+                }
+
+                // Auto-submit when time is up
+                if (timeRemaining <= 0) {
+                    clearInterval(examTimer);
+                    autoSubmitExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(timeRemaining / 3600);
+            const minutes = Math.floor((timeRemaining % 3600) / 60);
+            const seconds = timeRemaining % 60;
+
+            document.getElementById('timerDisplay').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Auto submit when time is up
+        function autoSubmitExam() {
+            // Play alarm sound
+            playSound('alarm');
+
+            // Show time's up alert
+            document.getElementById('timeUpAlert').style.display = 'flex';
+
+            // Disable all inputs
+            document.getElementById('questionPaper').classList.remove('active');
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                box.contentEditable = false;
+                box.style.cursor = 'not-allowed';
+            });
+
+            // Submit answers
+            submitAnswersToFirebase(true);
+        }
+
+        // Manual submit
+        function submitExam() {
+            if (!confirm('আপনি কি নিশ্চিত যে আপনি উত্তরপত্র জমা দিতে চান? একবার জমা দিলে আর পরিবর্তন করা যাবে না।')) {
+                return;
+            }
+
+            // Disable all inputs
+            document.getElementById('questionPaper').classList.remove('active');
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                box.contentEditable = false;
+                box.style.cursor = 'not-allowed';
+            });
+
+            // Stop timer
+            clearInterval(examTimer);
+            document.getElementById('timerContainer').style.display = 'none';
+
+            // Hide submit button
+            document.getElementById('submitBtn').style.display = 'none';
+
+            // Submit answers
+            submitAnswersToFirebase(false);
+        }
+
+        // Submit answers to Firebase
+        async function submitAnswersToFirebase(isAutoSubmit) {
+            if (!currentUser || !db) {
+                console.error('No user or database connection');
+                return;
+            }
+
+            try {
+                // Collect all answers
+                const answers = collectAnswers();
+
+                // Prepare data for Firebase
+                const examData = {
+                    studentName: currentUser.name,
+                    studentEmail: currentUser.email,
+                    studentRoll: currentUser.roll,
+                    startTime: currentUser.startTime,
+                    endTime: new Date().toISOString(),
+                    answers: answers,
+                    isAutoSubmit: isAutoSubmit,
+                    totalTimeUsed: (3 * 60 * 60) - timeRemaining, // in seconds
+                    submittedAt: new Date().toISOString()
+                };
+
+                // Save to Firestore
+                const docRef = await db.collection('examResults').add(examData);
+                console.log('Exam submitted with ID:', docRef.id);
+
+                // Mark as submitted
+                currentUser.submitted = true;
+                currentUser.examId = docRef.id;
+
+                // Calculate marks (you can implement your own logic here)
+                const marks = calculateMarks(answers);
+
+                // Show results
+                showResults(marks, isAutoSubmit);
+
+            } catch (error) {
+                console.error('Error submitting exam:', error);
+                alert('উত্তরপত্র জমা দেওয়ার সময় সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।');
+            }
+        }
+
+        // Collect all answers from the form
+        function collectAnswers() {
+            const answers = {};
+
+            // Collect MCQ answers (questions 1-20)
+            for (let i = 1; i <= 20; i++) {
+                const answerBox = document.querySelector(`.question:nth-child(${i}) .answer-box`);
+                if (answerBox) {
+                    answers[`q${i}`] = answerBox.textContent.trim();
+                }
+            }
+
+            // Collect short answers (questions 21-30)
+            for (let i = 21; i <= 30; i++) {
+                const answerBox = document.querySelector(`.question:nth-child(${i - 20}) .answer-box`);
+                if (answerBox) {
+                    answers[`q${i}`] = answerBox.textContent.trim();
+                }
+            }
+
+            // Collect true/false answers (questions 31-40)
+            for (let i = 31; i <= 40; i++) {
+                // This would need actual implementation based on your true/false selection
+                answers[`q${i}`] = ''; // Placeholder
+            }
+
+            // Collect coding answers (questions 41-44)
+            for (let i = 41; i <= 44; i++) {
+                const answerBox = document.querySelector(`.question:nth-child(${i - 30}) .answer-box.code`);
+                if (answerBox) {
+                    answers[`q${i}`] = answerBox.textContent.trim();
+                }
+            }
+
+            return answers;
+        }
+
+        // Calculate marks (simplified - you should implement proper grading)
+        function calculateMarks(answers) {
+            let total = 0;
+            const maxMarks = 100;
+
+            // Simple calculation - for demo purposes
+            // In real implementation, you should check each answer
+            total = Math.floor(Math.random() * 70) + 30; // Random marks between 30-100
+
+            return {
+                obtained: total,
+                total: maxMarks,
+                percentage: (total / maxMarks) * 100
+            };
+        }
+
+        // Show results
+        function showResults(marks, isAutoSubmit) {
+            const resultDiv = document.getElementById('resultContent');
+            
+            let grade = 'F';
+            let gradeClass = 'grade-f';
+            
+            if (marks.percentage >= 80) {
+                grade = 'A+';
+                gradeClass = 'grade-a';
+            } else if (marks.percentage >= 70) {
+                grade = 'A';
+                gradeClass = 'grade-a';
+            } else if (marks.percentage >= 60) {
+                grade = 'A-';
+                gradeClass = 'grade-b';
+            } else if (marks.percentage >= 50) {
+                grade = 'B';
+                gradeClass = 'grade-b';
+            } else if (marks.percentage >= 40) {
+                grade = 'C';
+                gradeClass = 'grade-c';
+            } else {
+                grade = 'F';
+                gradeClass = 'grade-f';
+            }
+
+            resultDiv.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div class="grade ${gradeClass}">${grade}</div>
+                    <p style="font-size: 18px; margin: 10px 0;">প্রাপ্ত নম্বর: ${marks.obtained}/${marks.total}</p>
+                    <p style="font-size: 16px; color: var(--text-light);">শতকরা: ${marks.percentage.toFixed(2)}%</p>
+                    ${isAutoSubmit ? '<p style="color: var(--warning-color); margin-top: 10px;"><i data-lucide="alert-triangle"></i> সময় শেষ হওয়ায় স্বয়ংক্রিয়ভাবে জমা দেওয়া হয়েছে</p>' : ''}
+                </div>
+                <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p><i data-lucide="info"></i> আপনার উত্তরপত্র সফলভাবে সংরক্ষণ করা হয়েছে।</p>
+                    <p style="font-size: 12px; color: var(--text-light); margin-top: 5px;">আপনার ফলাফল পরীক্ষকের মুল্যায়নের পর চূড়ান্ত করা হবে।</p>
+                </div>
+            `;
+
+            // Update icons in result modal
+            lucide.createIcons();
+
+            // Show result modal
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        // Select true/false option
+        function selectTrueFalse(element, questionNum, answer) {
+            if (!examStarted) return;
+
+            // Remove active class from all options in this question
+            const parent = element.parentElement;
+            parent.querySelectorAll('.tf-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+
+            // Add active class to selected option
+            element.classList.add('active');
+
+            // Store the answer
+            const answerBox = element.closest('.question').querySelector('.answer-box');
+            if (answerBox) {
+                answerBox.textContent = answer === 'true' ? 'সত্য' : 'মিথ্যা';
+            }
+        }
+
+        // Close result modal
+        function closeResult() {
+            document.getElementById('resultModal').style.display = 'none';
+            // Refresh the page
+            location.reload();
+        }
+
+        // Close time up alert
+        function closeTimeUpAlert() {
+            document.getElementById('timeUpAlert').style.display = 'none';
+            // Show results
+            submitAnswersToFirebase(true);
+        }
+
+        // Play sound
+        function playSound(type) {
+            const audio = document.getElementById('alarmSound');
+            
+            if (type === 'alarm') {
+                audio.src = 'https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3';
+                audio.volume = 0.5;
+                audio.play().catch(e => console.log('Audio play failed:', e));
+            } else if (type === 'warning') {
+                audio.src = 'https://assets.mixkit.co/sfx/preview/mixkit-warning-alarm-buzzer-957.mp3';
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Audio play failed:', e));
+            } else if (type === 'start') {
+                audio.src = 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3';
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Audio play failed:', e));
+            } else if (type === 'success') {
+                audio.src = 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3';
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Audio play failed:', e));
+            }
+        }
+
+        // Validate email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('displayDate').textContent = today.toLocaleDateString('bn-BD', options);
+
+            // Add keyboard shortcut for submit (Ctrl+Enter)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'Enter' && examStarted) {
+                    submitExam();
+                }
+            });
+
+            // Prevent copy-paste during exam
+            document.addEventListener('copy', function(e) {
+                if (examStarted) {
+                    e.preventDefault();
+                    alert('পরীক্ষার সময় কপি-পেস্ট করা যাবে না!');
+                }
+            });
+
+            document.addEventListener('paste', function(e) {
+                if (examStarted) {
+                    e.preventDefault();
+                    alert('পরীক্ষার সময় কপি-পেস্ট করা যাবে না!');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
