@@ -226,7 +226,6 @@
 
         /* Hover state for interactive panels */
         .glass-interactive:hover {
-            transform: translateY(-4px) scale(1.01);
             box-shadow:
                 0px 10px 20px rgba(0, 0, 0, 0.1),
                 0px 30px 60px rgba(0, 0, 0, 0.3),
@@ -2217,50 +2216,116 @@
             }
         }
 
-        .boton-elegante {
-            padding: 0px 2px;
-            border: 2px solid #2c2c2c;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            font-size: 7pt;
-            cursor: pointer;
-            border-radius: 100px;
-            transition: all 0.4s ease;
-            outline: none;
-            position: relative;
-            overflow: hidden;
+        /* --- Positioning --- */
+        .explore-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            /* Clean shadow */
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
         }
 
-        .boton-elegante::after {
+        /* --- The Glass Button Core --- */
+        .glass-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 5px 16px 5px 14px;
+
+            /* Darker, cooler glass base */
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            /* Borders: Icy white highlights */
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            outline: none;
+
+            /* Inner light rim */
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- The Cool Gradient Text --- */
+        .gradient-text {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+            /* Cyan -> White -> Blue Gradient */
+            background: linear-gradient(90deg, #00c6ff, #ffffff, #0072ff);
+            background-size: 200% auto;
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+
+            transition: background-position 0.4s ease;
+        }
+
+        .btn-icon {
+            width: 10px;
+            height: 10px;
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        /* --- Animations --- */
+
+        /* 1. Shine Sweep (White/Blue tint) */
+        .glass-button::before {
             content: "";
             position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
+            left: -100%;
+            width: 50%;
             height: 100%;
-            background: radial-gradient(circle,
-                    rgba(255, 255, 255, 0.25) 0%,
-                    rgba(255, 255, 255, 0) 70%);
-            transform: scale(0);
-            transition: transform 0.5s ease;
+            background: linear-gradient(120deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.3),
+                    transparent);
+            transform: skewX(-25deg);
+            transition: none;
         }
 
-        .boton-elegante:hover::after {
-            transform: scale(3);
+        .glass-button:hover::before {
+            left: 125%;
+            transition: left 0.7s ease-in-out;
         }
 
-        .boton-elegante:hover {
-            border-color: #666666;
-            background: #292929;
+        /* 2. Hover Body */
+        .glass-button:hover {
+            background: rgba(15, 23, 42, 0.8);
+            border-color: rgba(0, 198, 255, 0.3);
+            /* Cyan border tint */
+            border-top-color: rgba(255, 255, 255, 0.3);
+            /* Lighter top */
+            border-bottom-color: rgba(0, 0, 0, 0.5);
+            /* Darker bottom */
         }
 
-        .explore {
-            left: 50%;
-            transform: translateX(-50%);
-            position: fixed;
-            top: 0px;
-            text-align: center;
-            padding-bottom: 5pt;
+        /* 3. Hover Content */
+        .glass-button:hover .gradient-text {
+            background-position: right center;
+            /* Cyan Glow on text */
+            text-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
+        }
+
+        .glass-button:hover .btn-icon {
+            transform: rotate(90deg) scale(1.1);
+            /* Cyan Glow on icon */
+            filter: drop-shadow(0 0 5px rgba(0, 198, 255, 0.8));
         }
     </style>
 </head>
@@ -2362,9 +2427,28 @@
             <div class="home-grid">
 
                 <div class="hero-main">
-                    <div class="explore">
-                        <a href="birthday.html">
-                            <button class="boton-elegante">Explore</button>
+
+
+                    <div class="explore-container">
+                        <a href="birthday.html" class="glass-button-link">
+                            <button class="glass-button">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                        stroke="url(#cool-gradient)" stroke-width="1.5" stroke-opacity="0.6" />
+                                    <path d="M16.5 7.5L12 16.5L7.5 12L16.5 7.5Z" fill="url(#cool-gradient)" />
+
+                                    <defs>
+                                        <linearGradient id="cool-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#00c6ff" />
+                                            <stop offset="100%" style="stop-color:#0072ff" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+
+                                <span class="gradient-text">Explore</span>
+                            </button>
                         </a>
                     </div>
 
