@@ -52,6 +52,12 @@
             /* Prevent horizontal scroll */
             overflow-y: auto;
             /* Allow vertical scroll */
+            height: 100dvh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         /* --- LIQUID BACKGROUND BLOBS --- */
@@ -166,120 +172,176 @@
             box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
         }
 
-        /* --- CAKE STYLES (Colorful) --- */
+        /* --- ENHANCED 3D CAKE STYLES --- */
         .cake-wrapper {
             position: relative;
-            transform: scale(0.9);
+            transform: scale(0.85);
             transition: transform 0.3s ease;
             cursor: pointer;
-            margin: 40px auto;
+            margin: 20px auto;
         }
 
         .cake-wrapper:hover {
-            transform: scale(0.95);
+            transform: scale(0.9);
         }
 
         .cake-container {
             position: relative;
-            width: 250px;
-            height: 200px;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
         }
 
+        /* 3D Plate */
         .plate {
-            width: 270px;
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 5px;
+            width: 320px;
+            height: 120px;
+            background: radial-gradient(ellipse at center, #f5f5f5 0%, #e0e0e0 40%, #bdbdbd 100%);
+            border-radius: 50%;
             position: absolute;
-            bottom: -10px;
-            left: -10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.8);
+            z-index: 0;
         }
 
+        /* Common Layer Logic for Cylinder Shape */
         .layer {
             position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
-            height: 80px;
-            border-radius: 10px;
+            border-radius: 50%;
         }
 
-        /* Vibrant Colors for Cake */
+        /* Bottom Layer (Purple/Chocolate) */
         .layer-bottom {
-            bottom: 0;
-            background: #8e44ad;
-            box-shadow: inset 0 -10px rgba(0, 0, 0, 0.2);
+            bottom: 30px;
+            width: 260px;
+            height: 90px;
+            background: linear-gradient(to right, #6a1b9a, #8e44ad 30%, #9b59b6 50%, #8e44ad 70%, #6a1b9a 100%);
+            border-radius: 50% 50% 50% 50% / 20% 20% 15% 15%;
+            z-index: 1;
         }
 
-        /* Purple */
-        .layer-middle {
-            bottom: 50px;
-            width: 90%;
-            left: 5%;
-            background: #e91e63;
-            box-shadow: inset 0 -10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Pink */
-        .layer-top {
-            bottom: 100px;
-            width: 80%;
-            left: 10%;
-            background: #3498db;
-            box-shadow: inset 0 -10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Blue */
-
-        .icing {
+        .layer-bottom::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 15px;
-            background: #fff59d;
-            border-radius: 10px 10px 5px 5px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, #9b59b6 0%, #7b1fa2 100%);
         }
 
-        /* Cream */
+        /* Middle Layer (Pink) */
+        .layer-middle {
+            bottom: 80px;
+            width: 210px;
+            height: 80px;
+            background: linear-gradient(to right, #ad1457, #d81b60 30%, #ec407a 50%, #d81b60 70%, #ad1457 100%);
+            border-radius: 50% 50% 50% 50% / 20% 20% 15% 15%;
+            z-index: 2;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .layer-middle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 35px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, #f48fb1 0%, #c2185b 100%);
+        }
+
+        /* Top Layer (Blue + Icing) */
+        .layer-top {
+            bottom: 130px;
+            width: 170px;
+            height: 70px;
+            background: linear-gradient(to right, #1565c0, #1e88e5 30%, #42a5f5 50%, #1e88e5 70%, #1565c0 100%);
+            border-radius: 50% 50% 50% 50% / 20% 20% 15% 15%;
+            z-index: 3;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .layer-top::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, #fff 0%, #e3f2fd 100%);
+            /* Icing top */
+            z-index: 5;
+        }
+
         .drip {
             position: absolute;
-            top: 10px;
-            width: 15px;
-            height: 25px;
-            border-radius: 0 0 10px 10px;
-            background: #fff59d;
+            top: 15px;
+            width: 18px;
+            height: 35px;
+            background: #e3f2fd;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 4;
         }
 
         .drip:nth-child(1) {
             left: 10%;
-            height: 35px;
+            height: 40px;
         }
 
         .drip:nth-child(2) {
             left: 30%;
-            height: 20px;
+            height: 30px;
+            background: #fff;
         }
 
         .drip:nth-child(3) {
-            left: 60%;
-            height: 40px;
+            left: 55%;
+            height: 45px;
+            background: #e3f2fd;
         }
 
         .drip:nth-child(4) {
             left: 80%;
             height: 25px;
+            background: #fff;
         }
 
+        /* Candle */
         .candle {
             position: absolute;
-            bottom: 180px;
+            bottom: 185px;
             left: 50%;
             transform: translateX(-50%);
-            width: 15px;
-            height: 50px;
-            background: repeating-linear-gradient(45deg, #ff5252, #ff5252 5px, #fff 5px, #fff 10px);
-            border-radius: 3px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: 20px;
+            height: 60px;
+            background: repeating-linear-gradient(45deg, #ff1744, #ff1744 10px, #ffffff 10px, #ffffff 20px);
+            border-radius: 4px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2), inset -2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 6;
+            transform-origin: bottom center;
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 5px;
+            background: #333;
+            /* Wick */
         }
 
         .flame {
@@ -287,13 +349,16 @@
             top: -25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 15px;
-            height: 25px;
-            background: radial-gradient(ellipse at bottom, #ffd700 0%, #ff6b6b 60%, transparent 100%);
+            width: 20px;
+            height: 35px;
+            background: radial-gradient(ellipse at bottom, #ffd700 0%, #ff6d00 60%, transparent 100%);
             border-radius: 50% 50% 20% 20%;
             filter: blur(1px);
             animation: flicker 0.5s infinite alternate;
-            box-shadow: 0 0 20px #ff6b6b;
+            box-shadow: 0 0 30px #ff6d00;
+            transform-origin: bottom center;
+            transition: transform 0.1s ease-out;
+            z-index: 7;
         }
 
         .smoke {
@@ -307,6 +372,7 @@
             border-radius: 50%;
             filter: blur(5px);
             opacity: 0;
+            z-index: 8;
         }
 
         .smoke.active {
@@ -337,7 +403,7 @@
             }
         }
 
-        /* --- SLIDESHOW STAGE --- */
+        /* --- SLIDESHOW STAGE & ANIMATIONS --- */
         #cake-screen {
             transition: opacity 1s ease, transform 1s ease;
         }
@@ -348,7 +414,6 @@
             pointer-events: none;
         }
 
-        /* Fixed stage ensures slideshow covers viewport even if page is scrolled */
         #stage {
             position: fixed;
             inset: 0;
@@ -380,6 +445,63 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* Cinematic Ken Burns Animations */
+        .active .kb-zoom-in {
+            animation: kenBurnsZoomIn 10s ease-out forwards;
+        }
+
+        .active .kb-pan-right {
+            animation: kenBurnsPanRight 10s ease-out forwards;
+        }
+
+        .active .kb-zoom-out {
+            animation: kenBurnsZoomOut 10s ease-out forwards;
+        }
+
+        .active .kb-pan-left {
+            animation: kenBurnsPanLeft 10s ease-out forwards;
+        }
+
+        @keyframes kenBurnsZoomIn {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.15);
+            }
+        }
+
+        @keyframes kenBurnsZoomOut {
+            from {
+                transform: scale(1.15);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes kenBurnsPanRight {
+            from {
+                transform: scale(1.1) translate(-3%, 0);
+            }
+
+            to {
+                transform: scale(1.1) translate(3%, 0);
+            }
+        }
+
+        @keyframes kenBurnsPanLeft {
+            from {
+                transform: scale(1.1) translate(3%, 0);
+            }
+
+            to {
+                transform: scale(1.1) translate(-3%, 0);
+            }
         }
 
         .text-overlay {
@@ -424,17 +546,30 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
     </style>
 </head>
 
 <body class="flex flex-col items-center justify-center relative min-h-screen py-8">
 
-    <!-- Liquid Background (Grayscale to match "only cake colorful") -->
+    <!-- Confetti Layer -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Liquid Background -->
     <div class="liquid-bg">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
-        <!-- Noise Texture -->
         <div
             style="position: absolute; inset:0; background: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.06\'/%3E%3C/svg%3E'); opacity:0.4; mix-blend-mode: overlay;">
         </div>
@@ -442,7 +577,13 @@
 
     <!-- CAKE SCREEN -->
     <div id="cake-screen" class="z-50 w-full max-w-4xl px-4 flex flex-col items-center">
-        <!-- Hero Text in Glass Panel -->
+        <!-- Share Button (Top Right) -->
+        <button onclick="shareExperience()"
+            class="absolute top-4 right-4 md:top-8 md:right-8 p-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 transition-all z-50 group">
+            <i data-lucide="share-2" class="w-5 h-5 text-white group-hover:scale-110 transition-transform"></i>
+        </button>
+
+        <!-- Hero Text -->
         <div class="glass-panel p-8 md:p-12 text-center mb-8 relative overflow-hidden group w-full">
             <div
                 class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] uppercase font-black tracking-widest text-muted mb-6 backdrop-blur-xl">
@@ -460,14 +601,13 @@
             </p>
         </div>
 
-        <!-- The Cake (Centerpiece - Colorful) -->
+        <!-- The Cake -->
         <div class="cake-wrapper" id="cake" onclick="blowOutCandle()">
             <div class="cake-container">
                 <div class="plate"></div>
                 <div class="layer layer-bottom"></div>
                 <div class="layer layer-middle"></div>
                 <div class="layer layer-top">
-                    <div class="icing"></div>
                     <div class="drip"></div>
                     <div class="drip"></div>
                     <div class="drip"></div>
@@ -523,17 +663,25 @@
                 </button>
                 <input type="file" id="fileInput" accept="audio/*" style="display:none"
                     onchange="handleMusicUpload(this)">
+                <!-- Share Button -->
+                <button onclick="shareExperience()"
+                    class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white">
+                    <i data-lucide="share-2" class="w-5 h-5"></i>
+                </button>
             </div>
         </nav>
     </div>
 
     <script>
         // --- LOGIC ---
-        const slides = [
-            { img: 'photo1 (1).jpg', title: "The Beginning", desc: "Happy Birthday Animesh" },
-            { img: 'photo1 (2).jpg', title: "Growth", desc: "Keep Moving Forward" },
-            { img: 'photo1 (3).jpg', title: "Joy", desc: "Unforgettable Moments" },
-            { img: 'photo1 (4).jpg', title: "Future", desc: "The Best is Yet to Come" }
+       const slides = [
+            { img: 'photo1 (1).jpg', title: "The Beginning", desc: "Happy Birthday Animesh", anim: 'kb-zoom-in' },
+            { img: 'photo1 (2).jpg', title: "Growth", desc: "Keep Moving Forward", anim: 'kb-pan-right' },
+            { img: 'photo1 (3).jpg', title: "Joy", desc: "Unforgettable Moments", anim: 'kb-zoom-out' },
+            { img: 'photo1 (4).jpg', title: "Future", desc: "The Best is Yet to Come", anim: 'kb-pan-left' },
+            { img: 'photo1 (5).jpg', title: "Success", desc: "Reaching New Heights", anim: 'kb-zoom-in' },
+            { img: 'photo1 (6).jpg', title: "Memories", desc: "Timeless & True", anim: 'kb-pan-right' },
+            { img: 'photo1 (7).jpg', title: "Celebration", desc: "Here's To You", anim: 'kb-zoom-out' }
         ];
 
         let audioCtx;
@@ -544,6 +692,7 @@
         let isPlaying = false;
         let currentSlide = 0;
         let slideInterval;
+        let mySong = null;
 
         function initAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -583,10 +732,15 @@
             for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
             let avg = sum / dataArray.length;
 
-            // Visual feedback scale
-            const scale = 1 + (avg / 50);
-            document.getElementById('mic-visual').style.transform = `scale(${scale})`;
+            // Visual feedback - Flame Wobble
+            const scale = 1 + (avg / 100);
+            const rotate = (Math.random() - 0.5) * (avg / 5);
+            const flame = document.getElementById('flame');
+            flame.style.transform = `translateX(-50%) scale(${scale}) rotate(${rotate}deg)`;
 
+            document.getElementById('mic-visual').style.transform = `scale(${1 + avg / 50})`;
+
+            // Threshold to blow out
             if (avg > 40) blowOutCandle();
         }
 
@@ -601,8 +755,9 @@
             document.getElementById('flame').style.display = 'none';
             document.getElementById('smoke').classList.add('active');
 
-            // Audio Feedback
+            // Sound & Confetti
             playPuffSound();
+            triggerConfetti();
 
             setTimeout(() => {
                 document.getElementById('cake-screen').classList.add('fade-out');
@@ -618,7 +773,7 @@
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'triangle'; // Softer puff
+            osc.type = 'triangle';
             osc.frequency.setValueAtTime(150, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.3);
             gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
@@ -629,8 +784,93 @@
             osc.stop(audioCtx.currentTime + 0.3);
         }
 
+        // --- NEW AUDIO LOGIC: Custom Song with Fallback ---
+        function playAmbientMusic() {
+            // Try to play 'birthday_song.mp3' from the same folder
+            const songFilename = "birthday_song.mp3";
+
+            mySong = new Audio(songFilename);
+            mySong.loop = true;
+            mySong.volume = 0.6;
+
+            const playPromise = mySong.play();
+
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Custom song not found or autoplay blocked. Falling back to Synth Drone.");
+                    // Fallback to the oscillator drone
+                    playSynthDrone();
+                });
+            }
+        }
+
+        function playSynthDrone() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 220;
+            gain.gain.value = 0.1; // Louder for visibility
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+        }
+
+        // --- CONFETTI LOGIC ---
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const pieces = [];
+            const colors = ['#8e44ad', '#e91e63', '#3498db', '#f1c40f', '#2ecc71'];
+
+            for (let i = 0; i < 150; i++) {
+                pieces.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2 + 100, // Start from center/cake
+                    w: Math.random() * 10 + 5,
+                    h: Math.random() * 10 + 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vx: (Math.random() - 0.5) * 20,
+                    vy: (Math.random() - 1) * 20,
+                    gravity: 0.5,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+
+            function updateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let active = false;
+
+                pieces.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += p.gravity;
+                    p.rotation += p.rotationSpeed;
+
+                    if (p.y < canvas.height) active = true;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+
+                if (active) requestAnimationFrame(updateConfetti);
+            }
+
+            updateConfetti();
+        }
+
         function startSlideshow() {
-            document.body.style.overflow = 'hidden'; // Lock scroll for immersive slideshow
+            document.body.style.overflow = 'hidden';
             document.getElementById('stage').classList.add('visible');
             const container = document.getElementById('slide-container');
 
@@ -638,7 +878,7 @@
                 const div = document.createElement('div');
                 div.className = 'slide';
                 div.id = `slide-${i}`;
-                div.innerHTML = `<img src="${s.img}" onerror="this.src='https://placehold.co/1920x1080/050505/333?text=${encodeURIComponent(s.title)}'">`;
+                div.innerHTML = `<img src="${s.img}" class="${s.anim}" onerror="this.src='https://placehold.co/1920x1080/050505/333?text=${encodeURIComponent(s.title)}'">`;
                 container.appendChild(div);
             });
 
@@ -686,24 +926,44 @@
             lucide.createIcons();
         }
 
-        function playAmbientMusic() {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.value = 220;
-            gain.gain.value = 0.05;
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-        }
-
         function handleMusicUpload(input) {
             if (input.files[0]) {
-                if (audioCtx) audioCtx.close();
+                if (mySong) mySong.pause(); // Stop custom song if playing
+                if (audioCtx) audioCtx.close(); // Stop synth
+
                 const audio = new Audio(URL.createObjectURL(input.files[0]));
                 audio.play();
                 audio.loop = true;
+                mySong = audio; // Track new audio
+            }
+        }
+
+        // --- SHARE LOGIC ---
+        async function shareExperience() {
+            const shareData = {
+                title: 'Happy Birthday Animesh!',
+                text: '🎉 Check out this special birthday surprise created just for you!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                // Use Native Share Sheet (Works for Insta, WhatsApp, etc. on Mobile)
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('Share canceled');
+                }
+            } else {
+                // Fallback for Desktop: Copy Link + WhatsApp option
+                try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    // Optional: Open WhatsApp Web
+                    if (confirm("Link copied to clipboard! Open WhatsApp to share?")) {
+                        window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`, '_blank');
+                    }
+                } catch (err) {
+                    alert("Could not copy link. Manually copy the URL to share.");
+                }
             }
         }
 
