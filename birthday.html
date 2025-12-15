@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Animesh</title>
+
+    <!-- Dependencies from SecureThing Design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- LIQUID THEME ENGINE (Dark Mode Forced for Contrast) --- */
+        :root {
+            --bg-color: #050505;
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+
+            /* Glass Variables */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
+            --glass-blur: 50px;
+            --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.2);
+
+            --dock-bg: rgba(15, 15, 15, 0.6);
+            --accent-glow: rgba(255, 255, 255, 0.1);
+
+            /* Blobs - Desaturated to ensure ONLY CAKE is colorful */
+            --blob-1: #2a2a2a;
+            --blob-2: #1a1a1a;
+            --blob-3: #333333;
+
+            /* Gradients */
+            --gradient-start: #ffffff;
+            --gradient-end: #888888;
+
+            /* Emboss */
+            --emboss-light: rgba(255, 255, 255, 0.1);
+            --emboss-dark: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+            overflow-y: auto;
+            /* Allow vertical scroll */
+        }
+
+        /* --- LIQUID BACKGROUND BLOBS --- */
+        .liquid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: morph 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, border-radius;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: var(--blob-1);
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: var(--blob-2);
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            top: 40%;
+            left: 40%;
+            width: 40vw;
+            height: 40vw;
+            background: var(--blob-3);
+            animation-delay: -10s;
+            opacity: 0.4;
+        }
+
+        @keyframes morph {
+            0% {
+                transform: translate(0, 0) scale(1);
+                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+                border-radius: 50% 50% 20% 80% / 25% 80% 20% 75%;
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+                border-radius: 67% 33% 47% 53% / 37% 59% 41% 63%;
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            }
+        }
+
+        /* --- GLASS COMPONENTS --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid var(--glass-highlight);
+            border-left: 1px solid var(--glass-highlight);
+            box-shadow: var(--glass-shadow);
+            border-radius: 2.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .grad-text {
+            background: linear-gradient(135deg, var(--gradient-start) 30%, var(--gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .emboss-3d {
+            filter: drop-shadow(-2px -2px 4px var(--emboss-light)) drop-shadow(2px 2px 4px var(--emboss-dark));
+        }
+
+        .btn-solid {
+            background: linear-gradient(135deg, var(--text-main), var(--text-muted));
+            color: var(--bg-color);
+            border: none;
+            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-solid:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- CAKE STYLES (Colorful) --- */
+        .cake-wrapper {
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            margin: 40px auto;
+        }
+
+        .cake-wrapper:hover {
+            transform: scale(0.95);
+        }
+
+        .cake-container {
+            position: relative;
+            width: 250px;
+            height: 200px;
+        }
+
+        .plate {
+            width: 270px;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            position: absolute;
+            bottom: -10px;
+            left: -10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .layer {
+            position: absolute;
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+        }
+
+        /* Vibrant Colors for Cake */
+        .layer-bottom {
+            bottom: 0;
+            background: #8e44ad;
+            box-shadow: inset 0 -10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Purple */
+        .layer-middle {
+            bottom: 50px;
+            width: 90%;
+            left: 5%;
+            background: #e91e63;
+            box-shadow: inset 0 -10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Pink */
+        .layer-top {
+            bottom: 100px;
+            width: 80%;
+            left: 10%;
+            background: #3498db;
+            box-shadow: inset 0 -10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Blue */
+
+        .icing {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: #fff59d;
+            border-radius: 10px 10px 5px 5px;
+        }
+
+        /* Cream */
+        .drip {
+            position: absolute;
+            top: 10px;
+            width: 15px;
+            height: 25px;
+            border-radius: 0 0 10px 10px;
+            background: #fff59d;
+        }
+
+        .drip:nth-child(1) {
+            left: 10%;
+            height: 35px;
+        }
+
+        .drip:nth-child(2) {
+            left: 30%;
+            height: 20px;
+        }
+
+        .drip:nth-child(3) {
+            left: 60%;
+            height: 40px;
+        }
+
+        .drip:nth-child(4) {
+            left: 80%;
+            height: 25px;
+        }
+
+        .candle {
+            position: absolute;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 50px;
+            background: repeating-linear-gradient(45deg, #ff5252, #ff5252 5px, #fff 5px, #fff 10px);
+            border-radius: 3px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .flame {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 25px;
+            background: radial-gradient(ellipse at bottom, #ffd700 0%, #ff6b6b 60%, transparent 100%);
+            border-radius: 50% 50% 20% 20%;
+            filter: blur(1px);
+            animation: flicker 0.5s infinite alternate;
+            box-shadow: 0 0 20px #ff6b6b;
+        }
+
+        .smoke {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            filter: blur(5px);
+            opacity: 0;
+        }
+
+        .smoke.active {
+            animation: rise 2s forwards;
+        }
+
+        @keyframes flicker {
+            0% {
+                opacity: 0.9;
+                transform: translateX(-50%) scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1.1);
+            }
+        }
+
+        @keyframes rise {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-60px);
+            }
+        }
+
+        /* --- SLIDESHOW STAGE --- */
+        #cake-screen {
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        #cake-screen.fade-out {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        /* Fixed stage ensures slideshow covers viewport even if page is scrolled */
+        #stage {
+            position: fixed;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 2s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #stage.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .text-overlay {
+            position: absolute;
+            bottom: 20%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .active-text .slide-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-title {
+            font-size: 3rem;
+            font-weight: 900;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center justify-center relative min-h-screen py-8">
+
+    <!-- Liquid Background (Grayscale to match "only cake colorful") -->
+    <div class="liquid-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <!-- Noise Texture -->
+        <div
+            style="position: absolute; inset:0; background: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.06\'/%3E%3C/svg%3E'); opacity:0.4; mix-blend-mode: overlay;">
+        </div>
+    </div>
+
+    <!-- CAKE SCREEN -->
+    <div id="cake-screen" class="z-50 w-full max-w-4xl px-4 flex flex-col items-center">
+        <!-- Hero Text in Glass Panel -->
+        <div class="glass-panel p-8 md:p-12 text-center mb-8 relative overflow-hidden group w-full">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] uppercase font-black tracking-widest text-muted mb-6 backdrop-blur-xl">
+                <span
+                    class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_15px_rgba(52,211,153,0.6)]"></span>
+                <span class="grad-text">Surprise Ready</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-4 leading-none">
+                <span class="grad-text">Happy Birthday</span><br>
+                <span class="text-muted font-bold opacity-70 grad-text text-3xl md:text-5xl">Animesh.</span>
+            </h1>
+            <p class="text-base text-muted font-medium grad-text opacity-80">
+                A special moment, encrypted in time. Make a wish.
+            </p>
+        </div>
+
+        <!-- The Cake (Centerpiece - Colorful) -->
+        <div class="cake-wrapper" id="cake" onclick="blowOutCandle()">
+            <div class="cake-container">
+                <div class="plate"></div>
+                <div class="layer layer-bottom"></div>
+                <div class="layer layer-middle"></div>
+                <div class="layer layer-top">
+                    <div class="icing"></div>
+                    <div class="drip"></div>
+                    <div class="drip"></div>
+                    <div class="drip"></div>
+                    <div class="drip"></div>
+                </div>
+                <div class="candle">
+                    <div class="flame" id="flame"></div>
+                    <div class="smoke" id="smoke"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex flex-col items-center gap-4 mt-8">
+            <div id="mic-visual"
+                class="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-500/50 hidden items-center justify-center animate-pulse shadow-[0_0_20px_rgba(59,130,246,0.5)]">
+                <i data-lucide="mic" class="w-5 h-5 text-blue-400"></i>
+            </div>
+
+            <button id="mic-btn" onclick="requestMic()"
+                class="btn-solid px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3 emboss-3d interactive-feedback">
+                <i data-lucide="mic" class="w-4 h-4"></i> Enable Microphone
+            </button>
+
+            <p id="instruction" class="text-xs text-muted font-bold uppercase tracking-widest grad-text opacity-70">
+                Tap the candle or blow into mic
+            </p>
+        </div>
+    </div>
+
+    <!-- SLIDESHOW STAGE -->
+    <div id="stage" class="w-full h-full">
+        <div id="slide-container" class="absolute inset-0"></div>
+
+        <div class="text-overlay" id="text-layer">
+            <div class="glass-panel inline-block px-8 py-4 md:px-12 md:py-6">
+                <h2 class="slide-title grad-text text-3xl md:text-5xl font-black tracking-tighter" id="slide-title">
+                    Title</h2>
+                <p class="text-muted font-bold tracking-widest uppercase mt-2 text-sm" id="slide-desc">Description</p>
+            </div>
+        </div>
+
+        <!-- Floating Controls -->
+        <nav class="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
+            <div class="glass-panel p-2 flex gap-2 rounded-full">
+                <button onclick="togglePause()"
+                    class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white">
+                    <i data-lucide="play" id="playIcon" class="w-5 h-5 fill-current"></i>
+                </button>
+                <button onclick="document.getElementById('fileInput').click()"
+                    class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white">
+                    <i data-lucide="music" class="w-5 h-5"></i>
+                </button>
+                <input type="file" id="fileInput" accept="audio/*" style="display:none"
+                    onchange="handleMusicUpload(this)">
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // --- LOGIC ---
+        const slides = [
+            { img: 'photo1 (1).jpg', title: "The Beginning", desc: "Happy Birthday Animesh" },
+            { img: 'photo1 (2).jpg', title: "Growth", desc: "Keep Moving Forward" },
+            { img: 'photo1 (3).jpg', title: "Joy", desc: "Unforgettable Moments" },
+            { img: 'photo1 (4).jpg', title: "Future", desc: "The Best is Yet to Come" }
+        ];
+
+        let audioCtx;
+        let micStream;
+        let analyser;
+        let dataArray;
+        let candleOut = false;
+        let isPlaying = false;
+        let currentSlide = 0;
+        let slideInterval;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        async function requestMic() {
+            initAudio();
+            const btn = document.getElementById('mic-btn');
+            btn.innerHTML = `<div class="loader"></div> Connecting...`;
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                micStream = stream;
+                analyser = audioCtx.createAnalyser();
+                const source = audioCtx.createMediaStreamSource(stream);
+                source.connect(analyser);
+                analyser.fftSize = 256;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                btn.style.display = 'none';
+                document.getElementById('mic-visual').style.display = 'flex';
+                document.getElementById('instruction').textContent = "Blow into the mic now...";
+
+                detectBlow();
+            } catch (err) {
+                btn.innerHTML = `<i data-lucide="x-circle" class="w-4 h-4"></i> Access Denied`;
+                document.getElementById('instruction').textContent = "Microphone failed. Tap the candle instead.";
+                lucide.createIcons();
+            }
+        }
+
+        function detectBlow() {
+            if (candleOut) return;
+            requestAnimationFrame(detectBlow);
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+            let avg = sum / dataArray.length;
+
+            // Visual feedback scale
+            const scale = 1 + (avg / 50);
+            document.getElementById('mic-visual').style.transform = `scale(${scale})`;
+
+            if (avg > 40) blowOutCandle();
+        }
+
+        function blowOutCandle() {
+            if (candleOut) return;
+            candleOut = true;
+
+            if (micStream) micStream.getTracks().forEach(track => track.stop());
+            document.getElementById('mic-visual').style.display = 'none';
+
+            // Animation
+            document.getElementById('flame').style.display = 'none';
+            document.getElementById('smoke').classList.add('active');
+
+            // Audio Feedback
+            playPuffSound();
+
+            setTimeout(() => {
+                document.getElementById('cake-screen').classList.add('fade-out');
+                setTimeout(() => {
+                    document.getElementById('cake-screen').style.display = 'none';
+                    startSlideshow();
+                }, 1000);
+            }, 1500);
+        }
+
+        function playPuffSound() {
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle'; // Softer puff
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function startSlideshow() {
+            document.body.style.overflow = 'hidden'; // Lock scroll for immersive slideshow
+            document.getElementById('stage').classList.add('visible');
+            const container = document.getElementById('slide-container');
+
+            slides.forEach((s, i) => {
+                const div = document.createElement('div');
+                div.className = 'slide';
+                div.id = `slide-${i}`;
+                div.innerHTML = `<img src="${s.img}" onerror="this.src='https://placehold.co/1920x1080/050505/333?text=${encodeURIComponent(s.title)}'">`;
+                container.appendChild(div);
+            });
+
+            playAmbientMusic();
+            showSlide(0);
+            slideInterval = setInterval(nextSlide, 5000);
+            isPlaying = true;
+            document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
+            lucide.createIcons();
+        }
+
+        function showSlide(index) {
+            document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
+            const s = document.getElementById(`slide-${index}`);
+            if (s) s.classList.add('active');
+
+            const textLayer = document.getElementById('text-layer');
+            textLayer.classList.remove('active-text');
+            setTimeout(() => {
+                document.getElementById('slide-title').textContent = slides[index].title;
+                document.getElementById('slide-desc').textContent = slides[index].desc;
+                textLayer.classList.add('active-text');
+            }, 500);
+
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            let next = currentSlide + 1;
+            if (next >= slides.length) next = 0;
+            showSlide(next);
+        }
+
+        function togglePause() {
+            const icon = document.getElementById('playIcon');
+            if (isPlaying) {
+                clearInterval(slideInterval);
+                icon.setAttribute('data-lucide', 'play');
+            } else {
+                nextSlide();
+                slideInterval = setInterval(nextSlide, 5000);
+                icon.setAttribute('data-lucide', 'pause');
+            }
+            isPlaying = !isPlaying;
+            lucide.createIcons();
+        }
+
+        function playAmbientMusic() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 220;
+            gain.gain.value = 0.05;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+        }
+
+        function handleMusicUpload(input) {
+            if (input.files[0]) {
+                if (audioCtx) audioCtx.close();
+                const audio = new Audio(URL.createObjectURL(input.files[0]));
+                audio.play();
+                audio.loop = true;
+            }
+        }
+
+        // Init Icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
