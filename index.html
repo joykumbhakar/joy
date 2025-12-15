@@ -2216,6 +2216,52 @@
                 transform: translateX(-50%) rotate(360deg);
             }
         }
+
+        .boton-elegante {
+            padding: 0px 2px;
+            border: 2px solid #2c2c2c;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-size: 7pt;
+            cursor: pointer;
+            border-radius: 100px;
+            transition: all 0.4s ease;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boton-elegante::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle,
+                    rgba(255, 255, 255, 0.25) 0%,
+                    rgba(255, 255, 255, 0) 70%);
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .boton-elegante:hover::after {
+            transform: scale(3);
+        }
+
+        .boton-elegante:hover {
+            border-color: #666666;
+            background: #292929;
+        }
+
+        .explore {
+            left: 50%;
+            transform: translateX(-50%);
+            position: fixed;
+            top: 0px;
+            text-align: center;
+            padding-bottom: 5pt;
+        }
     </style>
 </head>
 
@@ -2316,6 +2362,14 @@
             <div class="home-grid">
 
                 <div class="hero-main">
+                    <div class="explore">
+                        <a href="birthday.html">
+                            <button class="boton-elegante">Explore</button>
+                        </a>
+                    </div>
+
+
+
                     <div
                         class="glass-panel p-6 md:p-10 flex flex-col justify-between relative overflow-hidden group h-full">
                         <div
@@ -2711,8 +2765,7 @@
                     <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
                         data-name="Weather Dashboard" data-category="Utility" data-tech="javascript,api,css,charts">
                         <div class="h-48 md:h-64 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1065&q=80"
-                                alt="Weather Dashboard"
+                            <img src="images/image4.png" alt="Weather Dashboard"
                                 class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                             <div
                                 class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10">
@@ -2738,11 +2791,13 @@
                                 <span
                                     class="px-2 md:px-3 py-1 md:py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-lg text-muted-dynamic">Charts.js</span>
                             </div>
-                            <div
-                                class="flex items-center font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors text-sm md:text-base cursor-pointer">
-                                View Project <i data-lucide="arrow-right"
+                            <a href="Projects/weather.html"
+                                class="flex items-center font-semibold text-cyan-400 group hover:text-cyan-300 transition-colors text-sm md:text-base cursor-pointer">
+                                View Project
+                                <i data-lucide="arrow-right"
                                     class="w-4 h-4 md:w-5 md:h-5 ml-2 transition-transform group-hover:translate-x-1"></i>
-                            </div>
+                            </a>
+
                         </div>
                     </div>
 
