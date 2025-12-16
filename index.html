@@ -3160,33 +3160,31 @@
                     </div>
                 </div>
 
-                <!-- Enhanced Pagination Controls -->
-                <div id="pagination-controls"
-                    class="flex flex-col sm:flex-row justify-center items-center mt-8 md:mt-12 gap-4">
+                <!-- Pagination Controls (Horizontal Layout) -->
+                <div id="pagination-controls" class="flex flex-row justify-center items-center mt-16 gap-4 sm:gap-6">
+
                     <button id="prev-btn"
-                        class="glass-panel glass-interactive px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 text-muted-dynamic hover:text-dynamic hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                        disabled>
-                        <i data-lucide="chevron-left" class="w-4 h-4 md:w-5 md:h-5"></i>
-                        <span class="font-semibold text-sm md:text-base">Previous</span>
+                        class="group glass-panel glass-interactive px-5 sm:px-6 py-3 flex items-center gap-2 rounded-full bg-gradient-to-b from-white/10 to-white/5 border border-white/10 hover:border-white/30 text-muted-dynamic hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300  backdrop-blur-xl active:scale-95">
+                        <i data-lucide="chevron-left"
+                            class="w-5 h-5 transition-transform group-hover:-translate-x-0.5"></i>
+                        <span class="hidden sm:inline font-medium">Prev</span>
                     </button>
 
-                    <div class="flex items-center gap-3">
-                        <div id="page-numbers" class="flex items-center gap-2">
-                            <!-- Page numbers will be generated dynamically -->
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-muted-dynamic text-sm md:text-base">Page</span>
-                            <span id="current-page" class="font-bold text-dynamic text-sm md:text-base">1</span>
-                            <span class="text-muted-dynamic text-sm md:text-base">of</span>
-                            <span id="total-pages" class="font-bold text-dynamic text-sm md:text-base">3</span>
-                        </div>
+                    <div
+                        class="glass-panel px-6 py-3 rounded-full bg-black/20 border border-white/5 backdrop-blur-md flex items-center gap-3 text-sm shadow-inner">
+                        <span class="text-white/40 font-medium uppercase tracking-wider text-xs">Page</span>
+                        <span id="current-page" class="text-white font-bold text-base font-mono">1</span>
+                        <span class="text-white/20">/</span>
+                        <span id="total-pages" class="text-white/60 font-mono">1</span>
                     </div>
 
                     <button id="next-btn"
-                        class="glass-panel glass-interactive px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 text-muted-dynamic hover:text-dynamic hover:scale-105 active:scale-95 transition-all duration-200">
-                        <span class="font-semibold text-sm md:text-base">Next</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4 md:w-5 md:h-5"></i>
+                        class="group glass-panel glass-interactive px-5 sm:px-6 py-3 flex items-center gap-2 rounded-full bg-gradient-to-b from-white/10 to-white/5 border border-white/10 hover:border-white/30 text-muted-dynamic hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300  backdrop-blur-xl active:scale-95">
+                        <span class="hidden sm:inline font-medium">Next</span>
+                        <i data-lucide="chevron-right"
+                            class="w-5 h-5 transition-transform group-hover:translate-x-0.5"></i>
                     </button>
+
                 </div>
             </div>
         </section>
