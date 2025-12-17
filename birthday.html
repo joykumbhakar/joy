@@ -3,972 +3,268 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Happy Birthday Animesh</title>
-
-    <!-- Dependencies from SecureThing Design -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
-        rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* --- LIQUID THEME ENGINE (Dark Mode Forced for Contrast) --- */
-        :root {
-            --bg-color: #050505;
-            --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.6);
-
-            /* Glass Variables */
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.15);
-            --glass-blur: 50px;
-            --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.2);
-
-            --dock-bg: rgba(15, 15, 15, 0.6);
-            --accent-glow: rgba(255, 255, 255, 0.1);
-
-            /* Blobs - Desaturated to ensure ONLY CAKE is colorful */
-            --blob-1: #2a2a2a;
-            --blob-2: #1a1a1a;
-            --blob-3: #333333;
-
-            /* Gradients */
-            --gradient-start: #ffffff;
-            --gradient-end: #888888;
-
-            /* Emboss */
-            --emboss-light: rgba(255, 255, 255, 0.1);
-            --emboss-dark: rgba(0, 0, 0, 0.5);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            overflow-x: hidden;
-            /* Prevent horizontal scroll */
-            overflow-y: auto;
-            /* Allow vertical scroll */
-            height: 100dvh;
-            width: 100vw;
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            position: relative;
+            color: rgb(255, 255, 255);
         }
 
-        /* --- LIQUID BACKGROUND BLOBS --- */
-        .liquid-bg {
-            position: fixed;
+        #canvas-container {
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.6;
-            animation: morph 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, border-radius;
+        .glass-card {
+            position: relative;
+            z-index: 2;
+            padding: 3rem 4rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+            max-width: 90%;
+            width: auto;
         }
 
-        .blob-1 {
-            top: -10%;
-            left: -10%;
-            width: 60vw;
-            height: 60vw;
-            background: var(--blob-1);
-            animation-delay: 0s;
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .blob-2 {
-            bottom: -10%;
-            right: -10%;
-            width: 60vw;
-            height: 60vw;
-            background: var(--blob-2);
-            animation-delay: -5s;
-        }
-
-        .blob-3 {
-            top: 40%;
-            left: 40%;
-            width: 40vw;
-            height: 40vw;
-            background: var(--blob-3);
-            animation-delay: -10s;
-            opacity: 0.4;
-        }
-
-        @keyframes morph {
-            0% {
-                transform: translate(0, 0) scale(1);
-                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            }
-
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-                border-radius: 50% 50% 20% 80% / 25% 80% 20% 75%;
-            }
-
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-                border-radius: 67% 33% 47% 53% / 37% 59% 41% 63%;
-            }
-
-            100% {
-                transform: translate(0, 0) scale(1);
-                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            }
-        }
-
-        /* --- GLASS COMPONENTS --- */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur)) saturate(120%);
-            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(120%);
-            border: 1px solid var(--glass-border);
-            border-top: 1px solid var(--glass-highlight);
-            border-left: 1px solid var(--glass-highlight);
-            box-shadow: var(--glass-shadow);
-            border-radius: 2.5rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .grad-text {
-            background: linear-gradient(135deg, var(--gradient-start) 30%, var(--gradient-end) 100%);
+        h1 {
+            color: #000;
+            font-size: 3.5rem;
+            margin: 0;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #dadada 0%, hsl(0, 0%, 0%) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: inline-block;
+            line-height: 1.1;
         }
 
-        .emboss-3d {
-            filter: drop-shadow(-2px -2px 4px var(--emboss-light)) drop-shadow(2px 2px 4px var(--emboss-dark));
+        p.subtitle {
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 300;
         }
 
-        .btn-solid {
-            background: linear-gradient(135deg, var(--text-main), var(--text-muted));
-            color: var(--bg-color);
-            border: none;
-            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .btn-solid:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
-        }
-
-        /* --- ENHANCED 3D CAKE STYLES --- */
-        .cake-wrapper {
-            position: relative;
-            transform: scale(0.85);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            margin: 20px auto;
-        }
-
-        .cake-wrapper:hover {
-            transform: scale(0.9);
-        }
-
-        .cake-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            display: flex;
-            justify-content: center;
-        }
-
-        /* 3D Plate */
-        .plate {
-            width: 320px;
-            height: 120px;
-            background: radial-gradient(ellipse at center, #f5f5f5 0%, #e0e0e0 40%, #bdbdbd 100%);
-            border-radius: 50%;
+        .footer {
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.8);
-            z-index: 0;
-        }
-
-        /* Common Layer Logic for Cylinder Shape */
-        .layer {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            border-radius: 50%;
-        }
-
-        /* Bottom Layer (Purple/Chocolate) */
-        .layer-bottom {
-            bottom: 30px;
-            width: 260px;
-            height: 90px;
-            background: linear-gradient(to right, #6a1b9a, #8e44ad 30%, #9b59b6 50%, #8e44ad 70%, #6a1b9a 100%);
-            border-radius: 50% 50% 50% 50% / 20% 20% 15% 15%;
-            z-index: 1;
-        }
-
-        .layer-bottom::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 40px;
-            border-radius: 50%;
-            background: radial-gradient(ellipse at center, #9b59b6 0%, #7b1fa2 100%);
-        }
-
-        /* Middle Layer (Pink) */
-        .layer-middle {
-            bottom: 80px;
-            width: 210px;
-            height: 80px;
-            background: linear-gradient(to right, #ad1457, #d81b60 30%, #ec407a 50%, #d81b60 70%, #ad1457 100%);
-            border-radius: 50% 50% 50% 50% / 20% 20% 15% 15%;
+            bottom: 2.5rem;
             z-index: 2;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 300;
         }
 
-        .layer-middle::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 35px;
-            border-radius: 50%;
-            background: radial-gradient(ellipse at center, #f48fb1 0%, #c2185b 100%);
-        }
-
-        /* Top Layer (Blue + Icing) */
-        .layer-top {
-            bottom: 130px;
-            width: 170px;
-            height: 70px;
-            background: linear-gradient(to right, #1565c0, #1e88e5 30%, #42a5f5 50%, #1e88e5 70%, #1565c0 100%);
-            border-radius: 50% 50% 50% 50% / 20% 20% 15% 15%;
-            z-index: 3;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .layer-top::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 30px;
-            border-radius: 50%;
-            background: radial-gradient(ellipse at center, #fff 0%, #e3f2fd 100%);
-            /* Icing top */
-            z-index: 5;
-        }
-
-        .drip {
-            position: absolute;
-            top: 15px;
-            width: 18px;
-            height: 35px;
-            background: #e3f2fd;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 4;
-        }
-
-        .drip:nth-child(1) {
-            left: 10%;
-            height: 40px;
-        }
-
-        .drip:nth-child(2) {
-            left: 30%;
-            height: 30px;
-            background: #fff;
-        }
-
-        .drip:nth-child(3) {
-            left: 55%;
-            height: 45px;
-            background: #e3f2fd;
-        }
-
-        .drip:nth-child(4) {
-            left: 80%;
-            height: 25px;
-            background: #fff;
-        }
-
-        /* Candle */
-        .candle {
-            position: absolute;
-            bottom: 185px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 60px;
-            background: repeating-linear-gradient(45deg, #ff1744, #ff1744 10px, #ffffff 10px, #ffffff 20px);
-            border-radius: 4px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2), inset -2px 0 5px rgba(0, 0, 0, 0.1);
-            z-index: 6;
-            transform-origin: bottom center;
-        }
-
-        .candle::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 5px;
-            background: #333;
-            /* Wick */
-        }
-
-        .flame {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 35px;
-            background: radial-gradient(ellipse at bottom, #ffd700 0%, #ff6d00 60%, transparent 100%);
-            border-radius: 50% 50% 20% 20%;
-            filter: blur(1px);
-            animation: flicker 0.5s infinite alternate;
-            box-shadow: 0 0 30px #ff6d00;
-            transform-origin: bottom center;
-            transition: transform 0.1s ease-out;
-            z-index: 7;
-        }
-
-        .smoke {
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            filter: blur(5px);
+        /* Smooth fade in */
+        .fade-in {
+            animation: fadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             opacity: 0;
-            z-index: 8;
         }
 
-        .smoke.active {
-            animation: rise 2s forwards;
-        }
-
-        @keyframes flicker {
-            0% {
-                opacity: 0.9;
-                transform: translateX(-50%) scale(1);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
 
-            100% {
+            to {
                 opacity: 1;
-                transform: translateX(-50%) scale(1.1);
+                transform: translateY(0);
             }
         }
 
-        @keyframes rise {
-            0% {
-                opacity: 0;
-                transform: translateX(-50%) translateY(0);
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
             }
 
-            100% {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-60px);
+            .glass-card {
+                padding: 2rem;
             }
-        }
-
-        /* --- SLIDESHOW STAGE & ANIMATIONS --- */
-        #cake-screen {
-            transition: opacity 1s ease, transform 1s ease;
-        }
-
-        #cake-screen.fade-out {
-            opacity: 0;
-            transform: scale(1.1);
-            pointer-events: none;
-        }
-
-        #stage {
-            position: fixed;
-            inset: 0;
-            opacity: 0;
-            transition: opacity 2s ease;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        #stage.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .slide {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            transition: opacity 1.5s ease;
-            z-index: 1;
-        }
-
-        .slide.active {
-            opacity: 1;
-            z-index: 2;
-        }
-
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Cinematic Ken Burns Animations */
-        .active .kb-zoom-in {
-            animation: kenBurnsZoomIn 10s ease-out forwards;
-        }
-
-        .active .kb-pan-right {
-            animation: kenBurnsPanRight 10s ease-out forwards;
-        }
-
-        .active .kb-zoom-out {
-            animation: kenBurnsZoomOut 10s ease-out forwards;
-        }
-
-        .active .kb-pan-left {
-            animation: kenBurnsPanLeft 10s ease-out forwards;
-        }
-
-        @keyframes kenBurnsZoomIn {
-            from {
-                transform: scale(1);
-            }
-
-            to {
-                transform: scale(1.15);
-            }
-        }
-
-        @keyframes kenBurnsZoomOut {
-            from {
-                transform: scale(1.15);
-            }
-
-            to {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes kenBurnsPanRight {
-            from {
-                transform: scale(1.1) translate(-3%, 0);
-            }
-
-            to {
-                transform: scale(1.1) translate(3%, 0);
-            }
-        }
-
-        @keyframes kenBurnsPanLeft {
-            from {
-                transform: scale(1.1) translate(3%, 0);
-            }
-
-            to {
-                transform: scale(1.1) translate(-3%, 0);
-            }
-        }
-
-        .text-overlay {
-            position: absolute;
-            bottom: 20%;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            z-index: 10;
-        }
-
-        .active-text .slide-title {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .slide-title {
-            font-size: 3rem;
-            font-weight: 900;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Loading Spinner */
-        .loader {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Confetti Canvas */
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 999;
         }
     </style>
 </head>
 
-<body class="flex flex-col items-center justify-center relative min-h-screen py-8">
+<body>
+    <div id="canvas-container"></div>
 
-    <!-- Confetti Layer -->
-    <canvas id="confetti-canvas"></canvas>
-
-    <!-- Liquid Background -->
-    <div class="liquid-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-        <div
-            style="position: absolute; inset:0; background: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.06\'/%3E%3C/svg%3E'); opacity:0.4; mix-blend-mode: overlay;">
-        </div>
+    <div class="glass-card fade-in">
+        <h1>Today is nothing special.</h1>
+        <p class="subtitle">Just another moment in time</p>
     </div>
 
-    <!-- CAKE SCREEN -->
-    <div id="cake-screen" class="z-50 w-full max-w-4xl px-4 flex flex-col items-center">
-        <!-- Share Button (Top Right) -->
-        <button onclick="shareExperience()"
-            class="absolute top-4 right-4 md:top-8 md:right-8 p-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 transition-all z-50 group">
-            <i data-lucide="share-2" class="w-5 h-5 text-white group-hover:scale-110 transition-transform"></i>
-        </button>
-
-        <!-- Hero Text -->
-        <div class="glass-panel p-8 md:p-12 text-center mb-8 relative overflow-hidden group w-full">
-            <div
-                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] uppercase font-black tracking-widest text-muted mb-6 backdrop-blur-xl">
-                <span
-                    class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_15px_rgba(52,211,153,0.6)]"></span>
-                <span class="grad-text">Surprise Ready</span>
-            </div>
-
-            <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-4 leading-none">
-                <span class="grad-text">Happy Birthday</span><br>
-                <span class="text-muted font-bold opacity-70 grad-text text-3xl md:text-5xl">Animesh.</span>
-            </h1>
-            <p class="text-base text-muted font-medium grad-text opacity-80">
-                A special moment, encrypted in time. Make a wish.
-            </p>
-        </div>
-
-        <!-- The Cake -->
-        <div class="cake-wrapper" id="cake" onclick="blowOutCandle()">
-            <div class="cake-container">
-                <div class="plate"></div>
-                <div class="layer layer-bottom"></div>
-                <div class="layer layer-middle"></div>
-                <div class="layer layer-top">
-                    <div class="drip"></div>
-                    <div class="drip"></div>
-                    <div class="drip"></div>
-                    <div class="drip"></div>
-                </div>
-                <div class="candle">
-                    <div class="flame" id="flame"></div>
-                    <div class="smoke" id="smoke"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="flex flex-col items-center gap-4 mt-8">
-            <div id="mic-visual"
-                class="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-500/50 hidden items-center justify-center animate-pulse shadow-[0_0_20px_rgba(59,130,246,0.5)]">
-                <i data-lucide="mic" class="w-5 h-5 text-blue-400"></i>
-            </div>
-
-            <button id="mic-btn" onclick="requestMic()"
-                class="btn-solid px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3 emboss-3d interactive-feedback">
-                <i data-lucide="mic" class="w-4 h-4"></i> Enable Microphone
-            </button>
-
-            <p id="instruction" class="text-xs text-muted font-bold uppercase tracking-widest grad-text opacity-70">
-                Tap the candle or blow into mic
-            </p>
-        </div>
-    </div>
-
-    <!-- SLIDESHOW STAGE -->
-    <div id="stage" class="w-full h-full">
-        <div id="slide-container" class="absolute inset-0"></div>
-
-        <div class="text-overlay" id="text-layer">
-            <div class="glass-panel inline-block px-8 py-4 md:px-12 md:py-6">
-                <h2 class="slide-title grad-text text-3xl md:text-5xl font-black tracking-tighter" id="slide-title">
-                    Title</h2>
-                <p class="text-muted font-bold tracking-widest uppercase mt-2 text-sm" id="slide-desc">Description</p>
-            </div>
-        </div>
-
-        <!-- Floating Controls -->
-        <nav class="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
-            <div class="glass-panel p-2 flex gap-2 rounded-full">
-                <button onclick="togglePause()"
-                    class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white">
-                    <i data-lucide="play" id="playIcon" class="w-5 h-5 fill-current"></i>
-                </button>
-                <button onclick="document.getElementById('fileInput').click()"
-                    class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white">
-                    <i data-lucide="music" class="w-5 h-5"></i>
-                </button>
-                <input type="file" id="fileInput" accept="audio/*" style="display:none"
-                    onchange="handleMusicUpload(this)">
-                <!-- Share Button -->
-                <button onclick="shareExperience()"
-                    class="w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white">
-                    <i data-lucide="share-2" class="w-5 h-5"></i>
-                </button>
-            </div>
-        </nav>
+    <div class="footer fade-in" style="animation-delay: 0.5s;">
+        00:00:00
     </div>
 
     <script>
-        // --- LOGIC ---
-       const slides = [
-            { img: 'photo1 (1).jpg', title: "The Beginning", desc: "Happy Birthday Animesh", anim: 'kb-zoom-in' },
-            { img: 'photo1 (2).jpg', title: "Growth", desc: "Keep Moving Forward", anim: 'kb-pan-right' },
-            { img: 'photo1 (3).jpg', title: "Joy", desc: "Unforgettable Moments", anim: 'kb-zoom-out' },
-            { img: 'photo1 (4).jpg', title: "Future", desc: "The Best is Yet to Come", anim: 'kb-pan-left' },
-            { img: 'photo1 (5).jpg', title: "Success", desc: "Reaching New Heights", anim: 'kb-zoom-in' },
-            { img: 'photo1 (6).jpg', title: "Memories", desc: "Timeless & True", anim: 'kb-pan-right' },
-            { img: 'photo1 (7).jpg', title: "Celebration", desc: "Here's To You", anim: 'kb-zoom-out' }
-        ];
+        // --- Three.js Setup ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 3.8;
 
-        let audioCtx;
-        let micStream;
-        let analyser;
-        let dataArray;
-        let candleOut = false;
-        let isPlaying = false;
-        let currentSlide = 0;
-        let slideInterval;
-        let mySong = null;
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimize for high DPI
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+        scene.add(ambientLight);
+
+        // Adjusted lights for a more sophisticated palette (Pink/Cyan/Deep Blue)
+        const light1 = new THREE.PointLight(0xff0080, 2, 10);
+        light1.position.set(2, 2, 2);
+        scene.add(light1);
+
+        const light2 = new THREE.PointLight(0x00ffff, 2, 10);
+        light2.position.set(-2, -2, 2);
+        scene.add(light2);
+
+        const light3 = new THREE.PointLight(0x4444ff, 3, 15); // Deep Blue Backlight
+        light3.position.set(0, 0, -5);
+        scene.add(light3);
+
+        // --- Liquid Glass Blob ---
+        const geometry = new THREE.IcosahedronGeometry(1.4, 40); // Higher detail for smoothness
+
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            metalness: 0.1,
+            roughness: 0.05,
+            transmission: 0.95,
+            thickness: 2.5,
+            ior: 1.45,
+            clearcoat: 1,
+            clearcoatRoughness: 0.05,
+            side: THREE.DoubleSide
+        });
+
+        const blob = new THREE.Mesh(geometry, material);
+        scene.add(blob);
+
+        const originalPositions = geometry.attributes.position.array.slice();
+
+        // --- Input Handling ---
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX);
+            mouseY = (event.clientY - windowHalfY);
+        });
+
+        // --- Animation ---
+        const clock = new THREE.Clock();
+
+        function customNoise(x, y, z, t) {
+            // Complex noise for organic movement
+            return Math.sin(x * 1.5 + t) * Math.cos(y * 1.5 + t * 0.8) * Math.sin(z * 1.5 + t * 0.5);
         }
 
-        async function requestMic() {
-            initAudio();
-            const btn = document.getElementById('mic-btn');
-            btn.innerHTML = `<div class="loader"></div> Connecting...`;
+        function animate() {
+            requestAnimationFrame(animate);
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                micStream = stream;
-                analyser = audioCtx.createAnalyser();
-                const source = audioCtx.createMediaStreamSource(stream);
-                source.connect(analyser);
-                analyser.fftSize = 256;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            const time = clock.getElapsedTime() * 0.6;
+            const positions = blob.geometry.attributes.position.array;
 
-                btn.style.display = 'none';
-                document.getElementById('mic-visual').style.display = 'flex';
-                document.getElementById('instruction').textContent = "Blow into the mic now...";
+            // Displace vertices for liquid effect
+            for (let i = 0; i < positions.length; i += 3) {
+                const ox = originalPositions[i];
+                const oy = originalPositions[i + 1];
+                const oz = originalPositions[i + 2];
 
-                detectBlow();
-            } catch (err) {
-                btn.innerHTML = `<i data-lucide="x-circle" class="w-4 h-4"></i> Access Denied`;
-                document.getElementById('instruction').textContent = "Microphone failed. Tap the candle instead.";
-                lucide.createIcons();
-            }
-        }
+                const noise = customNoise(ox, oy, oz, time);
+                const displacement = 1 + 0.35 * noise;
 
-        function detectBlow() {
-            if (candleOut) return;
-            requestAnimationFrame(detectBlow);
-            analyser.getByteFrequencyData(dataArray);
-            let sum = 0;
-            for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-            let avg = sum / dataArray.length;
-
-            // Visual feedback - Flame Wobble
-            const scale = 1 + (avg / 100);
-            const rotate = (Math.random() - 0.5) * (avg / 5);
-            const flame = document.getElementById('flame');
-            flame.style.transform = `translateX(-50%) scale(${scale}) rotate(${rotate}deg)`;
-
-            document.getElementById('mic-visual').style.transform = `scale(${1 + avg / 50})`;
-
-            // Threshold to blow out
-            if (avg > 40) blowOutCandle();
-        }
-
-        function blowOutCandle() {
-            if (candleOut) return;
-            candleOut = true;
-
-            if (micStream) micStream.getTracks().forEach(track => track.stop());
-            document.getElementById('mic-visual').style.display = 'none';
-
-            // Animation
-            document.getElementById('flame').style.display = 'none';
-            document.getElementById('smoke').classList.add('active');
-
-            // Sound & Confetti
-            playPuffSound();
-            triggerConfetti();
-
-            setTimeout(() => {
-                document.getElementById('cake-screen').classList.add('fade-out');
-                setTimeout(() => {
-                    document.getElementById('cake-screen').style.display = 'none';
-                    startSlideshow();
-                }, 1000);
-            }, 1500);
-        }
-
-        function playPuffSound() {
-            initAudio();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.3);
-        }
-
-        // --- NEW AUDIO LOGIC: Custom Song with Fallback ---
-        function playAmbientMusic() {
-            // Try to play 'birthday_song.mp3' from the same folder
-            const songFilename = "birthday_song.mp3";
-
-            mySong = new Audio(songFilename);
-            mySong.loop = true;
-            mySong.volume = 0.6;
-
-            const playPromise = mySong.play();
-
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Custom song not found or autoplay blocked. Falling back to Synth Drone.");
-                    // Fallback to the oscillator drone
-                    playSynthDrone();
-                });
-            }
-        }
-
-        function playSynthDrone() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.value = 220;
-            gain.gain.value = 0.1; // Louder for visibility
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-        }
-
-        // --- CONFETTI LOGIC ---
-        function triggerConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const pieces = [];
-            const colors = ['#8e44ad', '#e91e63', '#3498db', '#f1c40f', '#2ecc71'];
-
-            for (let i = 0; i < 150; i++) {
-                pieces.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2 + 100, // Start from center/cake
-                    w: Math.random() * 10 + 5,
-                    h: Math.random() * 10 + 5,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    vx: (Math.random() - 0.5) * 20,
-                    vy: (Math.random() - 1) * 20,
-                    gravity: 0.5,
-                    rotation: Math.random() * 360,
-                    rotationSpeed: (Math.random() - 0.5) * 10
-                });
+                positions[i] = ox * displacement;
+                positions[i + 1] = oy * displacement;
+                positions[i + 2] = oz * displacement;
             }
 
-            function updateConfetti() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let active = false;
+            blob.geometry.attributes.position.needsUpdate = true;
+            blob.geometry.computeVertexNormals();
 
-                pieces.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += p.gravity;
-                    p.rotation += p.rotationSpeed;
+            // Interactive rotation smoothing
+            targetX = mouseX * 0.0005;
+            targetY = mouseY * 0.0005;
 
-                    if (p.y < canvas.height) active = true;
+            blob.rotation.y += 0.05 * (targetX - blob.rotation.y);
+            blob.rotation.x += 0.05 * (targetY - blob.rotation.x);
+            blob.rotation.z += 0.002; // Constant slow spin
 
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate((p.rotation * Math.PI) / 180);
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-                    ctx.restore();
-                });
+            // Dynamic light movement
+            light1.position.x = Math.sin(time * 0.7) * 5;
+            light1.position.y = Math.cos(time * 0.5) * 5;
+            light2.position.x = Math.cos(time * 0.3) * 5;
+            light2.position.y = Math.sin(time * 0.5) * 5;
 
-                if (active) requestAnimationFrame(updateConfetti);
-            }
-
-            updateConfetti();
+            renderer.render(scene, camera);
         }
 
-        function startSlideshow() {
-            document.body.style.overflow = 'hidden';
-            document.getElementById('stage').classList.add('visible');
-            const container = document.getElementById('slide-container');
+        animate();
 
-            slides.forEach((s, i) => {
-                const div = document.createElement('div');
-                div.className = 'slide';
-                div.id = `slide-${i}`;
-                div.innerHTML = `<img src="${s.img}" class="${s.anim}" onerror="this.src='https://placehold.co/1920x1080/050505/333?text=${encodeURIComponent(s.title)}'">`;
-                container.appendChild(div);
-            });
+        // --- Resize Handler ---
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
 
-            playAmbientMusic();
-            showSlide(0);
-            slideInterval = setInterval(nextSlide, 5000);
-            isPlaying = true;
-            document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
-            lucide.createIcons();
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+
+            windowHalfX = width / 2;
+            windowHalfY = height / 2;
+        });
+
+        // --- Clock Logic ---
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+            document.querySelector('.footer').textContent = timeString;
         }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        function showSlide(index) {
-            document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
-            const s = document.getElementById(`slide-${index}`);
-            if (s) s.classList.add('active');
-
-            const textLayer = document.getElementById('text-layer');
-            textLayer.classList.remove('active-text');
-            setTimeout(() => {
-                document.getElementById('slide-title').textContent = slides[index].title;
-                document.getElementById('slide-desc').textContent = slides[index].desc;
-                textLayer.classList.add('active-text');
-            }, 500);
-
-            currentSlide = index;
-        }
-
-        function nextSlide() {
-            let next = currentSlide + 1;
-            if (next >= slides.length) next = 0;
-            showSlide(next);
-        }
-
-        function togglePause() {
-            const icon = document.getElementById('playIcon');
-            if (isPlaying) {
-                clearInterval(slideInterval);
-                icon.setAttribute('data-lucide', 'play');
-            } else {
-                nextSlide();
-                slideInterval = setInterval(nextSlide, 5000);
-                icon.setAttribute('data-lucide', 'pause');
-            }
-            isPlaying = !isPlaying;
-            lucide.createIcons();
-        }
-
-        function handleMusicUpload(input) {
-            if (input.files[0]) {
-                if (mySong) mySong.pause(); // Stop custom song if playing
-                if (audioCtx) audioCtx.close(); // Stop synth
-
-                const audio = new Audio(URL.createObjectURL(input.files[0]));
-                audio.play();
-                audio.loop = true;
-                mySong = audio; // Track new audio
-            }
-        }
-
-        // --- SHARE LOGIC ---
-        async function shareExperience() {
-            const shareData = {
-                title: 'Happy Birthday Animesh!',
-                text: '🎉 Check out this special birthday surprise created just for you!',
-                url: window.location.href
-            };
-
-            if (navigator.share) {
-                // Use Native Share Sheet (Works for Insta, WhatsApp, etc. on Mobile)
-                try {
-                    await navigator.share(shareData);
-                } catch (err) {
-                    console.log('Share canceled');
-                }
-            } else {
-                // Fallback for Desktop: Copy Link + WhatsApp option
-                try {
-                    await navigator.clipboard.writeText(window.location.href);
-                    // Optional: Open WhatsApp Web
-                    if (confirm("Link copied to clipboard! Open WhatsApp to share?")) {
-                        window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`, '_blank');
-                    }
-                } catch (err) {
-                    alert("Could not copy link. Manually copy the URL to share.");
-                }
-            }
-        }
-
-        // Init Icons
-        lucide.createIcons();
     </script>
 </body>
 
