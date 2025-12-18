@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaskFlow M3 | Ultimate</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Roboto', 'sans-serif'],
+                        google: ['Google Sans', 'sans-serif']
+                    },
+                    colors: {
+                        m3: {
+                            primary: '#0b57d0',
+                            primaryContainer: '#d3e3fd',
+                            surface: '#f8f9fa',
+                            surfaceVariant: '#e1e3e1',
+                            outline: '#747775',
+                            done: '#1e8e3e'
+                        },
+                        dark: { 800: '#1e1f20', 900: '#131314' }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3, button { font-family: 'Google Sans', sans-serif; }
+        
+        /* Material 3 Card Elevation */
+        .m3-card {
+            background: white;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dark .m3-card { background: #1e1f20; }
+        .m3-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        .task-card.dragging { opacity: 0.4; transform: scale(0.98); }
+        .column-drop-active { background-color: #d3e3fd !important; border: 2px dashed #0b57d0 !important; }
+        .dark .column-drop-active { background-color: #004a77 !important; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-m3-surface text-slate-900 dark:bg-dark-900 dark:text-slate-100 h-screen flex flex-col transition-colors duration-300">
+
+    <nav class="bg-white dark:bg-dark-800 border-b border-m3-surfaceVariant dark:border-slate-700 px-4 md:px-6 py-2.5 flex justify-between items-center z-30 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="bg-m3-primary text-white p-2 rounded-2xl shadow-lg">
+                <i data-lucide="check-square" class="w-5 h-5"></i>
+            </div>
+            <h1 class="font-google font-medium text-xl tracking-tight hidden sm:block">TaskFlow</h1>
+        </div>
+        
+        <div class="flex items-center gap-2">
+            <div class="relative group">
+                <button class="flex items-center gap-2 bg-m3-primaryContainer text-m3-primary px-4 py-2 rounded-full text-sm font-medium hover:brightness-95 transition">
+                    <i data-lucide="share-2" class="w-4 h-4"></i> <span>Share</span>
+                </button>
+                <div class="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-dark-800 rounded-2xl shadow-2xl border border-m3-surfaceVariant dark:border-slate-700 p-2 hidden group-hover:block z-50 animate-in fade-in slide-in-from-top-2">
+                    <button onclick="copyShareLink()" class="flex items-center w-full px-3 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition">
+                        <i data-lucide="link" class="w-4 h-4 mr-3"></i> Copy Magic Link
+                    </button>
+                    <button onclick="exportData()" class="flex items-center w-full px-3 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition">
+                        <i data-lucide="download" class="w-4 h-4 mr-3"></i> Download JSON
+                    </button>
+                    <button onclick="document.getElementById('importInput').click()" class="flex items-center w-full px-3 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition">
+                        <i data-lucide="upload" class="w-4 h-4 mr-3"></i> Import File
+                    </button>
+                </div>
+            </div>
+
+            <input type="file" id="importInput" class="hidden" accept=".json" onchange="importData(event)">
+
+            <button onclick="toggleTheme()" class="p-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition">
+                <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="px-4 md:px-6 py-4 flex flex-col md:flex-row gap-4 items-center">
+        <div class="flex items-center bg-m3-surfaceVariant/50 dark:bg-slate-800 px-4 py-2.5 rounded-full w-full md:w-96 group focus-within:bg-white focus-within:ring-2 ring-m3-primary transition-all">
+            <i data-lucide="search" class="w-4 h-4 text-slate-500"></i>
+            <input type="text" id="searchInput" placeholder="Search your tasks..." oninput="renderBoard()" class="bg-transparent border-none outline-none text-sm ml-3 w-full text-slate-800 dark:text-slate-100">
+        </div>
+        <div class="flex gap-2 overflow-x-auto no-scrollbar w-full md:w-auto">
+            <button onclick="filterByTag('all')" id="filter-all" class="tag-filter active px-4 py-1.5 rounded-full text-xs font-medium bg-m3-primaryContainer text-m3-primary">All</button>
+            <button onclick="filterByTag('Urgent')" id="filter-Urgent" class="tag-filter px-4 py-1.5 rounded-full text-xs font-medium bg-white border border-m3-surfaceVariant dark:bg-slate-800 text-slate-600">Urgent</button>
+            <button onclick="filterByTag('Design')" id="filter-Design" class="tag-filter px-4 py-1.5 rounded-full text-xs font-medium bg-white border border-m3-surfaceVariant dark:bg-slate-800 text-slate-600">Design</button>
+            <button onclick="filterByTag('Dev')" id="filter-Dev" class="tag-filter px-4 py-1.5 rounded-full text-xs font-medium bg-white border border-m3-surfaceVariant dark:bg-slate-800 text-slate-600">Dev</button>
+        </div>
+    </div>
+
+    <main class="flex-1 overflow-x-hidden overflow-y-auto md:overflow-y-hidden p-4 md:p-6">
+        <div class="flex flex-col md:flex-row h-auto md:h-full gap-6 pb-24 md:pb-0">
+            <div id="board-columns" class="flex flex-col md:flex-row w-full gap-6"></div>
+        </div>
+    </main>
+
+    <button onclick="openModal('todo')" class="fixed bottom-8 right-8 bg-m3-primaryContainer text-m3-primary p-4 rounded-2xl shadow-2xl hover:brightness-90 transition transform active:scale-95 z-40 group">
+        <div class="flex items-center gap-3 px-1">
+            <i data-lucide="plus" class="w-6 h-6"></i>
+            <span class="font-google font-medium hidden md:block">New Task</span>
+        </div>
+    </button>
+
+    <div id="taskModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-end md:items-center justify-center z-50 transition-opacity opacity-0 duration-300">
+        <div class="bg-white dark:bg-dark-800 rounded-t-3xl md:rounded-[2rem] shadow-2xl w-full md:max-w-xl max-h-[90vh] overflow-y-auto transform translate-y-full md:translate-y-0 transition-transform duration-300" id="modalContent">
+            
+            <div class="p-6 md:p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 id="modalTitle" class="text-2xl font-google font-medium text-slate-900 dark:text-white">Task details</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-full transition">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                
+                <form onsubmit="handleFormSubmit(event)" class="space-y-6">
+                    <input type="hidden" id="taskId">
+                    <input type="hidden" id="taskStatus" value="todo">
+                    
+                    <div class="space-y-1">
+                        <label class="text-sm font-medium text-m3-primary px-1">What needs to be done?</label>
+                        <input type="text" id="taskTitle" required placeholder="Project Launch..." 
+                            class="w-full text-xl font-medium bg-m3-surfaceVariant/30 dark:bg-dark-900 rounded-2xl px-4 py-3 border-none focus:ring-2 ring-m3-primary outline-none text-slate-900 dark:text-slate-100">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-sm font-medium text-slate-500 px-1">Details</label>
+                        <textarea id="taskDesc" rows="3" placeholder="Add some notes..." 
+                            class="w-full bg-m3-surfaceVariant/30 dark:bg-dark-900 rounded-2xl px-4 py-3 border-none text-slate-800 dark:text-slate-100 focus:ring-2 ring-m3-primary outline-none resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-sm font-medium text-slate-500 px-1">Priority</label>
+                            <select id="taskPriority" class="w-full bg-m3-surfaceVariant/30 dark:bg-dark-900 rounded-xl px-3 py-2.5 border-none text-sm outline-none focus:ring-2 ring-m3-primary">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-medium text-slate-500 px-1">Tag</label>
+                            <select id="taskTag" class="w-full bg-m3-surfaceVariant/30 dark:bg-dark-900 rounded-xl px-3 py-2.5 border-none text-sm outline-none focus:ring-2 ring-m3-primary">
+                                <option value="General">General</option>
+                                <option value="Urgent">Urgent</option>
+                                <option value="Design">Design</option>
+                                <option value="Dev">Dev</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center px-1">
+                            <label class="text-sm font-medium text-slate-500">Checklist</label>
+                            <span id="subtaskCounter" class="text-xs font-bold text-m3-primary">0/0</span>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <input type="text" id="newSubtaskInput" placeholder="Add a step..." class="flex-1 px-4 py-2.5 text-sm rounded-xl bg-m3-surfaceVariant/30 dark:bg-dark-900 border-none outline-none focus:ring-2 ring-m3-primary">
+                            <button type="button" onclick="addSubtaskFromInput()" class="bg-m3-primary text-white p-2.5 rounded-xl hover:brightness-95 transition">
+                                <i data-lucide="plus" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <ul id="subtaskList" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar"></ul>
+                    </div>
+
+                    <div class="flex gap-3 pt-6">
+                        <button type="button" onclick="deleteCurrentTask()" id="btnDelete" class="hidden px-5 py-3 rounded-full text-rose-600 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                        <div class="flex-1"></div>
+                        <button type="button" onclick="closeModal()" class="px-6 py-3 rounded-full text-slate-500 font-medium hover:bg-slate-100 transition">Cancel</button>
+                        <button type="submit" class="px-8 py-3 rounded-full bg-m3-primary text-white font-medium hover:shadow-lg transition transform active:scale-95">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- State Management ---
+        let tasks = [];
+        let draggedTaskId = null;
+        let activeTagFilter = 'all';
+        let tempSubtasks = [];
+
+        const columns = [
+            { id: 'todo', title: 'To Do', color: 'bg-slate-400' },
+            { id: 'inprogress', title: 'In Progress', color: 'bg-m3-primary' },
+            { id: 'done', title: 'Done', color: 'bg-m3-done' }
+        ];
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initBoardStructure();
+            loadTasks();
+            checkSharedLink();
+            initTheme();
+            lucide.createIcons();
+        });
+
+        function initBoardStructure() {
+            const container = document.getElementById('board-columns');
+            columns.forEach(col => {
+                container.innerHTML += `
+                    <div class="flex-1 flex flex-col md:min-w-[320px]">
+                        <div class="flex items-center justify-between mb-4 px-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2.5 h-2.5 rounded-full ${col.color}"></div>
+                                <h2 class="font-google font-medium text-slate-700 dark:text-slate-300">${col.title}</h2>
+                            </div>
+                            <span id="count-${col.id}" class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div id="col-${col.id}" 
+                            class="flex-1 bg-transparent rounded-3xl transition-all duration-300 p-1 md:overflow-y-auto no-scrollbar space-y-4 min-h-[150px]"
+                            ondrop="drop(event, '${col.id}')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- Sharing Logic (Magic Link) ---
+        function copyShareLink() {
+            // Encode tasks into base64
+            const data = btoa(JSON.stringify(tasks));
+            const shareUrl = `${window.location.origin}${window.location.pathname}#share=${data}`;
+            
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert("Magic Share Link copied! Send this to your teammate. When they open it, your board will load for them.");
+            });
+        }
+
+        function checkSharedLink() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#share=')) {
+                try {
+                    const data = JSON.parse(atob(hash.split('=')[1]));
+                    if(confirm(`Someone shared a board with ${data.length} tasks. Would you like to import it? (This replaces your local board)`)) {
+                        tasks = data;
+                        saveTasks();
+                        window.location.hash = ''; // Clear hash
+                    }
+                } catch(e) {
+                    console.error("Failed to parse shared link");
+                }
+            }
+        }
+
+        // --- Core Logic ---
+        function loadTasks() {
+            const saved = localStorage.getItem('taskflow_m3_db');
+            if (saved) tasks = JSON.parse(saved);
+            else {
+                tasks = [
+                    { id: '1', title: 'Welcome to M3', desc: 'Material You has arrived.', status: 'todo', priority: 'low', tag: 'General', subtasks: [], date: Date.now() }
+                ];
+                saveTasks();
+            }
+            renderBoard();
+        }
+
+        function saveTasks() {
+            localStorage.setItem('taskflow_m3_db', JSON.stringify(tasks));
+        }
+
+        function renderBoard() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            
+            columns.forEach(col => {
+                const columnEl = document.getElementById(`col-${col.id}`);
+                columnEl.innerHTML = '';
+                
+                const filtered = tasks.filter(t => 
+                    t.status === col.id && 
+                    (activeTagFilter === 'all' || t.tag === activeTagFilter) &&
+                    (t.title.toLowerCase().includes(searchQuery) || t.desc.toLowerCase().includes(searchQuery))
+                );
+
+                document.getElementById(`count-${col.id}`).innerText = filtered.length;
+                filtered.forEach(task => columnEl.appendChild(createTaskCard(task)));
+            });
+            lucide.createIcons();
+            timeago.render(document.querySelectorAll('.timeago'));
+        }
+
+        function createTaskCard(task) {
+            const card = document.createElement('div');
+            card.className = `m3-card p-5 rounded-[1.5rem] border border-m3-surfaceVariant dark:border-slate-800 cursor-grab group relative select-none`;
+            card.draggable = true;
+            
+            const tagStyles = {
+                Urgent: 'bg-rose-100 text-rose-700',
+                Design: 'bg-indigo-100 text-indigo-700',
+                Dev: 'bg-emerald-100 text-emerald-700',
+                General: 'bg-slate-100 text-slate-600'
+            };
+
+            const subCount = task.subtasks.length;
+            const subDone = task.subtasks.filter(s => s.done).length;
+            const progress = subCount > 0 ? (subDone / subCount) * 100 : 0;
+
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[10px] font-bold px-2 py-1 rounded-lg ${tagStyles[task.tag] || tagStyles.General}">${task.tag}</span>
+                    <button onclick="deleteFromCard(event, '${task.id}')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-500 transition">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <h4 class="font-google font-medium text-slate-900 dark:text-white mb-1">${task.title}</h4>
+                ${task.desc ? `<p class="text-xs text-slate-500 line-clamp-2 mb-3">${task.desc}</p>` : ''}
+                
+                ${subCount > 0 ? `
+                <div class="space-y-1.5 mb-4">
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1 overflow-hidden">
+                        <div class="bg-m3-primary h-full transition-all duration-500" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-400 font-bold">
+                        <span>Checklist</span>
+                        <span>${subDone}/${subCount}</span>
+                    </div>
+                </div>` : ''}
+
+                <div class="flex items-center justify-between mt-2 pt-3 border-t border-m3-surfaceVariant dark:border-slate-800">
+                    <div class="w-6 h-6 rounded-full bg-m3-primaryContainer flex items-center justify-center text-[10px] font-bold text-m3-primary uppercase">
+                        ${task.title.charAt(0)}
+                    </div>
+                    <span class="text-[10px] text-slate-400 timeago" datetime="${new Date(task.date).toISOString()}"></span>
+                </div>
+            `;
+
+            card.addEventListener('dragstart', (e) => {
+                draggedTaskId = task.id;
+                card.classList.add('dragging');
+            });
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+                document.querySelectorAll('.column-drop-active').forEach(c => c.classList.remove('column-drop-active'));
+            });
+            card.addEventListener('click', (e) => {
+                if(!e.target.closest('button')) openModal(task.status, task);
+            });
+
+            return card;
+        }
+
+        // --- Drag & Drop ---
+        function allowDrop(e) { e.preventDefault(); }
+        function dragEnter(e) {
+            e.preventDefault();
+            const col = e.target.closest('[id^="col-"]');
+            if (col) col.classList.add('column-drop-active');
+        }
+        function dragLeave(e) {
+            const col = e.target.closest('[id^="col-"]');
+            if (col) col.classList.remove('column-drop-active');
+        }
+        function drop(e, status) {
+            e.preventDefault();
+            const taskIndex = tasks.findIndex(t => t.id === draggedTaskId);
+            if (taskIndex > -1) {
+                const oldStatus = tasks[taskIndex].status;
+                tasks[taskIndex].status = status;
+                saveTasks();
+                renderBoard();
+                if(status === 'done' && oldStatus !== 'done') confetti({ particleCount: 60, spread: 70, origin: { y: 0.7 } });
+            }
+        }
+
+        // --- Modal ---
+        function openModal(status, task = null) {
+            const modal = document.getElementById('taskModal');
+            const content = document.getElementById('modalContent');
+            document.getElementById('taskStatus').value = status;
+            
+            if (task) {
+                document.getElementById('modalTitle').innerText = 'Edit task';
+                document.getElementById('taskId').value = task.id;
+                document.getElementById('taskTitle').value = task.title;
+                document.getElementById('taskDesc').value = task.desc;
+                document.getElementById('taskPriority').value = task.priority;
+                document.getElementById('taskTag').value = task.tag;
+                tempSubtasks = [...task.subtasks];
+                document.getElementById('btnDelete').classList.remove('hidden');
+            } else {
+                document.getElementById('modalTitle').innerText = 'New task';
+                document.getElementById('taskId').value = '';
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDesc').value = '';
+                tempSubtasks = [];
+                document.getElementById('btnDelete').classList.add('hidden');
+            }
+            
+            renderSubtasksInModal();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.replace('opacity-0', 'opacity-100');
+                content.classList.replace('translate-y-full', 'translate-y-0');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('taskModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.replace('opacity-100', 'opacity-0');
+            content.classList.replace('translate-y-0', 'translate-y-full');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function addSubtaskFromInput() {
+            const input = document.getElementById('newSubtaskInput');
+            if(!input.value.trim()) return;
+            tempSubtasks.push({ text: input.value, done: false });
+            input.value = '';
+            renderSubtasksInModal();
+        }
+
+        function renderSubtasksInModal() {
+            const list = document.getElementById('subtaskList');
+            list.innerHTML = '';
+            tempSubtasks.forEach((s, i) => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center gap-3 p-2 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition';
+                li.innerHTML = `
+                    <button type="button" onclick="toggleSub(${i})" class="${s.done ? 'text-m3-done' : 'text-slate-300'}">
+                        <i data-lucide="${s.done ? 'check-circle' : 'circle'}" class="w-5 h-5"></i>
+                    </button>
+                    <span class="flex-1 text-sm ${s.done ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-300'}">${s.text}</span>
+                    <button type="button" onclick="removeSub(${i})" class="text-slate-300 hover:text-rose-500"><i data-lucide="minus-circle" class="w-4 h-4"></i></button>
+                `;
+                list.appendChild(li);
+            });
+            const done = tempSubtasks.filter(s => s.done).length;
+            document.getElementById('subtaskCounter').innerText = `${done}/${tempSubtasks.length}`;
+            lucide.createIcons();
+        }
+
+        function toggleSub(i) { tempSubtasks[i].done = !tempSubtasks[i].done; renderSubtasksInModal(); }
+        function removeSub(i) { tempSubtasks.splice(i, 1); renderSubtasksInModal(); }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('taskId').value;
+            const taskObj = {
+                title: document.getElementById('taskTitle').value,
+                desc: document.getElementById('taskDesc').value,
+                priority: document.getElementById('taskPriority').value,
+                tag: document.getElementById('taskTag').value,
+                status: document.getElementById('taskStatus').value,
+                subtasks: tempSubtasks
+            };
+
+            if (id) {
+                const idx = tasks.findIndex(t => t.id === id);
+                tasks[idx] = { ...tasks[idx], ...taskObj };
+            } else {
+                tasks.push({ id: Date.now().toString(), ...taskObj, date: Date.now() });
+            }
+            saveTasks();
+            renderBoard();
+            closeModal();
+        }
+
+        function deleteCurrentTask() {
+            if(!confirm('Permanently delete?')) return;
+            tasks = tasks.filter(t => t.id !== document.getElementById('taskId').value);
+            saveTasks();
+            renderBoard();
+            closeModal();
+        }
+
+        function deleteFromCard(e, id) {
+            e.stopPropagation();
+            if(confirm('Delete task?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                saveTasks();
+                renderBoard();
+            }
+        }
+
+        function filterByTag(tag) {
+            activeTagFilter = tag;
+            document.querySelectorAll('.tag-filter').forEach(btn => {
+                btn.classList.remove('bg-m3-primaryContainer', 'text-m3-primary');
+                btn.classList.add('bg-white', 'dark:bg-slate-800');
+            });
+            const activeBtn = document.getElementById(`filter-${tag}`);
+            activeBtn.classList.remove('bg-white', 'dark:bg-slate-800');
+            activeBtn.classList.add('bg-m3-primaryContainer', 'text-m3-primary');
+            renderBoard();
+        }
+
+        // --- Theme ---
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        // --- File I/O ---
+        function exportData() {
+            const data = JSON.stringify(tasks);
+            const blob = new Blob([data], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'taskflow_backup.json';
+            a.click();
+        }
+
+        function importData(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                tasks = JSON.parse(event.target.result);
+                saveTasks();
+                renderBoard();
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
