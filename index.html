@@ -2067,14 +2067,15 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        /* Divider style */
-        #about .h-px.bg-white\\/10 {
+        #about .divider-glass {
             height: 1px;
             background: linear-gradient(90deg,
                     transparent 0%,
                     var(--glass-border) 50%,
                     transparent 100%);
         }
+
+        /* --- CHARACTER CONTAINER --- */
 
         .character-container {
             position: relative;
@@ -2327,6 +2328,62 @@
             /* Cyan Glow on icon */
             filter: drop-shadow(0 0 5px rgba(0, 198, 255, 0.8));
         }
+
+        /* Profile container */
+        .santa-profile {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        /* Profile image */
+        .santa-profile img:not(.santa-hat) {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Santa Hat */
+        .santa-hat {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-5deg);
+            width: 70px;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* Snow container */
+        .snow-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Snowflake */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 8px;
+            opacity: 0.8;
+            animation: snowfall linear infinite;
+        }
+
+        /* Snow animation */
+        @keyframes snowfall {
+            to {
+                transform: translateY(80px);
+            }
+        }
     </style>
 </head>
 
@@ -2397,17 +2454,27 @@
 
         <header class="flex items-center justify-between mb-12 fade-enter-active px-2">
             <div class="flex items-center gap-4">
-                <div class="profile-logo">
+                <div class="profile-logo santa-profile" onclick="openSantaGame()">
+                    <div class="snow-container"></div>
+
+                    <!-- Santa Hat -->
+                    <img src="images/santa-hat.png" class="santa-hat" alt="Santa Hat">
+
+                    <!-- Profile Image -->
                     <img src="images/lower.png" alt="Joy Kumbhakar - Frontend Developer"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
                     <div class="initials" style="display: none;">JK</div>
                 </div>
+
                 <div>
-                    <h3 class="font-semibold text-xl leading-tight text-dynamic">Joy Kumbhakar
+                    <h3 class="font-semibold text-xl leading-tight text-dynamic">
+                        Joy Kumbhakar
                     </h3>
                     <p class="text-sm text-muted-dynamic font-medium">Frontend Developer</p>
                 </div>
             </div>
+
 
             <div class="flex gap-4">
                 <button onclick="toggleAccount()"
@@ -2926,10 +2993,9 @@
                         </div>
                     </div>
 
-                    <!-- Project Extra -->
+                    <!-- Project 6 -->
                     <div class="glass-panel glass-interactive p-0 group cursor-pointer block overflow-hidden project-item"
-                        data-name="GamingHub" data-category="Gaming"
-                        data-tech="html5,javascript,css3,react">
+                        data-name="GamingHub" data-category="Gaming" data-tech="html5,javascript,css3,react">
                         <div class="h-48 md:h-64 relative overflow-hidden">
                             <img src="images/image6.png" alt="GamingHub - Online Gaming Platform"
                                 class="project-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -2938,7 +3004,7 @@
                             </div>
                             <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 z-20">
                                 <span
-                                    class="px-2 md:px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-red-500/30">Gaming</span>
+                                    class="px-2 md:px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full mb-2 md:mb-3 inline-block shadow-lg shadow-red-500/30">Business</span>
                                 <h3 class="text-xl md:text-2xl font-bold text-white mb-1">GamingHub</h3>
                                 <p class="text-white/80 text-sm">Online Gaming Platform</p>
                             </div>
@@ -5142,6 +5208,33 @@
             // Format as XML and serve via API endpoint
             return pages;
         }
+
+        function openSantaGame() {
+            window.location.href = "santa.html";
+        }
+
+        // Snow generation
+        const snowContainer = document.querySelector(".snow-container");
+
+        function createSnowflake() {
+            const snowflake = document.createElement("div");
+            snowflake.className = "snowflake";
+            snowflake.innerHTML = "❄";
+
+            snowflake.style.left = Math.random() * 100 + "%";
+            snowflake.style.animationDuration = 2 + Math.random() * 3 + "s";
+            snowflake.style.fontSize = 6 + Math.random() * 6 + "px";
+
+            snowContainer.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 5000);
+        }
+
+        // Continuous snow
+        setInterval(createSnowflake, 200);
+
     </script>
 </body>
 
