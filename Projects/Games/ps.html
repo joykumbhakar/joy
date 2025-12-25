@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,13 +9,13 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- SortableJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=Montserrat:wght@400;700&family=Pacifico&family=Fira+Code:wght@500&display=swap');
+        
         :root {
             --bg-deep: #050505;
-            --bg-panel: rgba(20, 20, 23, 0.75);
+            --bg-panel: rgba(20, 20, 23, 0.85); /* Slightly darker for better contrast */
             --border-glass: rgba(255, 255, 255, 0.08);
             --accent: #6366f1;
             --accent-glow: rgba(99, 102, 241, 0.3);
@@ -29,7 +28,7 @@
             overflow: hidden;
             touch-action: none;
             /* Subtle grid pattern background */
-            background-image:
+            background-image: 
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -45,23 +44,10 @@
         }
 
         /* Custom Scrollbar */
-        .custom-scroll::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-
-        .custom-scroll::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 4px;
-        }
-
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
         /* Range Slider */
         input[type=range] {
@@ -69,7 +55,6 @@
             width: 100%;
             background: transparent;
         }
-
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 12px;
@@ -78,19 +63,15 @@
             background: white;
             margin-top: -4px;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
             transition: transform 0.1s;
         }
-
-        input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
             height: 4px;
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             border-radius: 2px;
         }
 
@@ -99,14 +80,14 @@
             transform-origin: center center;
             will-change: transform;
             /* Checkerboard for transparency */
-            background-image:
-                linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
-                linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+            background-image: 
+                linear-gradient(45deg, #1a1a1a 25%, transparent 25%), 
+                linear-gradient(-45deg, #1a1a1a 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #1a1a1a 75%), 
                 linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
             background-size: 20px 20px;
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            box-shadow: 0 0 100px -20px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 100px -20px rgba(0,0,0,0.8);
         }
 
         /* Tool Buttons */
@@ -114,7 +95,6 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
-
         /* Indicator for Desktop sidebar buttons */
         .tool-btn.desktop-btn::after {
             content: '';
@@ -128,93 +108,62 @@
             border-radius: 2px;
             transition: transform 0.2s;
         }
-
-        .tool-btn:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .tool-btn.active {
-            color: var(--accent);
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .tool-btn.desktop-btn.active::after {
-            transform: translateY(-50%) scaleY(1);
-        }
-
+        .tool-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .tool-btn.active { color: var(--accent); background: rgba(99, 102, 241, 0.1); }
+        .tool-btn.desktop-btn.active::after { transform: translateY(-50%) scaleY(1); }
+        
         /* Mobile Indicator (Bottom Border) */
-        .tool-btn.mobile-btn.active {
-            border-bottom: 2px solid var(--accent);
-            border-radius: 0;
-            background: transparent;
-        }
+        .tool-btn.mobile-btn.active { border-bottom: 2px solid var(--accent); border-radius: 0; background: transparent; }
 
         /* Layers */
-        .layer-item {
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-
-        .layer-item:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .layer-item.active {
-            background: rgba(99, 102, 241, 0.1);
+        .layer-item { transition: all 0.2s; border: 1px solid transparent; }
+        .layer-item:hover { background: rgba(255,255,255,0.03); }
+        .layer-item.active { 
+            background: rgba(99, 102, 241, 0.1); 
             border-color: rgba(99, 102, 241, 0.2);
         }
     </style>
 </head>
-
 <body class="h-screen w-screen flex flex-col text-sm">
 
     <!-- Top Navigation -->
     <header class="h-14 glass flex items-center justify-between px-4 sm:px-5 z-50 relative shrink-0">
         <div class="flex items-center gap-3 sm:gap-4">
             <div class="flex items-center gap-2.5">
-                <div
-                    class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
                     <i data-lucide="layers" class="w-5 h-5"></i>
                 </div>
                 <div class="flex flex-col">
-                    <span class="font-bold text-white leading-tight tracking-wide">PixelPro <span
-                            class="text-indigo-400">X</span></span>
+                    <span class="font-bold text-white leading-tight tracking-wide">PixelPro <span class="text-indigo-400">X</span></span>
                     <span class="text-[10px] text-zinc-500 font-medium hidden sm:block">DESIGN STUDIO</span>
                 </div>
             </div>
-
+            
             <div class="h-6 w-px bg-white/10 mx-1 sm:mx-2"></div>
-
+            
             <!-- History -->
             <div class="flex items-center gap-1">
-                <button onclick="undo()" id="btn-undo"
-                    class="p-2 rounded-md hover:bg-white/5 text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-                    disabled>
+                <button onclick="undo()" id="btn-undo" class="p-2 rounded-md hover:bg-white/5 text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent transition-colors" disabled>
                     <i data-lucide="undo-2" class="w-4 h-4"></i>
                 </button>
-                <button onclick="redo()" id="btn-redo"
-                    class="p-2 rounded-md hover:bg-white/5 text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-                    disabled>
+                <button onclick="redo()" id="btn-redo" class="p-2 rounded-md hover:bg-white/5 text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent transition-colors" disabled>
                     <i data-lucide="redo-2" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
 
         <div class="flex items-center gap-2 sm:gap-3">
-            <button onclick="toggleLayers()" class="sm:hidden p-2 text-zinc-300">
+             <button onclick="toggleLayers()" class="sm:hidden p-2 text-zinc-300">
                 <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
-
-            <label
-                class="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full glass hover:bg-white/5 cursor-pointer transition-all border border-white/10 group">
+            
+            <label class="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full glass hover:bg-white/5 cursor-pointer transition-all border border-white/10 group">
                 <i data-lucide="folder-open" class="w-4 h-4 text-zinc-400 group-hover:text-white"></i>
                 <span class="font-medium text-zinc-300 group-hover:text-white hidden sm:inline">Open</span>
                 <input type="file" id="upload-input" accept="image/*" class="hidden">
             </label>
-
-            <button onclick="downloadImage()"
-                class="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-500/25 transition-all">
+            
+            <button onclick="downloadImage()" class="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-500/25 transition-all">
                 <i data-lucide="download" class="w-4 h-4"></i>
                 <span class="hidden sm:inline">Export</span>
             </button>
@@ -223,87 +172,62 @@
 
     <!-- Main Workspace -->
     <div class="flex-grow flex overflow-hidden relative">
-
+        
         <!-- Desktop Toolbar (Left) -->
-        <aside
-            class="absolute left-4 top-4 bottom-4 w-14 glass rounded-2xl flex-col items-center py-4 gap-2 z-40 custom-scroll overflow-y-auto overflow-x-hidden hidden sm:flex">
-
-            <button onclick="setTool('select')" id="tool-select"
-                class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400"
-                title="Select / Move (V)">
+        <aside class="absolute left-4 top-4 bottom-4 w-14 glass rounded-2xl flex-col items-center py-4 gap-2 z-40 custom-scroll overflow-y-auto overflow-x-hidden hidden sm:flex">
+            
+            <button onclick="setTool('select')" id="tool-select" class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400" title="Select / Move (V)">
                 <i data-lucide="mouse-pointer-2" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('crop')" id="tool-crop"
-                class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400"
-                title="Crop Canvas (C)">
+            <button onclick="setTool('crop')" id="tool-crop" class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400" title="Crop Canvas (C)">
                 <i data-lucide="crop" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('draw')" id="tool-draw"
-                class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400"
-                title="Brush (B)">
+            <button onclick="setTool('draw')" id="tool-draw" class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400" title="Brush (B)">
                 <i data-lucide="brush" class="w-5 h-5"></i>
             </button>
-
+            
             <div class="w-8 h-px bg-white/10 my-1"></div>
 
-            <button onclick="setTool('shape')" id="tool-shape"
-                class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400"
-                title="Shapes (S)">
+            <button onclick="setTool('shape')" id="tool-shape" class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400" title="Shapes (S)">
                 <i data-lucide="shapes" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('text')" id="tool-text"
-                class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400"
-                title="Text (T)">
+            <button onclick="setTool('text')" id="tool-text" class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400" title="Text (T)">
                 <i data-lucide="type" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('sticker')" id="tool-sticker"
-                class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400"
-                title="Stickers">
+            <button onclick="setTool('sticker')" id="tool-sticker" class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400" title="Stickers">
                 <i data-lucide="smile" class="w-5 h-5"></i>
             </button>
 
             <div class="w-8 h-px bg-white/10 my-1"></div>
 
-            <button onclick="setTool('adjust')" id="tool-adjust"
-                class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400"
-                title="Adjustments">
+            <button onclick="setTool('adjust')" id="tool-adjust" class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400" title="Adjustments">
                 <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('filter')" id="tool-filter"
-                class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400"
-                title="Filters">
+            <button onclick="setTool('filter')" id="tool-filter" class="tool-btn desktop-btn w-10 h-10 flex items-center justify-center rounded-xl text-zinc-400" title="Filters">
                 <i data-lucide="wand-2" class="w-5 h-5"></i>
             </button>
         </aside>
 
         <!-- Canvas Stage -->
         <main class="flex-grow relative flex items-center justify-center overflow-hidden bg-black/50" id="main-stage">
-
+            
             <!-- Canvas Container with transforms -->
             <div id="canvas-stage" class="relative shadow-2xl">
                 <canvas id="editor-canvas"></canvas>
-
+                
                 <!-- Crop Grid Overlay (only visible in crop mode) -->
                 <div id="crop-overlay" class="absolute inset-0 border border-indigo-500 hidden pointer-events-none">
-                    <div class="absolute inset-0 grid grid-cols-3 grid-rows-3">
-                        <div class="border-r border-b border-indigo-500/30"></div>
-                        <div class="border-r border-b border-indigo-500/30"></div>
-                        <div class="border-b border-indigo-500/30"></div>
-                        <div class="border-r border-b border-indigo-500/30"></div>
-                        <div class="border-r border-b border-indigo-500/30"></div>
-                        <div class="border-b border-indigo-500/30"></div>
-                        <div class="border-r border-indigo-500/30"></div>
-                        <div class="border-r border-indigo-500/30"></div>
-                        <div></div>
-                    </div>
+                     <div class="absolute inset-0 grid grid-cols-3 grid-rows-3">
+                         <div class="border-r border-b border-indigo-500/30"></div><div class="border-r border-b border-indigo-500/30"></div><div class="border-b border-indigo-500/30"></div>
+                         <div class="border-r border-b border-indigo-500/30"></div><div class="border-r border-b border-indigo-500/30"></div><div class="border-b border-indigo-500/30"></div>
+                         <div class="border-r border-indigo-500/30"></div><div class="border-r border-indigo-500/30"></div><div></div>
+                     </div>
                 </div>
             </div>
 
             <!-- Empty State -->
-            <div id="empty-state"
-                class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0 px-4 text-center">
-                <div
-                    class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl border border-dashed border-zinc-700 bg-white/5 flex items-center justify-center mb-6">
+            <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0 px-4 text-center">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl border border-dashed border-zinc-700 bg-white/5 flex items-center justify-center mb-6">
                     <i data-lucide="image" class="w-8 h-8 sm:w-10 sm:h-10 text-zinc-600"></i>
                 </div>
                 <h3 class="text-base sm:text-lg font-medium text-zinc-300">Start Creating</h3>
@@ -311,20 +235,16 @@
             </div>
 
             <!-- Floating Controls (Bottom Center - moved up on mobile) -->
-            <div class="absolute bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 glass px-4 sm:px-6 py-2 rounded-full flex items-center gap-4 sm:gap-6 shadow-2xl z-30 transition-all hover:scale-105 opacity-0"
-                id="bottom-bar">
+            <div class="absolute bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 glass px-4 sm:px-6 py-2 rounded-full flex items-center gap-4 sm:gap-6 shadow-2xl z-30 transition-all hover:scale-105 opacity-0" id="bottom-bar">
                 <!-- Zoom -->
                 <div class="flex items-center gap-3">
-                    <button onclick="adjustZoom(-0.1)" class="text-zinc-400 hover:text-white"><i data-lucide="minus"
-                            class="w-3 h-3"></i></button>
-                    <span id="zoom-level"
-                        class="text-xs font-mono text-zinc-300 w-12 text-center select-none">100%</span>
-                    <button onclick="adjustZoom(0.1)" class="text-zinc-400 hover:text-white"><i data-lucide="plus"
-                            class="w-3 h-3"></i></button>
+                    <button onclick="adjustZoom(-0.1)" class="text-zinc-400 hover:text-white"><i data-lucide="minus" class="w-3 h-3"></i></button>
+                    <span id="zoom-level" class="text-xs font-mono text-zinc-300 w-12 text-center select-none">100%</span>
+                    <button onclick="adjustZoom(0.1)" class="text-zinc-400 hover:text-white"><i data-lucide="plus" class="w-3 h-3"></i></button>
                 </div>
                 <div class="w-px h-4 bg-white/10 hidden sm:block"></div>
                 <!-- Pan Hint -->
-                <div class="hidden sm:flex items-center gap-2 text-zinc-500 text-xs select-none">
+                 <div class="hidden sm:flex items-center gap-2 text-zinc-500 text-xs select-none">
                     <i data-lucide="hand" class="w-3 h-3"></i>
                     <span>Hold Space to Pan</span>
                 </div>
@@ -332,46 +252,36 @@
         </main>
 
         <!-- Mobile Bottom Toolbar -->
-        <div
-            class="fixed bottom-0 left-0 right-0 h-16 glass border-t border-white/10 flex items-center justify-around px-2 z-50 sm:hidden overflow-x-auto">
-            <button onclick="setTool('select')" id="mobile-tool-select"
-                class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
+        <div class="fixed bottom-0 left-0 right-0 h-16 glass border-t border-white/10 flex items-center justify-around px-2 z-50 sm:hidden overflow-x-auto">
+            <button onclick="setTool('select')" id="mobile-tool-select" class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
                 <i data-lucide="mouse-pointer-2" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('crop')" id="mobile-tool-crop"
-                class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
+            <button onclick="setTool('crop')" id="mobile-tool-crop" class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
                 <i data-lucide="crop" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('draw')" id="mobile-tool-draw"
-                class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
+            <button onclick="setTool('draw')" id="mobile-tool-draw" class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
                 <i data-lucide="brush" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('shape')" id="mobile-tool-shape"
-                class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
+            <button onclick="setTool('shape')" id="mobile-tool-shape" class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
                 <i data-lucide="shapes" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('text')" id="mobile-tool-text"
-                class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
+            <button onclick="setTool('text')" id="mobile-tool-text" class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
                 <i data-lucide="type" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('sticker')" id="mobile-tool-sticker"
-                class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
+            <button onclick="setTool('sticker')" id="mobile-tool-sticker" class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
                 <i data-lucide="smile" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('adjust')" id="mobile-tool-adjust"
-                class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
+            <button onclick="setTool('adjust')" id="mobile-tool-adjust" class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
                 <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
             </button>
-            <button onclick="setTool('filter')" id="mobile-tool-filter"
-                class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
+            <button onclick="setTool('filter')" id="mobile-tool-filter" class="tool-btn mobile-btn flex flex-col items-center gap-1 p-2 text-zinc-400">
                 <i data-lucide="wand-2" class="w-5 h-5"></i>
             </button>
         </div>
 
         <!-- Right Panel (Layers & Properties) -->
-        <aside id="layers-panel"
-            class="w-80 glass border-l flex flex-col z-40 absolute right-0 top-0 h-full transform translate-x-full sm:translate-x-0 transition-transform duration-300">
-
+        <aside id="layers-panel" class="w-80 glass border-l flex flex-col z-40 absolute right-0 top-0 h-full transform translate-x-full sm:translate-x-0 transition-transform duration-300">
+            
             <!-- Dynamic Properties (Top) -->
             <div class="flex-grow sm:h-1/2 border-b border-white/10 flex flex-col min-h-[350px]">
                 <div class="h-12 border-b border-white/10 px-5 flex items-center justify-between bg-white/5">
@@ -393,15 +303,9 @@
                 <div class="h-10 border-b border-white/10 px-4 flex items-center justify-between bg-white/5">
                     <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Layers</span>
                     <div class="flex gap-1">
-                        <button onclick="addLayer('shape')"
-                            class="p-1.5 rounded hover:bg-white/10 text-zinc-400 hover:text-white" title="Add Shape"><i
-                                data-lucide="square" class="w-3.5 h-3.5"></i></button>
-                        <button onclick="addLayer('text', 'New Text')"
-                            class="p-1.5 rounded hover:bg-white/10 text-zinc-400 hover:text-white" title="Add Text"><i
-                                data-lucide="type" class="w-3.5 h-3.5"></i></button>
-                        <button onclick="document.getElementById('overlay-input').click()"
-                            class="p-1.5 rounded hover:bg-white/10 text-zinc-400 hover:text-white" title="Add Image"><i
-                                data-lucide="image" class="w-3.5 h-3.5"></i></button>
+                         <button onclick="addLayer('shape')" class="p-1.5 rounded hover:bg-white/10 text-zinc-400 hover:text-white" title="Add Shape"><i data-lucide="square" class="w-3.5 h-3.5"></i></button>
+                         <button onclick="addLayer('text', 'New Text')" class="p-1.5 rounded hover:bg-white/10 text-zinc-400 hover:text-white" title="Add Text"><i data-lucide="type" class="w-3.5 h-3.5"></i></button>
+                         <button onclick="document.getElementById('overlay-input').click()" class="p-1.5 rounded hover:bg-white/10 text-zinc-400 hover:text-white" title="Add Image"><i data-lucide="image" class="w-3.5 h-3.5"></i></button>
                     </div>
                 </div>
                 <div id="layers-list" class="flex-grow overflow-y-auto custom-scroll p-2 space-y-1"></div>
@@ -409,24 +313,18 @@
         </aside>
 
         <!-- Mobile Overlay -->
-        <div id="mobile-overlay" onclick="toggleLayers()"
-            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden sm:hidden"></div>
+        <div id="mobile-overlay" onclick="toggleLayers()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden sm:hidden"></div>
     </div>
 
     <!-- Hidden Inputs/Modals -->
     <input type="file" id="overlay-input" accept="image/*" class="hidden">
-
+    
     <!-- Sticker Picker -->
-    <div id="sticker-modal"
-        class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-opacity duration-200"
-        onclick="this.classList.add('hidden')">
-        <div class="glass rounded-2xl w-full max-w-md p-6 max-h-[70vh] flex flex-col shadow-2xl"
-            onclick="event.stopPropagation()">
+    <div id="sticker-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-opacity duration-200" onclick="this.classList.add('hidden')">
+        <div class="glass rounded-2xl w-full max-w-md p-6 max-h-[70vh] flex flex-col shadow-2xl" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="font-bold text-white text-lg">Sticker Library</h3>
-                <button onclick="document.getElementById('sticker-modal').classList.add('hidden')"
-                    class="p-2 rounded-full hover:bg-white/10 text-zinc-400"><i data-lucide="x"
-                        class="w-4 h-4"></i></button>
+                <button onclick="document.getElementById('sticker-modal').classList.add('hidden')" class="p-2 rounded-full hover:bg-white/10 text-zinc-400"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
             <div class="grid grid-cols-5 gap-3 overflow-y-auto custom-scroll p-1" id="sticker-grid"></div>
         </div>
@@ -440,45 +338,52 @@
             ctx: null,
             width: 0,
             height: 0,
-
+            
             // Viewport
             scale: 1,      // Current display zoom
-            pan: { x: 0, y: 0 },
-
+            pan: {x: 0, y: 0},
+            
             activeTool: 'select',
             isPanning: false,
-
+            
             adjustments: {
                 brightness: 100, contrast: 100, saturate: 100,
                 hue: 0, blur: 0, sepia: 0, grayscale: 0, invert: 0
             },
-
+            
             layers: [],
             selectedLayerId: null,
-
-            drawingCanvas: null,
+            
+            drawingCanvas: null, 
             isDrawing: false,
             brush: { size: 5, color: '#ffffff', opacity: 1, mode: 'source-over' },
-
+            
             history: [],
             historyIndex: -1
         };
 
-        const STICKERS = ['😀', '😎', '😍', '🥳', '🔥', '✨', '❤️', '👍', '👑', '🕶️', '🌈', '☀️', '🍕', '🚀', '💡', '📷', '🏆', '🎮', '🎨', '🦄', '🐉', '🐈', '🌸', '🌵', '🚗', '✈️', '💎'];
+        const STICKERS = ['😀','😎','😍','🥳','🔥','✨','❤️','👍','👑','🕶️','🌈','☀️','🍕','🚀','💡','📷','🏆','🎮','🎨','🦄','🐉','🐈','🌸','🌵','🚗','✈️','💎'];
+        const FONTS = [
+            { name: 'Modern', val: 'Plus Jakarta Sans, sans-serif' },
+            { name: 'Serif', val: 'Playfair Display, serif' },
+            { name: 'Classic', val: 'Montserrat, sans-serif' },
+            { name: 'Handwritten', val: 'Pacifico, cursive' },
+            { name: 'Code', val: 'Fira Code, monospace' }
+        ];
 
         // --- Initialization ---
         window.onload = () => {
             state.canvas = document.getElementById('editor-canvas');
             state.ctx = state.canvas.getContext('2d');
             state.drawingCanvas = document.createElement('canvas');
-
+            
             // Initial Icons
             lucide.createIcons();
-
+            
             // Listeners
             document.getElementById('upload-input').addEventListener('change', handleImageUpload);
             document.getElementById('overlay-input').addEventListener('change', handleOverlayUpload);
-
+            
             // Interaction Listeners (Stage)
             const stage = document.getElementById('main-stage');
             stage.addEventListener('wheel', handleWheel, { passive: false });
@@ -486,10 +391,10 @@
             window.addEventListener('pointermove', handlePointerMove);
             window.addEventListener('pointerup', handlePointerUp);
             window.addEventListener('resize', fitCanvas);
-
+            
             // Keyboard
             window.addEventListener('keydown', handleKey);
-            window.addEventListener('keyup', (e) => { if (e.code === 'Space') stage.style.cursor = 'default'; });
+            window.addEventListener('keyup', (e) => { if(e.code === 'Space') stage.style.cursor = 'default'; });
 
             // Sortable Layers
             new Sortable(document.getElementById('layers-list'), {
@@ -497,7 +402,7 @@
                 ghostClass: 'bg-indigo-500/10',
                 onEnd: reorderLayers
             });
-
+            
             renderStickerGrid();
         };
 
@@ -508,7 +413,7 @@
         // --- Image Loading ---
         function handleImageUpload(e) {
             const file = e.target.files[0];
-            if (!file) return;
+            if(!file) return;
             const reader = new FileReader();
             reader.onload = (evt) => {
                 const img = new Image();
@@ -526,17 +431,17 @@
             state.canvas.height = state.height;
             state.drawingCanvas.width = state.width;
             state.drawingCanvas.height = state.height;
-
+            
             // Reset state
             state.layers = [];
             state.adjustments = { brightness: 100, contrast: 100, saturate: 100, hue: 0, blur: 0, sepia: 0, grayscale: 0, invert: 0 };
             state.history = [];
             state.historyIndex = -1;
-            state.pan = { x: 0, y: 0 };
-
+            state.pan = {x: 0, y: 0};
+            
             document.getElementById('empty-state').classList.add('hidden');
             document.getElementById('bottom-bar').style.opacity = '1';
-
+            
             fitCanvas();
             saveHistory();
             render();
@@ -546,7 +451,7 @@
 
         function handleOverlayUpload(e) {
             const file = e.target.files[0];
-            if (!file) return;
+            if(!file) return;
             const reader = new FileReader();
             reader.onload = (evt) => {
                 const img = new Image();
@@ -558,13 +463,13 @@
 
         // --- Viewport Logic (Pan & Zoom) ---
         function fitCanvas() {
-            if (!state.img) return;
+            if(!state.img) return;
             const stage = document.getElementById('main-stage');
             const padding = 80;
             const availW = stage.clientWidth - padding;
             const availH = stage.clientHeight - padding;
             state.scale = Math.min(availW / state.width, availH / state.height);
-            state.pan = { x: 0, y: 0 };
+            state.pan = {x: 0, y: 0};
             updateTransform();
             updateZoomText();
         }
@@ -577,10 +482,10 @@
         }
 
         function handleWheel(e) {
-            if (!state.img) return;
+            if(!state.img) return;
             e.preventDefault();
-
-            if (e.ctrlKey || e.metaKey) {
+            
+            if(e.ctrlKey || e.metaKey) {
                 // Zoom
                 const delta = e.deltaY > 0 ? -0.1 : 0.1;
                 adjustZoom(delta);
@@ -594,8 +499,8 @@
 
         function adjustZoom(delta) {
             let newScale = state.scale + (delta * state.scale); // Proportional zoom
-            if (newScale < 0.1) newScale = 0.1;
-            if (newScale > 10) newScale = 10;
+            if(newScale < 0.1) newScale = 0.1;
+            if(newScale > 10) newScale = 10;
             state.scale = newScale;
             updateTransform();
             updateZoomText();
@@ -606,16 +511,28 @@
         }
 
         function handleKey(e) {
-            if (e.code === 'Space') {
+            if(e.code === 'Space') {
                 document.getElementById('main-stage').style.cursor = 'grab';
             }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); }
-            if (e.key === 'Delete' || e.key === 'Backspace') deleteSelectedLayer();
+            if((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+            if((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); }
+            if(e.key === 'Delete' || e.key === 'Backspace') deleteSelectedLayer();
+            
+            // Brush resizing shortcuts
+            if(state.activeTool === 'draw') {
+                if(e.key === '[') {
+                    state.brush.size = Math.max(1, state.brush.size - 5);
+                    updatePropertiesUI();
+                }
+                if(e.key === ']') {
+                    state.brush.size = Math.min(100, state.brush.size + 5);
+                    updatePropertiesUI();
+                }
+            }
         }
 
         // --- Input Handling ---
-        let dragStart = { x: 0, y: 0 };
+        let dragStart = {x:0, y:0};
         let isDraggingLayer = false;
         let isSpaceDown = false;
 
@@ -630,16 +547,16 @@
 
         function handlePointerDown(e) {
             isSpaceDown = e.buttons === 1 && (e.ctrlKey || e.code === 'Space' || document.activeElement === document.body && e.clientX < 50 /* Edge case */);
-
+            
             // 1. Pan Mode
             if (isSpaceDown || state.activeTool === 'hand') {
                 state.isPanning = true;
-                dragStart = { x: e.clientX, y: e.clientY };
+                dragStart = {x: e.clientX, y: e.clientY};
                 document.getElementById('main-stage').style.cursor = 'grabbing';
                 return;
             }
 
-            if (!state.img) return;
+            if(!state.img) return;
             const pos = getPointerPos(e);
 
             // 2. Drawing
@@ -652,51 +569,51 @@
             // 3. Layer Selection / Moving
             let hit = false;
             // Check layers top-down
-            for (let i = state.layers.length - 1; i >= 0; i--) {
+            for(let i = state.layers.length - 1; i >= 0; i--) {
                 const l = state.layers[i];
-                if (!l.visible) continue;
-
+                if(!l.visible) continue;
+                
                 // Simple Hit Test (Box)
-                const halfW = (l.width) / 2;
-                const halfH = (l.height) / 2;
-
+                const halfW = (l.width)/2; 
+                const halfH = (l.height)/2;
+                
                 // More precise rect check relative to rotation would be better, but simple box check:
                 if (Math.abs(pos.x - l.x) < halfW && Math.abs(pos.y - l.y) < halfH) {
                     selectLayer(l.id);
                     isDraggingLayer = true;
-                    dragStart = { x: pos.x, y: pos.y }; // Canvas coords
+                    dragStart = {x: pos.x, y: pos.y}; // Canvas coords
                     hit = true;
-                    if (state.activeTool !== 'select') setTool('select');
+                    if(state.activeTool !== 'select') setTool('select');
                     break;
                 }
             }
 
-            if (!hit && state.activeTool === 'select') {
+            if(!hit && state.activeTool === 'select') {
                 selectLayer(null);
             }
         }
 
         function handlePointerMove(e) {
             // Panning
-            if (state.isPanning) {
+            if(state.isPanning) {
                 const dx = e.clientX - dragStart.x;
                 const dy = e.clientY - dragStart.y;
                 state.pan.x += dx;
                 state.pan.y += dy;
-                dragStart = { x: e.clientX, y: e.clientY };
+                dragStart = {x: e.clientX, y: e.clientY};
                 updateTransform();
                 return;
             }
 
-            if (!state.img) return;
+            if(!state.img) return;
             const pos = getPointerPos(e);
 
-            if (state.isDrawing) {
+            if(state.isDrawing) {
                 draw(pos.x, pos.y);
             }
             else if (isDraggingLayer && state.selectedLayerId) {
                 const l = state.layers.find(x => x.id === state.selectedLayerId);
-                if (l) {
+                if(l) {
                     l.x += pos.x - dragStart.x;
                     l.y += pos.y - dragStart.y;
                     dragStart = pos;
@@ -706,11 +623,11 @@
         }
 
         function handlePointerUp() {
-            if (state.isPanning) {
+            if(state.isPanning) {
                 state.isPanning = false;
                 document.getElementById('main-stage').style.cursor = 'default';
             }
-            if (state.isDrawing || isDraggingLayer) {
+            if(state.isDrawing || isDraggingLayer) {
                 saveHistory();
             }
             state.isDrawing = false;
@@ -719,7 +636,7 @@
 
         // --- Rendering Pipeline ---
         function render() {
-            if (!state.img) return;
+            if(!state.img) return;
             const ctx = state.ctx;
             const w = state.width;
             const h = state.height;
@@ -738,7 +655,7 @@
 
             // 3. Render Layers
             state.layers.forEach(l => {
-                if (!l.visible) return;
+                if(!l.visible) return;
                 ctx.save();
                 ctx.translate(l.x, l.y);
                 ctx.rotate((l.rotation * Math.PI) / 180);
@@ -746,30 +663,37 @@
                 ctx.globalCompositeOperation = l.blendMode;
 
                 if (l.type === 'image') {
-                    ctx.drawImage(l.content, -l.width / 2, -l.height / 2, l.width, l.height);
+                    ctx.drawImage(l.content, -l.width/2, -l.height/2, l.width, l.height);
                 } else if (l.type === 'text') {
-                    ctx.font = `bold ${l.height}px ${l.font}`;
-                    ctx.fillStyle = l.color;
+                    ctx.font = `bold ${l.height}px ${l.font || 'Plus Jakarta Sans'}`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                    ctx.shadowBlur = 4;
+                    
+                    // Draw Stroke
+                    if (l.strokeWidth > 0) {
+                        ctx.strokeStyle = l.strokeColor || '#000000';
+                        ctx.lineWidth = l.strokeWidth;
+                        ctx.lineJoin = 'round';
+                        ctx.strokeText(l.content, 0, 0);
+                    }
+                    
+                    ctx.fillStyle = l.color;
                     ctx.fillText(l.content, 0, 0);
                 } else if (l.type === 'shape') {
                     ctx.fillStyle = l.color;
                     ctx.strokeStyle = l.borderColor;
                     ctx.lineWidth = l.borderWidth;
                     ctx.beginPath();
-                    if (l.shapeType === 'rect') ctx.rect(-l.width / 2, -l.height / 2, l.width, l.height);
-                    else if (l.shapeType === 'circle') ctx.arc(0, 0, l.width / 2, 0, Math.PI * 2);
-                    else if (l.shapeType === 'triangle') {
-                        ctx.moveTo(0, -l.height / 2);
-                        ctx.lineTo(l.width / 2, l.height / 2);
-                        ctx.lineTo(-l.width / 2, l.height / 2);
+                    if(l.shapeType === 'rect') ctx.rect(-l.width/2, -l.height/2, l.width, l.height);
+                    else if(l.shapeType === 'circle') ctx.arc(0, 0, l.width/2, 0, Math.PI*2);
+                    else if(l.shapeType === 'triangle') {
+                        ctx.moveTo(0, -l.height/2);
+                        ctx.lineTo(l.width/2, l.height/2);
+                        ctx.lineTo(-l.width/2, l.height/2);
                         ctx.closePath();
                     }
                     ctx.fill();
-                    if (l.borderWidth > 0) ctx.stroke();
+                    if(l.borderWidth > 0) ctx.stroke();
                 } else if (l.type === 'sticker') {
                     ctx.font = `${l.height}px sans-serif`;
                     ctx.textAlign = 'center';
@@ -785,25 +709,25 @@
                     ctx.rotate((l.rotation * Math.PI) / 180);
                     ctx.strokeStyle = '#6366f1';
                     ctx.lineWidth = 2 / state.scale;
-
+                    
                     // Box Dimension
                     let boxW = l.width, boxH = l.height;
-                    if (l.type === 'text') {
-                        ctx.font = `bold ${l.height}px ${l.font}`;
+                    if(l.type === 'text') {
+                        ctx.font = `bold ${l.height}px ${l.font || 'Plus Jakarta Sans'}`;
                         const m = ctx.measureText(l.content);
                         boxW = m.width + 20;
                     }
-
-                    ctx.strokeRect(-boxW / 2, -boxH / 2, boxW, boxH);
-
+                    
+                    ctx.strokeRect(-boxW/2, -boxH/2, boxW, boxH);
+                    
                     // Rotation Handle
                     ctx.beginPath();
-                    ctx.moveTo(0, -boxH / 2);
-                    ctx.lineTo(0, -boxH / 2 - 20);
+                    ctx.moveTo(0, -boxH/2);
+                    ctx.lineTo(0, -boxH/2 - 20);
                     ctx.stroke();
                     ctx.fillStyle = '#6366f1';
                     ctx.beginPath();
-                    ctx.arc(0, -boxH / 2 - 20, 6 / state.scale, 0, Math.PI * 2);
+                    ctx.arc(0, -boxH/2 - 20, 6/state.scale, 0, Math.PI*2);
                     ctx.fill();
                     ctx.restore();
                 }
@@ -815,11 +739,15 @@
             ctx.lineWidth = state.brush.size;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.strokeStyle = state.brush.color;
-            ctx.globalAlpha = state.brush.opacity;
-            ctx.globalCompositeOperation = state.brush.mode;
+            
+            if (state.brush.mode === 'destination-out') {
+                ctx.globalCompositeOperation = 'destination-out';
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = state.brush.color;
+            }
 
-            if (isStart) {
+            if(isStart) {
                 ctx.beginPath();
                 ctx.moveTo(x, y);
             } else {
@@ -833,18 +761,19 @@
         function addLayer(type, content) {
             const id = Date.now();
             let width = 150, height = 150;
-            if (type === 'image') {
+            if(type === 'image') {
                 const ratio = content.width / content.height;
                 width = state.width * 0.3; height = width / ratio;
             } else if (type === 'text') { width = 200; height = 60; }
-
+            
             const layer = {
                 id, type, content,
-                x: state.width / 2, y: state.height / 2,
+                x: state.width/2, y: state.height/2,
                 width, height,
                 rotation: 0, opacity: 1, blendMode: 'source-over',
                 visible: true,
-                color: '#ffffff', font: 'Inter, sans-serif',
+                color: '#ffffff', font: 'Plus Jakarta Sans, sans-serif',
+                strokeWidth: 0, strokeColor: '#000000',
                 shapeType: 'rect', borderColor: '#ffffff', borderWidth: 0
             };
             state.layers.push(layer);
@@ -860,7 +789,7 @@
         }
 
         function deleteSelectedLayer() {
-            if (!state.selectedLayerId) return;
+            if(!state.selectedLayerId) return;
             state.layers = state.layers.filter(l => l.id !== state.selectedLayerId);
             state.selectedLayerId = null;
             render();
@@ -875,7 +804,7 @@
             const newLayers = [];
             for (let i = newIds.length - 1; i >= 0; i--) {
                 const layer = state.layers.find(l => l.id === newIds[i]);
-                if (layer) newLayers.push(layer);
+                if(layer) newLayers.push(layer);
             }
             state.layers = newLayers;
             render();
@@ -884,35 +813,35 @@
 
         // --- Crop Functionality ---
         function cropCanvas(ratio) {
-            if (!state.img) return;
-
+            if(!state.img) return;
+            
             let newW = state.width;
             let newH = state.height;
-
+            
             if (ratio === 1) { // Square
                 const size = Math.min(state.width, state.height);
                 newW = size; newH = size;
-            } else if (ratio === 16 / 9) {
+            } else if (ratio === 16/9) {
                 if (state.width / state.height > ratio) newW = state.height * ratio;
                 else newH = state.width / ratio;
-            } else if (ratio === 4 / 3) {
+            } else if (ratio === 4/3) {
                 if (state.width / state.height > ratio) newW = state.height * ratio;
                 else newH = state.width / ratio;
             }
-
+            
             const temp = document.createElement('canvas');
             temp.width = newW;
             temp.height = newH;
             const tCtx = temp.getContext('2d');
-
+            
             const sx = (state.width - newW) / 2;
             const sy = (state.height - newH) / 2;
-
+            
             tCtx.drawImage(state.canvas, sx, sy, newW, newH, 0, 0, newW, newH);
-
+            
             const newImg = new Image();
             newImg.onload = () => {
-                initEditor(newImg);
+                initEditor(newImg); 
             };
             newImg.src = temp.toDataURL();
         }
@@ -921,41 +850,41 @@
 
         function setTool(t) {
             state.activeTool = t;
-
+            
             // Remove active class from all buttons
             document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-
+            
             // Activate desktop button
             document.getElementById(`tool-${t}`)?.classList.add('active');
-
+            
             // Activate mobile button
             document.getElementById(`mobile-tool-${t}`)?.classList.add('active');
-
+            
             // Show/Hide Overlays
             const cropOverlay = document.getElementById('crop-overlay');
             if (t === 'crop') cropOverlay.classList.remove('hidden');
             else cropOverlay.classList.add('hidden');
-
+            
             if (t === 'sticker') document.getElementById('sticker-modal').classList.remove('hidden');
-
+            
             updatePropertiesUI();
         }
 
         function updateLayersUI() {
             const list = document.getElementById('layers-list');
             list.innerHTML = '';
-
+            
             [...state.layers].reverse().forEach(l => {
                 const item = document.createElement('div');
                 item.className = `layer-item flex items-center justify-between p-3 rounded-lg cursor-pointer mb-1 ${l.id === state.selectedLayerId ? 'active' : ''}`;
                 item.dataset.id = l.id;
                 item.onclick = () => selectLayer(l.id);
-
+                
                 let icon = 'layers';
-                if (l.type === 'text') icon = 'type';
-                if (l.type === 'image') icon = 'image';
-                if (l.type === 'shape') icon = 'square';
-                if (l.type === 'sticker') icon = 'smile';
+                if(l.type === 'text') icon = 'type';
+                if(l.type === 'image') icon = 'image';
+                if(l.type === 'shape') icon = 'square';
+                if(l.type === 'sticker') icon = 'smile';
 
                 item.innerHTML = `
                     <div class="flex items-center gap-3">
@@ -976,7 +905,7 @@
 
         function toggleVis(id) {
             const l = state.layers.find(x => x.id === id);
-            if (l) { l.visible = !l.visible; render(); updateLayersUI(); }
+            if(l) { l.visible = !l.visible; render(); updateLayersUI(); }
         }
 
         function updatePropertiesUI() {
@@ -987,7 +916,7 @@
 
             // 1. CROP TOOL
             if (state.activeTool === 'crop') {
-                container.innerHTML = `
+                 container.innerHTML = `
                     <div class="grid grid-cols-2 gap-2">
                         <button onclick="cropCanvas(1)" class="p-3 bg-white/5 hover:bg-white/10 rounded-lg text-zinc-300 border border-white/5">Square (1:1)</button>
                         <button onclick="cropCanvas(16/9)" class="p-3 bg-white/5 hover:bg-white/10 rounded-lg text-zinc-300 border border-white/5">Landscape (16:9)</button>
@@ -995,36 +924,36 @@
                     </div>
                     <p class="text-xs text-zinc-500 mt-2 text-center">Cropping flattens layers.</p>
                  `;
-                return;
+                 return;
             }
 
             // 2. ADJUST/FILTER
             if (state.activeTool === 'adjust' || state.activeTool === 'filter') {
-                if (state.activeTool === 'filter') {
-                    const filters = [
-                        { n: 'Normal', v: { brightness: 100, contrast: 100, saturate: 100, sepia: 0, grayscale: 0, invert: 0 } },
-                        { n: 'Noir', v: { brightness: 110, contrast: 120, saturate: 0, grayscale: 100 } },
-                        { n: 'Vivid', v: { brightness: 105, contrast: 110, saturate: 150 } },
-                        { n: 'Vintage', v: { sepia: 50, contrast: 90, brightness: 90 } },
-                        { n: 'Cyber', v: { hue: 180, contrast: 120 } }
-                    ];
-                    const grid = document.createElement('div');
-                    grid.className = "grid grid-cols-2 gap-2";
-                    filters.forEach(f => {
-                        const btn = document.createElement('button');
-                        btn.className = "p-3 bg-white/5 rounded-lg text-xs hover:bg-indigo-600 border border-white/5 transition-colors";
-                        btn.innerText = f.n;
-                        btn.onclick = () => { Object.assign(state.adjustments, f.v); render(); saveHistory(); };
-                        grid.appendChild(btn);
-                    });
-                    container.appendChild(grid);
-                } else {
-                    createSlider(container, 'Brightness', state.adjustments.brightness, 0, 200, v => { state.adjustments.brightness = v; render() });
-                    createSlider(container, 'Contrast', state.adjustments.contrast, 0, 200, v => { state.adjustments.contrast = v; render() });
-                    createSlider(container, 'Saturation', state.adjustments.saturate, 0, 200, v => { state.adjustments.saturate = v; render() });
-                    createSlider(container, 'Blur', state.adjustments.blur, 0, 20, v => { state.adjustments.blur = v; render() });
-                }
-                return;
+                 if (state.activeTool === 'filter') {
+                     const filters = [
+                         {n:'Normal', v:{brightness:100, contrast:100, saturate:100, sepia:0, grayscale:0, invert:0}},
+                         {n:'Noir', v:{brightness:110, contrast:120, saturate:0, grayscale:100}},
+                         {n:'Vivid', v:{brightness:105, contrast:110, saturate:150}},
+                         {n:'Vintage', v:{sepia:50, contrast:90, brightness:90}},
+                         {n:'Cyber', v:{hue:180, contrast:120}}
+                     ];
+                     const grid = document.createElement('div');
+                     grid.className = "grid grid-cols-2 gap-2";
+                     filters.forEach(f => {
+                         const btn = document.createElement('button');
+                         btn.className = "p-3 bg-white/5 rounded-lg text-xs hover:bg-indigo-600 border border-white/5 transition-colors";
+                         btn.innerText = f.n;
+                         btn.onclick = () => { Object.assign(state.adjustments, f.v); render(); saveHistory(); };
+                         grid.appendChild(btn);
+                     });
+                     container.appendChild(grid);
+                 } else {
+                     createSlider(container, 'Brightness', state.adjustments.brightness, 0, 200, v => {state.adjustments.brightness=v;render()});
+                     createSlider(container, 'Contrast', state.adjustments.contrast, 0, 200, v => {state.adjustments.contrast=v;render()});
+                     createSlider(container, 'Saturation', state.adjustments.saturate, 0, 200, v => {state.adjustments.saturate=v;render()});
+                     createSlider(container, 'Blur', state.adjustments.blur, 0, 20, v => {state.adjustments.blur=v;render()});
+                 }
+                 return;
             }
 
             // 3. LAYER SELECTED
@@ -1034,56 +963,93 @@
                     <button onclick="duplicateLayer(${l.id})" class="hover:text-white text-zinc-400" title="Duplicate"><i data-lucide="copy" class="w-4 h-4"></i></button>
                     <button onclick="deleteSelectedLayer()" class="hover:text-red-400 text-zinc-400" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 `;
-
-                if (l.type === 'shape') {
-                    const typeWrap = document.createElement('div');
-                    typeWrap.className = "flex gap-2 mb-4 p-1 bg-white/5 rounded-lg";
-                    ['rect', 'circle', 'triangle'].forEach(t => {
-                        const btn = document.createElement('button');
-                        btn.className = `flex-1 py-1.5 rounded-md text-xs ${l.shapeType === t ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}`;
-                        btn.innerHTML = t; // Icon would be better
-                        btn.onclick = () => { l.shapeType = t; render(); saveHistory(); updatePropertiesUI(); };
-                        typeWrap.appendChild(btn);
-                    });
-                    container.appendChild(typeWrap);
-                    createColorInput(container, 'Fill', l.color, c => { l.color = c; render() });
-                    createColorInput(container, 'Border', l.borderColor, c => { l.borderColor = c; render() });
-                    createSlider(container, 'Border Width', l.borderWidth, 0, 20, v => { l.borderWidth = v; render() });
+                
+                if(l.type === 'shape') {
+                     const typeWrap = document.createElement('div');
+                     typeWrap.className = "flex gap-2 mb-4 p-1 bg-white/5 rounded-lg";
+                     ['rect','circle','triangle'].forEach(t => {
+                         const btn = document.createElement('button');
+                         btn.className = `flex-1 py-1.5 rounded-md text-xs ${l.shapeType === t ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}`;
+                         btn.innerHTML = t; // Icon would be better
+                         btn.onclick = () => { l.shapeType = t; render(); saveHistory(); updatePropertiesUI(); };
+                         typeWrap.appendChild(btn);
+                     });
+                     container.appendChild(typeWrap);
+                     createColorInput(container, 'Fill', l.color, c => {l.color=c;render()});
+                     createColorInput(container, 'Border', l.borderColor, c => {l.borderColor=c;render()});
+                     createSlider(container, 'Border Width', l.borderWidth, 0, 20, v=>{l.borderWidth=v;render()});
                 }
-
-                if (l.type === 'text') {
+                
+                if(l.type === 'text') {
                     const editBtn = document.createElement('button');
                     editBtn.className = "w-full py-2 bg-indigo-600 rounded-lg text-white font-medium mb-4 shadow-lg shadow-indigo-500/20";
                     editBtn.innerText = "Edit Text";
-                    editBtn.onclick = () => {
-                        const t = prompt("Edit text", l.content);
-                        if (t) { l.content = t; render(); saveHistory(); updateLayersUI(); }
+                    editBtn.onclick = () => { 
+                        const t = prompt("Edit text", l.content); 
+                        if(t) { l.content = t; render(); saveHistory(); updateLayersUI(); }
                     };
                     container.appendChild(editBtn);
-                    createColorInput(container, 'Color', l.color, c => { l.color = c; render() });
-                }
 
-                createSlider(container, 'Opacity', l.opacity * 100, 0, 100, v => { l.opacity = v / 100; render() });
-                createSlider(container, 'Size', l.height, 10, 800, v => {
-                    const r = l.width / l.height;
-                    l.height = v;
-                    if (l.type !== 'text' && l.type !== 'shape') l.width = v * r;
-                    if (l.type === 'shape' && l.shapeType !== 'circle') l.width = v * r;
-                    if (l.shapeType === 'circle') l.width = v;
-                    render();
+                    // Font Selector
+                    const fontWrap = document.createElement('div');
+                    fontWrap.className = "mb-4";
+                    fontWrap.innerHTML = `<div class="text-xs text-zinc-400 mb-2 font-medium">Font Family</div>`;
+                    const fontSel = document.createElement('select');
+                    fontSel.className = "w-full bg-white/5 text-xs text-white p-2 rounded-lg border border-white/10 outline-none";
+                    FONTS.forEach(f => {
+                        const opt = document.createElement('option');
+                        opt.value = f.val;
+                        opt.innerText = f.name;
+                        if(l.font === f.val) opt.selected = true;
+                        fontSel.appendChild(opt);
+                    });
+                    fontSel.onchange = (e) => { l.font = e.target.value; render(); saveHistory(); };
+                    fontWrap.appendChild(fontSel);
+                    container.appendChild(fontWrap);
+
+                    createColorInput(container, 'Color', l.color, c => {l.color=c;render()});
+                    createColorInput(container, 'Stroke Color', l.strokeColor || '#000000', c => {l.strokeColor=c;render()});
+                    createSlider(container, 'Stroke Width', l.strokeWidth || 0, 0, 10, v=>{l.strokeWidth=v;render()});
+                }
+                
+                createSlider(container, 'Opacity', l.opacity*100, 0, 100, v=>{l.opacity=v/100;render()});
+                createSlider(container, 'Size', l.height, 10, 800, v=>{
+                     const r = l.width/l.height; 
+                     l.height=v; 
+                     if(l.type!=='text' && l.type!=='shape') l.width=v*r;
+                     if(l.type==='shape' && l.shapeType!=='circle') l.width=v*r;
+                     if(l.shapeType==='circle') l.width=v;
+                     render();
                 });
-                createSlider(container, 'Rotation', l.rotation, 0, 360, v => { l.rotation = v; render() });
+                createSlider(container, 'Rotation', l.rotation, 0, 360, v=>{l.rotation=v;render()});
             }
 
             // 4. BRUSH
             if (state.activeTool === 'draw') {
-                createSlider(container, 'Brush Size', state.brush.size, 1, 100, v => state.brush.size = v);
-                createColorInput(container, 'Color', state.brush.color, c => state.brush.color = c);
+                // Brush Mode
+                const modeWrap = document.createElement('div');
+                modeWrap.className = "flex gap-2 mb-4 p-1 bg-white/5 rounded-lg";
+                ['Paint','Eraser'].forEach(m => {
+                    const modeVal = m === 'Paint' ? 'source-over' : 'destination-out';
+                    const btn = document.createElement('button');
+                    btn.className = `flex-1 py-1.5 rounded-md text-xs ${state.brush.mode === modeVal ? 'bg-indigo-600 text-white' : 'text-zinc-400 hover:text-white'}`;
+                    btn.innerText = m;
+                    btn.onclick = () => { state.brush.mode = modeVal; updatePropertiesUI(); };
+                    modeWrap.appendChild(btn);
+                });
+                container.appendChild(modeWrap);
+
+                createSlider(container, 'Size [ / ]', state.brush.size, 1, 100, v=>state.brush.size=v);
+                
+                if (state.brush.mode !== 'destination-out') {
+                    createColorInput(container, 'Color', state.brush.color, c=>state.brush.color=c);
+                }
+                
                 const clrBtn = document.createElement('button');
                 clrBtn.className = "w-full py-2 bg-red-500/10 text-red-400 rounded-lg mt-4 hover:bg-red-500/20";
                 clrBtn.innerText = "Clear Drawing";
-                clrBtn.onclick = () => {
-                    state.drawingCanvas.getContext('2d').clearRect(0, 0, state.width, state.height);
+                clrBtn.onclick = () => { 
+                    state.drawingCanvas.getContext('2d').clearRect(0,0,state.width,state.height);
                     render(); saveHistory();
                 };
                 container.appendChild(clrBtn);
@@ -1140,11 +1106,11 @@
 
         function duplicateLayer(id) {
             const l = state.layers.find(x => x.id === id);
-            if (l) {
+            if(l) {
                 const clone = JSON.parse(JSON.stringify(l));
                 clone.id = Date.now();
                 clone.x += 20; clone.y += 20;
-                if (l.type === 'image') clone.content = l.content;
+                if(l.type==='image') clone.content = l.content;
                 state.layers.push(clone);
                 selectLayer(clone.id);
                 saveHistory();
@@ -1153,51 +1119,51 @@
 
         // History & Download
         function saveHistory() {
-            if (state.historyIndex < state.history.length - 1) state.history = state.history.slice(0, state.historyIndex + 1);
+            if(state.historyIndex < state.history.length - 1) state.history = state.history.slice(0, state.historyIndex + 1);
             const snap = {
-                adj: { ...state.adjustments },
+                adj: {...state.adjustments},
                 layers: state.layers.map(l => {
-                    const c = { ...l };
-                    if (c.type === 'image') c.src = l.content.src;
+                    const c = {...l}; 
+                    if(c.type==='image') c.src = l.content.src;
                     delete c.content; return c;
                 }),
                 draw: state.drawingCanvas.toDataURL()
             };
             state.history.push(snap);
-            if (state.history.length > 20) state.history.shift();
+            if(state.history.length > 20) state.history.shift();
             else state.historyIndex++;
-
+            
             document.getElementById('btn-undo').disabled = state.historyIndex <= 0;
             document.getElementById('btn-redo').disabled = state.historyIndex >= state.history.length - 1;
         }
 
         function undo() {
-            if (state.historyIndex > 0) {
+            if(state.historyIndex > 0) {
                 state.historyIndex--;
                 restore(state.history[state.historyIndex]);
             }
         }
         function redo() {
-            if (state.historyIndex < state.history.length - 1) {
+            if(state.historyIndex < state.history.length - 1) {
                 state.historyIndex++;
                 restore(state.history[state.historyIndex]);
             }
         }
 
         async function restore(snap) {
-            state.adjustments = { ...snap.adj };
+            state.adjustments = {...snap.adj};
             const img = new Image();
             img.onload = () => {
-                state.drawingCanvas.getContext('2d').clearRect(0, 0, state.width, state.height);
-                state.drawingCanvas.getContext('2d').drawImage(img, 0, 0);
+                state.drawingCanvas.getContext('2d').clearRect(0,0,state.width,state.height);
+                state.drawingCanvas.getContext('2d').drawImage(img,0,0);
                 render();
             };
             img.src = snap.draw;
-
+            
             const newLayers = [];
-            for (const lData of snap.layers) {
-                const l = { ...lData };
-                if (l.type === 'image') {
+            for(const lData of snap.layers) {
+                const l = {...lData};
+                if(l.type==='image') {
                     await new Promise(r => {
                         const i = new Image();
                         i.onload = () => { l.content = i; r(); };
@@ -1210,7 +1176,7 @@
             render();
             updateLayersUI();
             updatePropertiesUI();
-
+            
             document.getElementById('btn-undo').disabled = state.historyIndex <= 0;
             document.getElementById('btn-redo').disabled = state.historyIndex >= state.history.length - 1;
         }
@@ -1233,5 +1199,4 @@
         }
     </script>
 </body>
-
 </html>
